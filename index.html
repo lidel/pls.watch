@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+<style>
+
+body {
+  background: #444;
+}
+
+section {
+  background: black;
+  color: white;
+  border-radius: 1em;
+  padding: 1em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.5);
+}
+
+p {font-family: sans-serif;}
+
+</style>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+<section>
+<div id="player"></div>
+</section>
+
+<script>
+
+function initYT() {
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+}
+
+function onYouTubeIframeAPIReady() {
+  var player;
+  player = new YT.Player('player', {
+    height: '720',
+    width: '1280',
+    videoId: urlParam('v'),
+
+    playerVars: {
+      'start': getSecs(getStart(urlParam('t'))),
+      'end': getSecs(getEnd(urlParam('t'))),
+      'autohide': '1',
+      'html5': '1',
+      'iv_load_policy': '3',
+      'modestbranding': '1',
+      'showinfo': '0',
+      'theme': 'dark',
+    },
+
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+function onPlayerStateChange(event) {
+  console.log('event.data: ' + event.data);
+
+  // no brakes on the loop train
+  if (event.data == YT.PlayerState.ENDED || event.data == YT.PlayerState.PAUSED) {
+    console.log('event: ended/paused');
+    jumpAndPlay(event.target, getSecs(getStart((urlParam('t')))));
+    event.target.playVideo();
+  }
+
+}
+
+function jumpAndPlay(target, time) {
+  target.seekTo(time, true);
+}
+
+function onPlayerReady(event) {
+  console.log('onPlayerReady');
+  $(document).prop('title', event.target.getVideoData().title);
+  event.target.playVideo();
+}
+
+function urlParam(key) {
+  var result = new RegExp(key + '=([^&]*)', 'i').exec(window.location.search);
+  return result && unescape(result[1]) || '';
+};
+
+function getStart(t) {
+  return !t ? 0 : t.split(';')[0];
+}
+
+function getEnd(t) {
+  var t = !t ? null : t.split(';');
+  if (t && t.length > 1) {
+    return t[1];
+  } else {
+    return null;
+  }
+}
+
+function getSecs(t) {
+  //TODO: handle 1m12s etc
+  return t;
+}
+
+// TODO: hide controls and display relative duration, current time and YT link under video
+
+if (urlParam('v')) {
+  initYT();
+} else {
+  $('#player').html('<p><strong>Usage:</strong></p><p>Append <code>?v=VIDEO_ID&t=start;end</code> to URL.</p>');
+}
+
+</script>
+</body>
+</html>

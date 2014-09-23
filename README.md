@@ -1,4 +1,4 @@
 yt-looper
 =========
 
-Minimalistic Youtube Looper
+Minimalistic Youtube Looper at http://yt.aergia.eu
