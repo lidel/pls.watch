@@ -5,23 +5,22 @@
 <style>
 
 body {
-  background: #444;
+  background: #555;
 }
 
 section {
   background: black;
   color: white;
-  border-radius: 1em;
-  padding: 1em;
   position: absolute;
   top: 50%;
   left: 50%;
   margin-right: -50%;
   transform: translate(-50%, -50%);
-  box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.5);
+  box-shadow: 0px 5px 10px rgba(0,0,0,0.4);
+  border: 1px solid rgba (84,104,105,0.25);
 }
 
-p {font-family: sans-serif;}
+p {padding: 0 1em 0 1em; font-family: sans-serif;}
 
 </style>
 
@@ -49,8 +48,8 @@ function initYT() {
 function onYouTubeIframeAPIReady() {
   var player;
   player = new YT.Player('player', {
-    height: '720',
-    width: '1280',
+    width: '640',
+    height: '390',
     videoId: urlParam('v'),
 
     playerVars: {
@@ -127,3 +126,4 @@ if (urlParam('v')) {
 </script>
 </body>
 </html>
+
