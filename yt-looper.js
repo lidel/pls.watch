@@ -1,9 +1,14 @@
-function initYT() {
+
+function initYT(v) {
+
+  $('#player').parent().css('background-image', 'url(//img.youtube.com/vi/' + v + '/0.jpg)')
+
   var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
+  tag.src = "//www.youtube.com/iframe_api";
 
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
 
 }
 
@@ -33,11 +38,11 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerStateChange(event) {
-  console.log('event.data: ' + event.data);
+  //console.log('event.data: ' + event.data);
 
   // no brakes on the loop train
   if (event.data == YT.PlayerState.ENDED || event.data == YT.PlayerState.PAUSED) {
-    console.log('event: ended/paused');
+    //console.log('event: ended/paused');
     jumpAndPlay(event.target, getSecs(getStart((urlParam('t')))));
     event.target.playVideo();
   }
@@ -49,7 +54,8 @@ function jumpAndPlay(target, time) {
 }
 
 function onPlayerReady(event) {
-  console.log('onPlayerReady');
+  //console.log('onPlayerReady');
+  $('#player').parent().css('background-image', 'none')
   $(document).prop('title', event.target.getVideoData().title);
   event.target.playVideo();
 }
@@ -76,7 +82,7 @@ function getSecs(t) {
 
   // convert from 1h2m3s
   var tokens = /(\d+h)?(\d+m)?(\d+s)?/g.exec(t);
-  console.log(tokens);
+  //console.log(tokens);
   var tt = 0;
   $.each(tokens, function(i, token) {
     if (token && i > 0) {
