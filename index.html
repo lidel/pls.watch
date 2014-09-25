@@ -2,30 +2,37 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
 
-    body { background: #333 url('zwartevilt.png'); } /* image from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
+    body {
+      background: #333 url('zwartevilt.png'); /* image from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
+      display: table;
+      position: absolute;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+    }
 
-    body > div {
+    body>div {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    section {
+      display: inline-block;
+      text-align: left;
       background-color: #1B1B1B;
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center center;
-      color: #aaa;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: auto;
-      transform: translate(-50%, -50%);
-      -webkit-transform: translate(-50%,-50%);
-      -ms-transform: translate(-50%,-50%);
+      color: #EEE;
       box-shadow: 0px 5px 10px rgba(0,0,0,0.4);
       border: 1px solid rgba (100,100,100,0.25);
     }
 
-    body > div p {padding: 0 1em 0 1em; font-family: sans-serif;}
-    body > div a {color: #888; text-decoration:none}
+    section p {padding: 0 1em 0 1em; font-family: sans-serif;}
+    section a {color: #888; text-decoration:none}
 
   </style>
 
@@ -36,7 +43,9 @@
 
 <body>
 
-<div><div id="player"></div></div>
+<div><section>
+  <div id="player"></div>
+</section></div>
 
 <script>
 var v = urlParam('v');
@@ -50,6 +59,7 @@ if (v) {
   );
 }
 </script>
+
 </body>
 </html>
 <!-- vim:set ts=2 sw=2 et: -->
