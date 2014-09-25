@@ -98,3 +98,5 @@ function getSecs(t) {
 
   return tt > 0 ? tt : t;
 }
+
+// vim:ts=2:sw=2:et:
