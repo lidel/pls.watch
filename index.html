@@ -48,16 +48,7 @@
 </div></div>
 
 <script>
-var v = urlParam('v');
-if (v) {
-  initYT(v);
-} else {
-  $('#player').html(
-        '<p><strong>Usage:</strong></p>'
-      + '<p>Append <tt>?v=VIDEO_ID&t=start;end</tt> to URL.</p>'
-      + '<p>Eg. <tt><a href="?v=ZuHZSbPJhaY&t=1h1s;1h4s">?v=ZuHZSbPJhaY&t=1h1s;1h4s</a></tt></p>'
-  );
-}
+renderPage();
 </script>
 
 </body>

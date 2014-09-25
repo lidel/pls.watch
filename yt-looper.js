@@ -1,8 +1,19 @@
+function renderPage() {
+  var v = urlParam('v');
+  if (v) {
+    // splash screen
+    $('#box').css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
+    initYT(v);
+  } else {
+    $('#box').html(
+          '<p><strong>Usage:</strong></p>'
+        + '<p>Append <tt>#v=VIDEO_ID&t=start;end</tt> to URL.</p>'
+        + '<p>Eg. <tt><a href="#v=ZuHZSbPJhaY&t=1h1s;1h4s">#v=ZuHZSbPJhaY&t=1h1s;1h4s</a></tt></p>'
+    );
+  }
+}
 
 function initYT(v) {
-
-  // splash screen
-  $('#box').css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
 
   var tag = document.createElement('script');
   tag.src = "//www.youtube.com/iframe_api";
@@ -13,10 +24,11 @@ function initYT(v) {
 }
 
 function onYouTubeIframeAPIReady() {
-  var playerTag = $('#player');
 
-  if (playerTag != null) {
-    playerTag.remove();
+  // remove old player object
+  var $player = $('#player');
+  if ($player.length > 0) {
+    $player.remove();
   }
 
   $('#box').html('<div id="player"></div>');
@@ -45,18 +57,25 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-function onPlayerStateChange(event) {
 
-  // no brakes on the loop train
-  if (event.data == YT.PlayerState.ENDED) {
+function onPlayerStateChange(event) {
+  var player = event.target;
+
+  // Loop on ENDED event or when end of full video is reached
+  // Why? For some reason if no 'end' timestamp is provided,
+  // YT api ends video with PAUSE instead of ENDED (sic!)
+  if (event.data == YT.PlayerState.ENDED
+      || (event.data == YT.PlayerState.PAUSED
+          && player.getDuration() === player.getCurrentTime())) {
+
     if (getNextInterval.intervals.length > 1) {
       onYouTubeIframeAPIReady(); // restart player
     } else {
-      event.target.seekTo(getSecs(getStart(urlParam('t'))));
-      event.target.playVideo();
+      player.seekTo(getSecs(getStart(urlParam('t'))));
+      player.playVideo();
     }
-  }
 
+  }
 }
 
 function onPlayerReady(event) {
@@ -66,13 +85,13 @@ function onPlayerReady(event) {
 }
 
 function urlParam(key) {
-  var result = new RegExp(key + '=([^&]*)', 'i').exec(window.location.search);
+  var result = new RegExp(key + '=([^&]*)', 'i').exec(window.location.href);
   return result && unescape(result[1]) || '';
 };
 
 function getNextInterval() {
   if (getNextInterval.intervals == null) {
-    getNextInterval.intervals = urlParam('t').split('|');
+    getNextInterval.intervals = urlParam('t').split('+');
     getNextInterval.interval  = 0;
   }
 
@@ -118,5 +137,17 @@ function getSecs(t) {
 
   return tt > 0 ? tt : t;
 }
+
+$(window).bind('hashchange', function() {
+  console.log('hash change: ' + window.location.hash);
+
+  // reset player or entire page
+  getNextInterval.intervals = null;
+  if ($('#player').length > 0) {
+    onYouTubeIframeAPIReady();
+  } else {
+    renderPage();
+  }
+});
 
 // vim:ts=2:sw=2:et:
