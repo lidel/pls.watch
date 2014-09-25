@@ -7,23 +7,25 @@
 
     body { background: #333 url('zwartevilt.png'); } /* image from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
 
-    section {
-      background-color: black;
+    body > div {
+      background-color: #1B1B1B;
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center center;
-      color: white;
+      color: #aaa;
       position: absolute;
       top: 50%;
       left: 50%;
-      margin-right: -50%;
+      margin: auto;
       transform: translate(-50%, -50%);
+      -webkit-transform: translate(-50%,-50%);
+      -ms-transform: translate(-50%,-50%);
       box-shadow: 0px 5px 10px rgba(0,0,0,0.4);
-      border: 1px solid rgba (84,104,105,0.25);
+      border: 1px solid rgba (100,100,100,0.25);
     }
 
-    section p {padding: 0 1em 0 1em; font-family: sans-serif;}
-    section a {color: #888; text-decoration:none}
+    body > div p {padding: 0 1em 0 1em; font-family: sans-serif;}
+    body > div a {color: #888; text-decoration:none}
 
   </style>
 
@@ -34,9 +36,7 @@
 
 <body>
 
-<section>
-<div id="player"></div>
-</section>
+<div><div id="player"></div></div>
 
 <script>
 var v = urlParam('v');
