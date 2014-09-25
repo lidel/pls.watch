@@ -2,7 +2,7 @@
 function initYT(v) {
 
   // spash screen
-  $('#player').parent().css('background-image', 'url(//img.youtube.com/vi/' + v + '/0.jpg)').fadeTo(0, 0.5);
+  $('#player').parent().css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
 
   var tag = document.createElement('script');
   tag.src = "//www.youtube.com/iframe_api";
@@ -16,7 +16,6 @@ function onYouTubeIframeAPIReady() {
   var player;
   player = new YT.Player('player', {
     width: '640',
-    height: '390',
     videoId: urlParam('v'),
 
     playerVars: {
@@ -55,7 +54,7 @@ function jumpAndPlay(target, time) {
 
 function onPlayerReady(event) {
   //console.log('onPlayerReady');
-  $('#player').parent().css('background-image', 'none').fadeTo(0, 1);
+  $('#player').parent().css('background-image', 'none');
   $(document).prop('title', event.target.getVideoData().title);
   event.target.playVideo();
 }
