@@ -20,7 +20,7 @@
       text-align: center;
     }
 
-    section {
+    #box {
       display: inline-block;
       text-align: left;
       background-color: #1B1B1B;
@@ -32,8 +32,8 @@
       border: 1px solid rgba (100,100,100,0.25);
     }
 
-    section p {padding: 0 1em 0 1em; font-family: sans-serif;}
-    section a {color: #888; text-decoration:none}
+    #box p {padding: 0 1em 0 1em; font-family: sans-serif;}
+    #box a {color: #888; text-decoration:none}
 
   </style>
 
@@ -44,9 +44,9 @@
 
 <body>
 
-<div><section>
+<div><div id="box">
   <div id="player"></div>
-</section></div>
+</div></div>
 
 <script>
 var v = urlParam('v');

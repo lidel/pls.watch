@@ -2,7 +2,7 @@
 function initYT(v) {
 
   // spash screen
-  $('#player').parent().css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
+  $('#box').css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
 
   var tag = document.createElement('script');
   tag.src = "//www.youtube.com/iframe_api";
@@ -41,7 +41,6 @@ function onPlayerStateChange(event) {
 
   // no brakes on the loop train
   if (event.data == YT.PlayerState.ENDED || event.data == YT.PlayerState.PAUSED) {
-    //console.log('event: ended/paused');
     jumpAndPlay(event.target, getSecs(getStart((urlParam('t')))));
     event.target.playVideo();
   }
@@ -53,9 +52,8 @@ function jumpAndPlay(target, time) {
 }
 
 function onPlayerReady(event) {
-  //console.log('onPlayerReady');
-  $('#player').parent().css('background-image', 'none');
   $(document).prop('title', event.target.getVideoData().title);
+  $('#box').css('background-image', 'none');
   event.target.playVideo();
 }
 
