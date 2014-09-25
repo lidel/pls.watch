@@ -1,7 +1,7 @@
 
 function initYT(v) {
 
-  // spash screen
+  // splash screen
   $('#box').css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
 
   var tag = document.createElement('script');
@@ -13,14 +13,23 @@ function initYT(v) {
 }
 
 function onYouTubeIframeAPIReady() {
-  var player;
-  player = new YT.Player('player', {
+  var playerTag = $('#player');
+
+  if (playerTag != null) {
+    playerTag.remove();
+  }
+
+  $('#box').html('<div id="player"></div>');
+
+  var nextInterval = getNextInterval();
+
+  new YT.Player('player', {
     width: '640',
     videoId: urlParam('v'),
 
     playerVars: {
-      'start': getSecs(getStart(urlParam('t'))),
-      'end': getSecs(getEnd(urlParam('t'))),
+      'start': getSecs(getStart(nextInterval)),
+      'end': getSecs(getEnd(nextInterval)),
       'autohide': '1',
       'html5': '1',
       'iv_load_policy': '3',
@@ -40,8 +49,12 @@ function onPlayerStateChange(event) {
 
   // no brakes on the loop train
   if (event.data == YT.PlayerState.ENDED) {
-    event.target.seekTo(getSecs(getStart(urlParam('t'))));
-    event.target.playVideo();
+    if (getNextInterval.intervals.length > 1) {
+      onYouTubeIframeAPIReady(); // restart player
+    } else {
+      event.target.seekTo(getSecs(getStart(urlParam('t'))));
+      event.target.playVideo();
+    }
   }
 
 }
@@ -56,6 +69,21 @@ function urlParam(key) {
   var result = new RegExp(key + '=([^&]*)', 'i').exec(window.location.search);
   return result && unescape(result[1]) || '';
 };
+
+function getNextInterval() {
+  if (getNextInterval.intervals == null) {
+    getNextInterval.intervals = urlParam('t').split('|');
+    getNextInterval.interval  = 0;
+  }
+
+  var thisInterval = getNextInterval.intervals[getNextInterval.interval++];
+
+  if (getNextInterval.interval >= getNextInterval.intervals.length) {
+    getNextInterval.interval = 0;
+  }
+
+  return thisInterval;
+}
 
 function getStart(t) {
   return !t ? 0 : t.split(';')[0];
