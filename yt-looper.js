@@ -37,18 +37,13 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerStateChange(event) {
-  //console.log('event.data: ' + event.data);
 
   // no brakes on the loop train
-  if (event.data == YT.PlayerState.ENDED || event.data == YT.PlayerState.PAUSED) {
-    jumpAndPlay(event.target, getSecs(getStart((urlParam('t')))));
+  if (event.data == YT.PlayerState.ENDED) {
+    event.target.seekTo(getSecs(getStart(urlParam('t'))));
     event.target.playVideo();
   }
 
-}
-
-function jumpAndPlay(target, time) {
-  target.seekTo(time, true);
 }
 
 function onPlayerReady(event) {
