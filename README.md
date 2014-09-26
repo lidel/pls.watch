@@ -9,7 +9,3 @@ or
 
 if you'd like to concatenate several time intervals try: `#v=VIDEO_ID&t=start1;end1+start2;end2+...`
 
-
-### TODO
-
-- hide Youtube player and display remaining time, loop duration and link to original video in more unobtrusive  way

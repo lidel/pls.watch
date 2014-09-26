@@ -25,6 +25,8 @@ function initYT(v) {
 
 function onYouTubeIframeAPIReady() {
 
+  console.log('onYouTubeIframeAPIReady');
+
   // remove old player object
   var $player = $('#player');
   if ($player.length > 0) {
@@ -47,6 +49,7 @@ function onYouTubeIframeAPIReady() {
       'iv_load_policy': '3',
       'modestbranding': '1',
       'showinfo': '0',
+      'rel': '0',
       'theme': 'dark',
     },
 
@@ -59,6 +62,7 @@ function onYouTubeIframeAPIReady() {
 
 
 function onPlayerStateChange(event) {
+  console.log('onPlayerStateChange: ' + event.data);
   var player = event.target;
 
   // Loop on ENDED event or when end of full video is reached
