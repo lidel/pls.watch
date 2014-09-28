@@ -42,7 +42,7 @@ function parseIntervals(v) {
       }
     });
     return tt > 0 ? tt : t;
-  }; 
+  };
   var ret = [];
   if (v) {
     var t = getParam(v, 't');
@@ -77,7 +77,7 @@ function playbackSchedule() {
         playbackSchedule.schedule.push(
           $.extend({ 'videoId': v }, interval)
         );
-      });    
+      });
     } else {
       playbackSchedule.schedule.push(
         { 'videoId': v,
@@ -120,7 +120,7 @@ function onYouTubeIframeAPIReady() {
     if ($player.length) {
       $player.remove();
     }
-    
+
     $('#box').html('<div id="player"></div>');
 
     new YT.Player('player',{
@@ -158,19 +158,7 @@ function onYouTubeIframeAPIReady() {
 
     var player = event.target;
 
-    // > Loop on ENDED event or when end of full video is reached
-    // > Why? For some reason if no 'end' timestamp is provided,
-    // > YT api ends video with PAUSE instead of ENDED (sic!)
     if (event.data == YT.PlayerState.ENDED) {
-    // 0K this old "bugfix" caused a lot of trouble (sic!).
-    // There is indeed 'pause' event when full video ends,
-    // but there is also following 'end' event every time
-    // (I haven't noticed any glitches).
-    // So basically same event was handled twice from time to time.
-    // Conclusion: this "bugfix" introduced a real bug.
-    // PURGE WITH FLAME OR LEAVE IT COMMENTED AS A WARNING:
-    //   || (event.data == YT.PlayerState.PAUSED
-    //       && player.getDuration() === player.getCurrentTime())) {
 
       if (playbackSchedule.schedule.length > 1) {
         newPlayer(playbackSchedule.cycle());
