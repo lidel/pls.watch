@@ -9,3 +9,5 @@ or
 
 if you'd like to concatenate several time intervals try: `#v=VIDEO_ID&t=start1;end1+start2;end2+...`
 
+To chain intervals from multiple videos just append them at the end: `#v=VIDEO_ID&t=start1;end1+start2;end2&#v=VIDEO2_ID&t=start1;end1+start2;end2`
+
