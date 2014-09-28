@@ -1,3 +1,201 @@
+
+
+function getParam(params, key) {
+  var rslt = new RegExp(key + '=([^&]*)', 'i').exec(params);
+  return rslt && unescape(rslt[1]) || '';
+}
+
+
+function urlParam(key) {
+  return getParam(window.location.href, key);
+}
+
+
+function parseVideos() {
+  var rslt = /[#?]v=(.*)/i.exec(window.location.href);
+  if (!rslt) {
+    return [''];
+  } else {
+    var vids = (rslt[1] || '').split(/[#?&]v=/i);
+    $.each(vids, function(i, vid) {
+      vids[i] = 'v=' + vid;
+    });
+    return vids;
+  }
+}
+
+
+function parseIntervals(v) {
+  var getSeconds = function(t) {
+    // convert from 1h2m3s
+    var tokens = /(\d+h)?(\d+m)?(\d+s)?/g.exec(t);
+    var tt = 0;
+    $.each(tokens, function(i, token) {
+      if (token && i > 0) {
+        if (token.indexOf('s') != -1) {
+          tt += parseInt(token.split('s')[0], 10);
+        } else if (token.indexOf('m') != -1) {
+          tt += 60 * parseInt(token.split('m')[0], 10);
+        } else if (token.indexOf('h') != -1) {
+          tt += 3600 * parseInt(token.split('h')[0], 10);
+        }
+      }
+    });
+    return tt > 0 ? tt : t;
+  }; 
+  var ret = [];
+  if (v) {
+    var t = getParam(v, 't');
+    if (t && t.length) {
+      $.each(t.split('+'), function(i, interval) {
+        var tt = interval.split(';');
+        var rec = { start: getSeconds(tt[0]),
+                      end: null };
+        if (tt.length > 1) {
+          rec['end'] = getSeconds(tt[1]);
+        }
+        ret.push(rec);
+      });
+    }
+  }
+  return ret;
+}
+
+
+function playbackSchedule() {
+  console.log('playbackSchedule()');
+
+  playbackSchedule.schedule = [];
+  playbackSchedule.index = 0;
+
+  $.each(parseVideos(), function(i, video) {
+    var v = getParam(video, 'v');
+    var intervals = parseIntervals(video);
+
+    if (intervals.length) {
+      $.each(intervals, function(j, interval) {
+        playbackSchedule.schedule.push(
+          $.extend({ 'videoId': v }, interval)
+        );
+      });    
+    } else {
+      playbackSchedule.schedule.push(
+        { 'videoId': v,
+            'start': 0,
+             'end' : null }
+      );
+    }
+  });
+
+  playbackSchedule.log = function() {
+    $.each(playbackSchedule.schedule, function(i, playback) {
+      console.log(playback);
+    });
+  };
+
+  playbackSchedule.current = function() {
+    return playbackSchedule.schedule[playbackSchedule.index];
+  };
+
+  playbackSchedule.cycle = function() {
+    var current = playbackSchedule.current();
+
+    var index = playbackSchedule.index + 1;
+    playbackSchedule.index = index >= playbackSchedule.schedule.length
+                           ? 0
+                           : index;
+    return current;
+  };
+}
+
+
+function onYouTubeIframeAPIReady() {
+  console.log('onYouTubeIframeAPIReady()');
+
+  var newPlayer = function(playback) {
+    console.log('newPlayer()');
+    console.log(playback);
+
+    var $player = $('#player');
+    if ($player.length) {
+      $player.remove();
+    }
+    
+    $('#box').html('<div id="player"></div>');
+
+    new YT.Player('player',{
+      width: '640',
+      videoId: playback['videoId'],
+      playerVars: {
+        start: playback['start'],
+        end: playback['end'],
+        autohide: '1',
+        html5: '1',
+        iv_load_policy: '3',
+        modestbranding: '1',
+        showinfo: '0',
+        rel: '0',
+        theme: 'dark',
+      },
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange
+      }
+    });
+  };
+
+  var onPlayerReady = function(event) {
+    console.log('onPlayerReady()');
+
+    $(document).prop('title', event.target.getVideoData().title);
+    $('#box').css('background-image', 'none');
+
+    event.target.playVideo();
+  };
+
+  var onPlayerStateChange = function(event) {
+    console.log('onPlayerStateChange(): ' + event.data);
+
+    var player = event.target;
+
+    // > Loop on ENDED event or when end of full video is reached
+    // > Why? For some reason if no 'end' timestamp is provided,
+    // > YT api ends video with PAUSE instead of ENDED (sic!)
+    if (event.data == YT.PlayerState.ENDED) {
+    // 0K this old "bugfix" caused a lot of trouble (sic!).
+    // There is indeed 'pause' event when full video ends,
+    // but there is also following 'end' event every time
+    // (I haven't noticed any glitches).
+    // So basically same event was handled twice from time to time.
+    // Conclusion: this "bugfix" introduced a real bug.
+    // PURGE WITH FLAME OR LEAVE IT COMMENTED AS A WARNING:
+    //   || (event.data == YT.PlayerState.PAUSED
+    //       && player.getDuration() === player.getCurrentTime())) {
+
+      if (playbackSchedule.schedule.length > 1) {
+        newPlayer(playbackSchedule.cycle());
+      } else {
+        player.seekTo(playbackSchedule.current()['start']);
+        player.playVideo();
+      }
+
+    }
+  };
+
+  playbackSchedule();
+  playbackSchedule.log();
+  newPlayer(playbackSchedule.cycle());
+}
+
+
+function initYT(v) {
+  var tag = document.createElement('script');
+  tag.src = "//www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+
+
 function renderPage() {
   var v = urlParam('v');
   if (v) {
@@ -13,145 +211,18 @@ function renderPage() {
   }
 }
 
-function initYT(v) {
-
-  var tag = document.createElement('script');
-  tag.src = "//www.youtube.com/iframe_api";
-
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-}
-
-function onYouTubeIframeAPIReady() {
-
-  console.log('onYouTubeIframeAPIReady');
-
-  // remove old player object
-  var $player = $('#player');
-  if ($player.length > 0) {
-    $player.remove();
-  }
-
-  $('#box').html('<div id="player"></div>');
-
-  var nextInterval = getNextInterval();
-
-  new YT.Player('player', {
-    width: '640',
-    videoId: urlParam('v'),
-
-    playerVars: {
-      'start': getSecs(getStart(nextInterval)),
-      'end': getSecs(getEnd(nextInterval)),
-      'autohide': '1',
-      'html5': '1',
-      'iv_load_policy': '3',
-      'modestbranding': '1',
-      'showinfo': '0',
-      'rel': '0',
-      'theme': 'dark',
-    },
-
-    events: {
-      'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
-
-
-function onPlayerStateChange(event) {
-  console.log('onPlayerStateChange: ' + event.data);
-  var player = event.target;
-
-  // Loop on ENDED event or when end of full video is reached
-  // Why? For some reason if no 'end' timestamp is provided,
-  // YT api ends video with PAUSE instead of ENDED (sic!)
-  if (event.data == YT.PlayerState.ENDED
-      || (event.data == YT.PlayerState.PAUSED
-          && player.getDuration() === player.getCurrentTime())) {
-
-    if (getNextInterval.intervals.length > 1) {
-      onYouTubeIframeAPIReady(); // restart player
-    } else {
-      player.seekTo(getSecs(getStart(urlParam('t'))));
-      player.playVideo();
-    }
-
-  }
-}
-
-function onPlayerReady(event) {
-  $(document).prop('title', event.target.getVideoData().title);
-  $('#box').css('background-image', 'none');
-  event.target.playVideo();
-}
-
-function urlParam(key) {
-  var result = new RegExp(key + '=([^&]*)', 'i').exec(window.location.href);
-  return result && unescape(result[1]) || '';
-};
-
-function getNextInterval() {
-  if (getNextInterval.intervals == null) {
-    getNextInterval.intervals = urlParam('t').split('+');
-    getNextInterval.interval  = 0;
-  }
-
-  var thisInterval = getNextInterval.intervals[getNextInterval.interval++];
-
-  if (getNextInterval.interval >= getNextInterval.intervals.length) {
-    getNextInterval.interval = 0;
-  }
-
-  return thisInterval;
-}
-
-function getStart(t) {
-  return !t ? 0 : t.split(';')[0];
-}
-
-function getEnd(t) {
-  var t = !t ? null : t.split(';');
-  if (t && t.length > 1) {
-    return t[1];
-  } else {
-    return null;
-  }
-}
-
-function getSecs(t) {
-
-  // convert from 1h2m3s
-  var tokens = /(\d+h)?(\d+m)?(\d+s)?/g.exec(t);
-  //console.log(tokens);
-  var tt = 0;
-  $.each(tokens, function(i, token) {
-    if (token && i > 0) {
-      if (token.indexOf('s') != -1) {
-        tt += parseInt(token.split('s')[0], 10);
-      } else if (token.indexOf('m') != -1) {
-        tt += 60 * parseInt(token.split('m')[0], 10);
-      } else if (token.indexOf('h') != -1) {
-        tt += 3600 * parseInt(token.split('h')[0], 10);
-      }
-    }
-  });
-
-  return tt > 0 ? tt : t;
-}
 
 $(window).bind('hashchange', function() {
   console.log('hash change: ' + window.location.hash);
 
   // reset player or entire page
-  getNextInterval.intervals = null;
   if ($('#player').length > 0) {
     onYouTubeIframeAPIReady();
   } else {
     renderPage();
   }
+
 });
+
 
 // vim:ts=2:sw=2:et:
