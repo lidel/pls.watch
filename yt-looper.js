@@ -10,7 +10,7 @@ function urlParam(key) {
 }
 
 function urlFlag(key) {
-  var ptrn = '([#?&]' + key + '[&])|([#?&]' + key + '$)';
+  var ptrn = '(?:[#?&]' + key + '[&])|(?:[#?&]' + key + '$)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
   return !rslt ? urlParam(key) == 'true' 
                : true;
@@ -18,16 +18,12 @@ function urlFlag(key) {
 
 
 function parseVideos() {
-  var rslt = /[^&]+[#?&]v=(.*)/i.exec(window.location.href);
-  if (!rslt) {
-    return [''];
-  } else {
-    var vids = (rslt[1] || '').split(/[#?&]v=/i);
-    $.each(vids, function(i, vid) {
-      vids[i] = 'v=' + vid;
-    });
-    return vids;
+  var vids = [];
+  var regx = /v=[^&]*(?:&t=[^&]*)?/g, rslt;
+  while ((rslt = regx.exec(window.location.href))) {
+    vids.push(rslt[0]);
   }
+  return vids;
 }
 
 
