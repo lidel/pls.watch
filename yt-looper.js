@@ -5,14 +5,20 @@ function getParam(params, key) {
   return rslt && unescape(rslt[1]) || '';
 }
 
-
 function urlParam(key) {
   return getParam(window.location.href, key);
 }
 
+function urlFlag(key) {
+  var ptrn = '([#?&]' + key + '[&])|([#?&]' + key + '$)';
+  var rslt = new RegExp(ptrn).exec(window.location.href);
+  return !rslt ? urlParam(key) == 'true' 
+               : true;
+}
+
 
 function parseVideos() {
-  var rslt = /[#?]v=(.*)/i.exec(window.location.href);
+  var rslt = /[^&]+[#?&]v=(.*)/i.exec(window.location.href);
   if (!rslt) {
     return [''];
   } else {
@@ -106,6 +112,20 @@ function playbackSchedule() {
                            : index;
     return current;
   };
+
+  playbackSchedule.shuffle = function() {
+    var m = playbackSchedule.schedule.length;
+    while (m) {
+      var i = Math.floor(Math.random() * m--);
+      var t = playbackSchedule.schedule[m];
+      playbackSchedule.schedule[m] = playbackSchedule.schedule[i];
+      playbackSchedule.schedule[i] = t;
+    }
+  };
+
+  if (urlFlag('shuffle')) {
+    playbackSchedule.shuffle();
+  }
 }
 
 
