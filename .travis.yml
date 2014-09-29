@@ -1,0 +1,6 @@
+language: node_js
+before_script:
+    - sudo $(which npm) install -g grunt
+    - sudo $(which npm) install -g grunt-cli
+    - sudo $(which npm) install grunt-contrib-qunit
+script: grunt travis --verbose --force
