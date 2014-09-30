@@ -198,14 +198,34 @@ function initYT() {
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
+// document.head (http://jsperf.com/document-head) failsafe init for old browsers
+document.head = typeof document.head != 'object'
+              ? document.getElementsByTagName('head')[0]
+              : document.head;
+
+function changeFavicon(src) {
+  var oldIcon = document.getElementById('dynamic-favicon');
+  if (oldIcon || (!src && oldIcon)) {
+    document.head.removeChild(oldIcon);
+  }
+  if (src) {
+    var icon = document.createElement('link');
+    icon.id = 'dynamic-favicon';
+    icon.rel = 'shortcut icon';
+    icon.href = src;
+    document.head.appendChild(icon);
+  }
+}
 
 function renderPage() {
   var v = urlParam('v');
   if (v) {
     // splash screen
+    changeFavicon('http://youtube.com/favicon.ico');
     $('#box').css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
     initYT();
   } else {
+    changeFavicon();
     $('#box').html(
           '<p><big>Usage:</big></p>'
         + '<p>append <tt>#v=VIDEO_ID:t=start;end</tt> to current URL</p>'
@@ -230,6 +250,5 @@ $(window).bind('hashchange', function() {
   }
 
 });
-
 
 // vim:ts=2:sw=2:et:
