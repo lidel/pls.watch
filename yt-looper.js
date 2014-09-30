@@ -16,11 +16,10 @@ function urlFlag(key) {
                : true;
 }
 
-
-function parseVideos() {
+function parseVideos(url) {
   var vids = [];
   var regx = /v=[^&]*(?:&t=[^&]*)?/g, rslt;
-  while ((rslt = regx.exec(window.location.href))) {
+  while ((rslt = regx.exec(url))) {
     vids.push(rslt[0]);
   }
   return vids;
@@ -43,7 +42,7 @@ function parseIntervals(v) {
         }
       }
     });
-    return tt > 0 ? tt : t;
+    return tt > 0 ? tt : parseInt(t, 10);
   };
   var ret = [];
   if (v) {
@@ -54,7 +53,7 @@ function parseIntervals(v) {
         var rec = { start: getSeconds(tt[0]),
                       end: null };
         if (tt.length > 1) {
-          rec['end'] = getSeconds(tt[1]);
+          rec.end = getSeconds(tt[1]);
         }
         ret.push(rec);
       });
@@ -70,7 +69,7 @@ function playbackSchedule() {
   playbackSchedule.schedule = [];
   playbackSchedule.index = 0;
 
-  $.each(parseVideos(), function(i, video) {
+  $.each(parseVideos(window.location.href), function(i, video) {
     var v = getParam(video, 'v');
     var intervals = parseIntervals(video);
 
@@ -141,10 +140,10 @@ function onYouTubeIframeAPIReady() {
 
     new YT.Player('player',{
       width: '640',
-      videoId: playback['videoId'],
+      videoId: playback.videoId,
       playerVars: {
-        start: playback['start'],
-        end: playback['end'],
+        start: playback.start,
+        end: playback.end,
         autohide: '1',
         html5: '1',
         iv_load_policy: '3',
@@ -179,7 +178,7 @@ function onYouTubeIframeAPIReady() {
       if (playbackSchedule.schedule.length > 1) {
         newPlayer(playbackSchedule.cycle());
       } else {
-        player.seekTo(playbackSchedule.current()['start']);
+        player.seekTo(playbackSchedule.current().start);
         player.playVideo();
       }
 
