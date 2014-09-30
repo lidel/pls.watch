@@ -191,7 +191,7 @@ function onYouTubeIframeAPIReady() {
 }
 
 
-function initYT(v) {
+function initYT() {
   var tag = document.createElement('script');
   tag.src = '//www.youtube.com/iframe_api';
   var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -204,7 +204,7 @@ function renderPage() {
   if (v) {
     // splash screen
     $('#box').css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
-    initYT(v);
+    initYT();
   } else {
     $('#box').html(
           '<p><strong>Usage:</strong></p>'

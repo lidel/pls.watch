@@ -10,6 +10,8 @@ module.exports = function(grunt) {
         'quotmark': 'single',
         'white': true,
         'indent': 2,
+        'latedef': true,
+        'unused': true,
       },
     },
   });
