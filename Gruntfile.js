@@ -7,6 +7,9 @@ module.exports = function(grunt) {
       all: ['Gruntfile.js', 'yt-looper.js', 'test/**/*.js'],
       options: {
         '-W014': true, // ignore [W014] Bad line breaking
+        'quotmark': 'single',
+        'white': true,
+        'indent': 2,
       },
     },
   });
