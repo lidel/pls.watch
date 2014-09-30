@@ -12,7 +12,7 @@ function urlParam(key) {
 function urlFlag(key) {
   var ptrn = '(?:[#?&]' + key + '[&])|(?:[#?&]' + key + '$)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
-  return !rslt ? urlParam(key) == 'true' 
+  return !rslt ? urlParam(key) == 'true'
                : true;
 }
 
@@ -193,7 +193,7 @@ function onYouTubeIframeAPIReady() {
 
 function initYT(v) {
   var tag = document.createElement('script');
-  tag.src = "//www.youtube.com/iframe_api";
+  tag.src = '//www.youtube.com/iframe_api';
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
