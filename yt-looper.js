@@ -1,7 +1,7 @@
 
 
 function getParam(params, key) {
-  var rslt = new RegExp(key + '=([^&]*)', 'i').exec(params);
+  var rslt = new RegExp(key + '=([^&:]*)', 'i').exec(params);
   return rslt && unescape(rslt[1]) || '';
 }
 
@@ -10,7 +10,7 @@ function urlParam(key) {
 }
 
 function urlFlag(key) {
-  var ptrn = '(?:[#?&]' + key + '[&])|(?:[#?&]' + key + '$)';
+  var ptrn = '(?:[#?&:]' + key + '[&:])|(?:[#?&:]' + key + '$)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
   return !rslt ? urlParam(key) == 'true'
                : true;
@@ -18,7 +18,7 @@ function urlFlag(key) {
 
 function parseVideos(url) {
   var vids = [];
-  var regx = /v=[^&]*(?:&t=[^&]*)?/g, rslt;
+  var regx = /v=[^&:]*(?:[&:]t=[^&:]*)?/g, rslt;
   while ((rslt = regx.exec(url))) {
     vids.push(rslt[0]);
   }
@@ -207,11 +207,13 @@ function renderPage() {
     initYT();
   } else {
     $('#box').html(
-          '<p><strong>Usage:</strong></p>'
-        + '<p>Append <tt>#v=VIDEO_ID&t=start;end</tt> to URL.</p>'
-        + '<p>Eg. <tt><a href="#v=ZuHZSbPJhaY&t=1h1s;1h4s">#v=ZuHZSbPJhaY&t=1h1s;1h4s</a></tt> '
-        + 'or <tt><a href="#v=eSMeUPFjQHc&t=60;80&v=ZuHZSbPJhaY&t=1h;1h5s">#v=eSMeUPFjQHc&t=60;80&v=ZuHZSbPJhaY&t=1h;1h5s</a></tt><br/>'
-        + 'or even <tt><a href="#v=ZNno63ZO2Lw&t=54s;1m20s+1m33s;1m47s+3m30s;3m46s&v=TM1Jy3qPSCQ&t=2s;16s">#v=ZNno63ZO2Lw&t=54s;1m20s+1m33s;1m47s+3m30s;3m46s&v=TM1Jy3qPSCQ&t=2s;16s</a></tt></p>'
+          '<p><big>Usage:</big></p>'
+        + '<p>append <tt>#v=VIDEO_ID:t=start;end</tt> to current URL</p>'
+        + '<p>alternative syntax: <tt>?v=VIDEO_ID&t=start;end</tt> will also work</p>'
+        + '<p style="font-size:small">eg. <tt><a href="#v=ZuHZSbPJhaY:t=1h1s;1h4s">#v=ZuHZSbPJhaY:t=1h1s;1h4s</a></tt> '
+        + 'or <tt><a href="#v=eSMeUPFjQHc:t=60;80:v=ZuHZSbPJhaY:t=1h;1h5s">#v=eSMeUPFjQHc:t=60;80:v=ZuHZSbPJhaY:t=1h;1h5s</a></tt><br/>'
+        + 'or even <tt><a href="#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2s;16s">#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2s;16s</a></tt></p>'
+        + '<p style="text-align:right;font-size:xx-small">More at <a href="https://github.com/lidel/yt-looper">GitHub</a></p>'
     );
   }
 }

@@ -6,12 +6,13 @@ module.exports = function(grunt) {
     jshint: {
       all: ['Gruntfile.js', 'yt-looper.js', 'test/**/*.js'],
       options: {
-        '-W014': true, // ignore [W014] Bad line breaking
+        'jquery': true,
         'quotmark': 'single',
         'white': true,
         'indent': 2,
         'latedef': true,
         'unused': true,
+        '-W014': true, // ignore [W014] Bad line breaking
       },
     },
   });
