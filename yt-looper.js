@@ -100,12 +100,23 @@ function playbackSchedule() {
 
   playbackSchedule.cycle = function() {
     var current = playbackSchedule.current();
-
     var index = playbackSchedule.index + 1;
     playbackSchedule.index = index >= playbackSchedule.schedule.length
                            ? 0
                            : index;
     return current;
+  };
+
+  playbackSchedule.rewind = function() {
+    var rewindOnce = function() {
+      var index = playbackSchedule.index - 1;
+      playbackSchedule.index = index < 0
+                             ? playbackSchedule.schedule.length - 1
+                             : index;
+    };
+    rewindOnce();
+    rewindOnce();
+    return playbackSchedule.cycle();
   };
 
   playbackSchedule.shuffle = function() {
@@ -171,19 +182,28 @@ function onYouTubeIframeAPIReady() {
   var onPlayerStateChange = function(event) {
     console.log('onPlayerStateChange(): ' + event.data);
 
-    var player = event.target;
-
     if (event.data == YT.PlayerState.ENDED) {
 
       if (playbackSchedule.schedule.length > 1) {
         newPlayer(playbackSchedule.cycle());
       } else {
-        player.seekTo(playbackSchedule.current().start);
-        player.playVideo();
+        event.target.seekTo(playbackSchedule.current().start);
+        event.target.playVideo();
       }
 
     }
   };
+
+  $(document).keypress(function(e) {
+    console.log('keypress(): ' + String.fromCharCode(e.which));
+
+    if (e.which == 'h'.charCodeAt(0)) { // prev video
+      newPlayer(playbackSchedule.rewind());
+    } else if(e.which == 'l'.charCodeAt(0)) { // next video
+      newPlayer(playbackSchedule.cycle());
+    }
+
+  });
 
   playbackSchedule();
   playbackSchedule.log();
