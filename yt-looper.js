@@ -61,49 +61,37 @@ function parseIntervals(v) {
     });
     return tt > 0 ? tt : parseInt(t, 10);
   };
-  var ret = [];
-  if (v) {
-    var t = getParam(v, 't');
-    if (t && t.length) {
-      $.each(t.split('+'), function(i, interval) {
+  var t;
+  return v && (t = getParam(v, 't')) && t.length
+    ? $.map(t.split('+'), function(interval) {
         var tt = interval.split(';');
-        var rec = { start: getSeconds(tt[0]),
-                      end: null };
-        if (tt.length > 1) {
-          rec.end = getSeconds(tt[1]);
-        }
-        ret.push(rec);
-      });
-    }
-  }
-  return ret;
+        return { start: getSeconds(tt[0]),
+                   end: tt.length > 1 ? getSeconds(tt[1]) : null };
+      })
+    : [];
 }
 
 
 function playbackSchedule() {
   console.log('playbackSchedule()');
 
-  playbackSchedule.scheduleDetails = [];
+  playbackSchedule.scheduleGroups =
+    $.map(parseVideos(window.location.href), function(video) {
+      var v = getParam(video, 'v');
+      var intervals = parseIntervals(video);
+      return [
+        intervals.length
+        ? $.map(intervals, function(interval) {
+          return $.extend({ videoId: v }, interval)
+        })
+        : { videoId: v,
+              start: '0',
+                end: null }
+      ];
+    });
+  playbackSchedule.schedule = toolbox.flatten1(playbackSchedule.scheduleGroups);
   playbackSchedule.index = 0;
 
-  $.each(parseVideos(window.location.href), function(i, video) {
-    var v = getParam(video, 'v');
-    var intervals = parseIntervals(video);
-
-    if (intervals.length) {
-      var group = [];
-      $.each(intervals, function(j, interval) {
-        group.push($.extend({ videoId: v }, interval));
-      });
-      playbackSchedule.scheduleDetails.push(group);
-    } else {
-      playbackSchedule.scheduleDetails.push([{ videoId: v,
-                                                 start: '0',
-                                                   end: null }]);
-    }
-  });
-
-  playbackSchedule.schedule = toolbox.flatten1(playbackSchedule.scheduleDetails);
 
   playbackSchedule.log = function() {
     $.each(playbackSchedule.schedule, function(i, playback) {
@@ -138,7 +126,7 @@ function playbackSchedule() {
 
   playbackSchedule.shuffle = function() {
     playbackSchedule.schedule = toolbox.flatten1(toolbox.shuffle(
-      playbackSchedule.scheduleDetails
+      playbackSchedule.scheduleGroups
     ));
   };
 
