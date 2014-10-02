@@ -1,21 +1,4 @@
 
-// all short simple utensils go here
-var toolbox = {
-  flatten1: function(tt) { // flatten array one level only
-    return $.map(tt, function(n) { return n; });
-  },
-  shuffle: function(tt) { // shuffle "in place"
-    var m = tt.length;
-    while (m) {
-      var i = Math.floor(Math.random() * m--);
-      var t = tt[m];
-      tt[m] = tt[i];
-      tt[i] = t;
-    }
-    return tt;
-  }
-};
-
 
 function getParam(params, key) {
   var rslt = new RegExp(key + '=([^&:]*)', 'i').exec(params);
@@ -48,7 +31,7 @@ function parseIntervals(v) {
     // convert from 1h2m3s
     var tokens = /(\d+h)?(\d+m)?(\d+s)?/g.exec(t);
     var tt = 0;
-    $.each(tokens, function(i, token) {
+    _.each(tokens, function(token, i) {
       if (token && i > 0) {
         if (token.indexOf('s') != -1) {
           tt += parseInt(token.split('s')[0], 10);
@@ -63,7 +46,7 @@ function parseIntervals(v) {
   };
   var t;
   return v && (t = getParam(v, 't')) && t.length
-    ? $.map(t.split('+'), function(interval) {
+    ? _.map(t.split('+'), function(interval) {
         var tt = interval.split(';');
         return { start: getSeconds(tt[0]),
                    end: tt.length > 1 ? getSeconds(tt[1]) : null };
@@ -76,25 +59,23 @@ function playbackSchedule() {
   console.log('playbackSchedule()');
 
   playbackSchedule.scheduleGroups =
-    $.map(parseVideos(window.location.href), function(video) {
+    _.map(parseVideos(window.location.href), function(video) {
       var v = getParam(video, 'v');
       var intervals = parseIntervals(video);
-      return [
-        intervals.length
-        ? $.map(intervals, function(interval) {
-          return $.extend({ videoId: v }, interval)
-        })
-        : { videoId: v,
+      return intervals.length
+        ? _.map(intervals, function(interval) {
+            return _.extend({ videoId: v }, interval);
+          })
+        : [{ videoId: v,
               start: '0',
-                end: null }
-      ];
+                end: null }];
     });
-  playbackSchedule.schedule = toolbox.flatten1(playbackSchedule.scheduleGroups);
+  playbackSchedule.schedule = _.flatten(playbackSchedule.scheduleGroups, true);
   playbackSchedule.index = 0;
 
 
   playbackSchedule.log = function() {
-    $.each(playbackSchedule.schedule, function(i, playback) {
+    _.each(playbackSchedule.schedule, function(playback) {
       console.log(playback);
     });
   };
@@ -125,9 +106,8 @@ function playbackSchedule() {
   };
 
   playbackSchedule.shuffle = function() {
-    playbackSchedule.schedule = toolbox.flatten1(toolbox.shuffle(
-      playbackSchedule.scheduleGroups
-    ));
+    playbackSchedule.schedule =
+      _.flatten(_.shuffle(playbackSchedule.scheduleGroups), true);
   };
 
   if (urlFlag('shuffle')) {
