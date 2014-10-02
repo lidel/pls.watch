@@ -4,4 +4,4 @@ before_script:
     - sudo $(which npm) install -g grunt-cli
     - sudo $(which npm) install grunt-contrib-qunit
     - sudo $(which npm) install grunt-contrib-jshint
-script: grunt travis --verbose --force
+script: grunt travis --verbose
