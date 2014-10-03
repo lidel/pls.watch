@@ -102,9 +102,9 @@ function jackiechanMyIntervals(shuffle) { // such name
         zs[i+','+j] = k++;
         _.extend(y,{ // y is not a copy!
           nextI: j  < ys.length-1 ?             i+','+(j+1)         :     i+','+0,
-          prevI: j == 0           ?             i+','+(ys.length-1) :     i+','+(j-1),
+          prevI: j === 0          ?             i+','+(ys.length-1) :     i+','+(j-1),
           nextV: i  < xs.length-1 ?         (i+1)+','+0             :     0+','+0,
-          prevV: i == 0           ? (xs.length-1)+','+0             : (i-1)+','+0,
+          prevV: i === 0          ? (xs.length-1)+','+0             : (i-1)+','+0,
         });
       });
     });
