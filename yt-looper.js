@@ -69,73 +69,88 @@ function parseIntervals(v) {
   };
   var t;
   return v && (t = getParam(v, 't')) && t.length
-    ? _.map(t.split('+'), function(interval) {
+    ? _.chain(t.split('+')).map(function(interval) {
         var tt = interval.split(';');
         return { start: getSeconds(tt[0]),
                    end: tt.length > 1 ? getSeconds(tt[1]) : null };
-      })
+      }).value()
     : [];
 }
 
 
-function playbackSchedule() {
-  console.log('playbackSchedule()');
-
-  playbackSchedule.scheduleGroups =
-    _.map(parseVideos(window.location.href), function(video) {
-      var v = getParam(video, 'v');
-      var intervals = parseIntervals(video);
-      return intervals.length
-        ? _.map(intervals, function(interval) {
-            return _.extend({ videoId: v }, interval);
-          })
-        : [{ videoId: v,
-              start: '0',
-                end: null }];
+function jackiechanMyIntervals(shuffle) { // such name
+  var getExtendedIntervals = function(videos) {
+    var r = // stuped halper
+      _.chain(videos).map(function(video) {
+        var v = getParam(video, 'v');
+        var ys = parseIntervals(video);
+        return ys.length
+          ? _.chain(ys).map(function(y) {
+              return _.extend({ videoId: v }, y);
+            }).value()
+          : [{ videoId: v,
+                start: '0',
+                  end: null }];
+      }).value();
+    return r;
+  };
+  var computeDirections = function(xs) {
+    var zs = {}; // index map 2d -> 1d
+    var k  = 0;
+    _.each(xs, function(ys, i) {
+      _.each(ys, function(y, j) {
+        zs[i+','+j] = k++;
+        _.extend(y,{ // y is not a copy!
+          nextI: j  < ys.length-1 ?             i+','+(j+1)         :     i+','+0,
+          prevI: j == 0           ?             i+','+(ys.length-1) :     i+','+(j-1),
+          nextV: i  < xs.length-1 ?         (i+1)+','+0             :     0+','+0,
+          prevV: i == 0           ? (xs.length-1)+','+0             : (i-1)+','+0,
+        });
+      });
     });
-  playbackSchedule.schedule = _.flatten(playbackSchedule.scheduleGroups, true);
-  playbackSchedule.index = 0;
+    var r = // stuped halper
+      _.chain(xs).flatten(true).map(function(y) {
+        y.nextI = zs[y.nextI]; // map
+        y.prevI = zs[y.prevI]; //     to
+        y.nextV = zs[y.nextV]; //        flat
+        y.prevV = zs[y.prevV]; //             list
+        return y;
+      }).value();
+    return r;
+  };
+  var vs = shuffle ? _.shuffle(parseVideos(window.location.href))
+                   :           parseVideos(window.location.href);
+  return {
+    multivideo: vs.length > 1,
+     intervals: computeDirections(getExtendedIntervals(vs))
+  };
+}
 
 
-  playbackSchedule.log = function() {
-    _.each(playbackSchedule.schedule, function(playback) {
-      console.log(playback);
+function playlist() {
+  console.log('playlist()');
+
+  _.extend(playlist, jackiechanMyIntervals(urlFlag('shuffle')));
+  playlist.index = 0;
+
+  playlist.log = function() {
+    _.each(playlist.intervals, function(y) {
+      console.log(JSON.stringify(y));
     });
   };
 
-  playbackSchedule.current = function() {
-    return playbackSchedule.schedule[playbackSchedule.index];
+  playlist.current = function() {
+    return playlist.intervals[playlist.index];
   };
 
-  playbackSchedule.cycle = function() {
-    var current = playbackSchedule.current();
-    var index = playbackSchedule.index + 1;
-    playbackSchedule.index = index >= playbackSchedule.schedule.length
-                           ? 0
-                           : index;
-    return current;
+  playlist.go = function(direction) { // 'nextI' 'prevI' 'nextV' 'prevV'
+    return playlist.intervals[playlist.index = playlist.current()[direction]];
   };
 
-  playbackSchedule.rewind = function() {
-    var rewindOnce = function() {
-      var index = playbackSchedule.index - 1;
-      playbackSchedule.index = index < 0
-                             ? playbackSchedule.schedule.length - 1
-                             : index;
-    };
-    rewindOnce();
-    rewindOnce();
-    return playbackSchedule.cycle();
+  playlist.cycle = function() {
+    return playlist.go(playlist.index >= playlist.current().nextI ? 'nextV'
+                                                                  : 'nextI');
   };
-
-  playbackSchedule.shuffle = function() {
-    playbackSchedule.schedule =
-      _.flatten(_.shuffle(playbackSchedule.scheduleGroups), true);
-  };
-
-  if (urlFlag('shuffle')) {
-    playbackSchedule.shuffle();
-  }
 }
 
 
@@ -144,7 +159,7 @@ function onYouTubeIframeAPIReady() {
 
   var newPlayer = function(playback) {
     console.log('newPlayer()');
-    console.log(playback);
+    console.log(JSON.stringify(playback));
 
     var $player = $('#player');
     if ($player.length) {
@@ -189,10 +204,10 @@ function onYouTubeIframeAPIReady() {
     if (event.data == YT.PlayerState.ENDED) {
       changeFavicon(faviconWait);
 
-      if (playbackSchedule.schedule.length > 1) {
-        newPlayer(playbackSchedule.cycle());
+      if (playlist.multivideo) {
+        newPlayer(playlist.cycle());
       } else {
-        event.target.seekTo(playbackSchedule.current().start);
+        event.target.seekTo(playlist.current().start);
         event.target.playVideo();
       }
 
@@ -207,19 +222,19 @@ function onYouTubeIframeAPIReady() {
   };
 
   $(document).keypress(function(e) {
-    console.log('keypress(): ' + String.fromCharCode(e.which));
-
-    if (e.which == 'h'.charCodeAt(0)) { // prev video
-      newPlayer(playbackSchedule.rewind());
-    } else if(e.which == 'l'.charCodeAt(0)) { // next video
-      newPlayer(playbackSchedule.cycle());
-    }
-
+    var k = String.fromCharCode(e.which);
+    var current = 
+      k=='h' ? playlist.go('prevV')
+             : k=='j' ? playlist.go('prevI')
+                      : k=='k' ? playlist.go('nextI')
+                               : k=='l' ? playlist.go('nextV')
+                                        : null;
+    if (current) newPlayer(current);
   });
 
-  playbackSchedule();
-  playbackSchedule.log();
-  newPlayer(playbackSchedule.cycle());
+  playlist();
+  playlist.log();
+  newPlayer(playlist.current());
 }
 
 
