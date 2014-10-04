@@ -9,7 +9,7 @@ QUnit.test('one video, one interval', function (assert) {
   var urls = [url, url.replace(':','&')];
   var expected_intervals = [{'start':23,'end':30}];
 
-  _.each(urls, function (test_url, i) {
+  _(urls).each(function (test_url, i) {
     var videos = parseVideos(test_url);
     assert.ok(videos.length == 1, 'incorrect number of detected videos for test_url #' + i);
     test_url = videos[0];
@@ -26,7 +26,7 @@ QUnit.test('one video, multiple intervals', function (assert) {
   var urls = [url, url.replace(':','&')];
   var expected_intervals = [{'start':54,'end':80},{'start':93,'end':107},{'start':210,'end':226}];
 
-  _.each(urls, function (test_url, i) {
+  _(urls).each(function (test_url, i) {
     var videos = parseVideos(test_url);
     assert.ok(videos.length == 1, 'incorrect number of detected videos');
     test_url = videos[0];
@@ -44,7 +44,7 @@ QUnit.test('two videos, mixed intervals', function (assert) {
   var urls = [url, url.replace(':','&')];
   var expected_intervals;
 
-  _.each(urls, function (test_url, i) {
+  _(urls).each(function (test_url, i) {
     var videos = parseVideos(test_url);
     assert.ok(videos.length == 2, 'incorrect number of detected videos');
 
@@ -63,4 +63,5 @@ QUnit.test('two videos, mixed intervals', function (assert) {
   });
 
 });
+
 // vim:ts=2:sw=2:et:

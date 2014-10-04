@@ -8,7 +8,6 @@ document.head = typeof document.head != 'object'
               ? document.getElementsByTagName('head')[0]
               : document.head;
 
-
 function changeFavicon(src) {
   var oldIcon = document.getElementById('dynamic-favicon');
   if (oldIcon || (!src && oldIcon)) {
@@ -23,9 +22,10 @@ function changeFavicon(src) {
   }
 }
 
+
 function getParam(params, key) {
   var rslt = new RegExp(key + '=([^&:]*)', 'i').exec(params);
-  return rslt && unescape(rslt[1]) || '';
+  return rslt && _.unescape(rslt[1]) || '';
 }
 
 function urlParam(key) {
@@ -35,26 +35,23 @@ function urlParam(key) {
 function urlFlag(key) {
   var ptrn = '(?:[#?&:]' + key + '[&:])|(?:[#?&:]' + key + '$)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
-  return !rslt ? urlParam(key) == 'true'
-               : true;
+  return !rslt ? urlParam(key) == 'true' : true;
 }
+
 
 function parseVideos(url) {
-  var vids = [];
   var regx = /v=[^&:]*(?:[&:]t=[^&:]*)?/g, rslt;
-  while ((rslt = regx.exec(url))) {
-    vids.push(rslt[0]);
-  }
+  var vids = [];
+  while ((rslt = regx.exec(url))) vids.push(rslt[0]);
   return vids;
 }
-
 
 function parseIntervals(v) {
   var getSeconds = function(t) {
     // convert from 1h2m3s
-    var tokens = /(\d+h)?(\d+m)?(\d+s)?/g.exec(t);
+    var tokens = /(\d+h)?(\d+m)?(\d+s)?/.exec(t);
     var tt = 0;
-    _.each(tokens, function(token, i) {
+    _(tokens).each(function(token, i) {
       if (token && i > 0) {
         if (token.indexOf('s') != -1) {
           tt += parseInt(token.split('s')[0], 10);
@@ -69,42 +66,41 @@ function parseIntervals(v) {
   };
   var t;
   return v && (t = getParam(v, 't')) && t.length
-    ? _.chain(t.split('+')).map(function(interval) {
+    ? _(t.split('+')).map(function(interval) {
         var tt = interval.split(';');
         return { start: getSeconds(tt[0]),
                    end: tt.length > 1 ? getSeconds(tt[1]) : null };
-      }).value()
+      })
     : [];
 }
 
-
 function jackiechanMyIntervals(shuffle) { // such name
-  var getExtendedIntervals = function(videos) {
+  var extendIntervals = function(videos) {
     var r = // stuped halper
-      _.chain(videos).map(function(video) {
-        var v = getParam(video, 'v');
+      _(videos).map(function(video) {
         var ys = parseIntervals(video);
         return ys.length
-          ? _.chain(ys).map(function(y) {
-              return _.extend({ videoId: v }, y);
-            }).value()
-          : [{ videoId: v,
-                start: '0',
-                  end: null }];
-      }).value();
+          ? _(ys).map(function(y) {
+              return _.extend({ videoId: getParam(video, 'v') }, y);
+            })
+          : [{ videoId: getParam(video, 'v'),
+                 start: '0',
+                   end: null }];
+      });
     return r;
   };
   var computeDirections = function(xs) {
     var zs = {}; // index map 2d -> 1d
-    var k  = 0;
-    _.each(xs, function(ys, i) {
-      _.each(ys, function(y, j) {
-        zs[i+','+j] = k++;
-        _.extend(y,{ // y is not a copy!
-          nextI: j  < ys.length-1 ?             i+','+(j+1)         :     i+','+0,
-          prevI: j === 0          ?             i+','+(ys.length-1) :     i+','+(j-1),
-          nextV: i  < xs.length-1 ?         (i+1)+','+0             :     0+','+0,
-          prevV: i === 0          ? (xs.length-1)+','+0             : (i-1)+','+0,
+    var Y = ','; // such shape
+    var k = 0;
+    _(xs).each(function(ys, i) {
+      _(ys).each(function(y, j) {
+        zs[i+Y+j] = k++;
+        _.extend(y, { // y is not a copy!
+          nextI: j < ys.length-1 ?             i+Y+(j+1)         :     i+Y+0,
+          prevI: j === 0         ?             i+Y+(ys.length-1) :     i+Y+(j-1),
+          nextV: i < xs.length-1 ?         (i+1)+Y+0             :     0+Y+0,
+          prevV: i === 0         ? (xs.length-1)+Y+0             : (i-1)+Y+0,
         });
       });
     });
@@ -122,7 +118,7 @@ function jackiechanMyIntervals(shuffle) { // such name
                    :           parseVideos(window.location.href);
   return {
     multivideo: vs.length > 1,
-     intervals: computeDirections(getExtendedIntervals(vs))
+     intervals: computeDirections(extendIntervals(vs))
   };
 }
 
@@ -134,9 +130,7 @@ function playlist() {
   playlist.index = 0;
 
   playlist.log = function() {
-    _.each(playlist.intervals, function(y) {
-      console.log(JSON.stringify(y));
-    });
+    _(playlist.intervals).each(_.compose(function(x){console.log(x)}, JSON.stringify));
   };
 
   playlist.current = function() {
@@ -148,8 +142,8 @@ function playlist() {
   };
 
   playlist.cycle = function() {
-    return playlist.go(playlist.index >= playlist.current().nextI ? 'nextV'
-                                                                  : 'nextI');
+    return playlist.index >= playlist.current().nextI ? playlist.go('nextV')
+                                                      : playlist.go('nextI');
   };
 }
 
@@ -269,14 +263,12 @@ function renderPage() {
 
 $(window).bind('hashchange', function() {
   console.log('hash change: ' + window.location.hash);
-
   // reset player or entire page
   if ($('#player').length > 0) {
     onYouTubeIframeAPIReady();
   } else {
     renderPage();
   }
-
 });
 
 // vim:ts=2:sw=2:et:
