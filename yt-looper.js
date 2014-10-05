@@ -130,7 +130,7 @@ function playlist(href) {
   playlist.index = 0;
 
   playlist.log = function() {
-    _(playlist.intervals).each(_.compose(function(x){console.log(x)}, JSON.stringify));
+    _(playlist.intervals).each(_.compose(function(x){console.log(x);}, JSON.stringify));
   };
 
   playlist.current = function() {
