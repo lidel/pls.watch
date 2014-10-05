@@ -74,7 +74,7 @@ function parseIntervals(v) {
     : [];
 }
 
-function jackiechanMyIntervals(shuffle) { // such name
+function jackiechanMyIntervals(href, shuffle) { // such name
   var extendIntervals = function(videos) {
     var r = // stuped halper
       _(videos).map(function(video) {
@@ -84,7 +84,7 @@ function jackiechanMyIntervals(shuffle) { // such name
               return _.extend({ videoId: getParam(video, 'v') }, y);
             })
           : [{ videoId: getParam(video, 'v'),
-                 start: '0',
+                 start: 0,
                    end: null }];
       });
     return r;
@@ -114,8 +114,8 @@ function jackiechanMyIntervals(shuffle) { // such name
       }).value();
     return r;
   };
-  var vs = shuffle ? _.shuffle(parseVideos(window.location.href))
-                   :           parseVideos(window.location.href);
+  var vs = shuffle ? _.shuffle(parseVideos(href))
+                   :           parseVideos(href);
   return {
     multivideo: vs.length > 1,
      intervals: computeDirections(extendIntervals(vs))
@@ -123,10 +123,10 @@ function jackiechanMyIntervals(shuffle) { // such name
 }
 
 
-function playlist() {
+function playlist(href) {
   console.log('playlist()');
 
-  _.extend(playlist, jackiechanMyIntervals(urlFlag('shuffle')));
+  _.extend(playlist, jackiechanMyIntervals(href, urlFlag('shuffle')));
   playlist.index = 0;
 
   playlist.log = function() {
@@ -226,7 +226,7 @@ function onYouTubeIframeAPIReady() {
     if (current) newPlayer(current);
   });
 
-  playlist();
+  playlist(window.location.href);
   playlist.log();
   newPlayer(playlist.current());
 }
