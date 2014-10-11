@@ -92,12 +92,14 @@ function parseIntervals(v) {
 function normalizeUrl(url) {
   var apiUrl = url;
 
+  // translate YouTube URL shenanigans
+  apiUrl = apiUrl.replace('&',':');
+  apiUrl = apiUrl.replace('#t=',':t=');
+  apiUrl = apiUrl.replace('/watch','');
+
   // force hash-based URLs
   apiUrl = apiUrl.replace('?','#');
 
-  // support YouTube quirks
-  apiUrl = apiUrl.replace('&',':');
-  apiUrl = apiUrl.replace('#t=',':t=');
 
   if (url != apiUrl) {
     document.location.replace(apiUrl);
