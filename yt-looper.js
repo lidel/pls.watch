@@ -89,7 +89,8 @@ function parseIntervals(v) {
     : [];
 }
 
-function normalizeUrl(url) {
+function normalizeUrl() {
+  var url = window.location.href;
   var apiUrl = url;
 
   // translate YouTube URL shenanigans
@@ -100,11 +101,9 @@ function normalizeUrl(url) {
   // force hash-based URLs
   apiUrl = apiUrl.replace('?','#');
 
-
   if (url != apiUrl) {
     document.location.replace(apiUrl);
   }
-  return url;
 }
 
 function jackiechanMyIntervals(href, shuffle) { // such name
@@ -258,7 +257,7 @@ function onYouTubeIframeAPIReady() {
     if (current) newPlayer(current);
   });
 
-  playlist(normalizeUrl(window.location.href));
+  playlist(window.location.href);
   playlist.log();
   newPlayer(playlist.current());
 }
@@ -297,6 +296,8 @@ function renderPage() {
 
   $(window).bind('hashchange', function() {
     console.log('hash change: ' + window.location.hash);
+
+    normalizeUrl();
 
     // reset things that depend on URL
     $('#shortened').remove();
