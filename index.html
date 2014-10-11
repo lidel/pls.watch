@@ -16,6 +16,7 @@
       margin: 0;
       height: 100%;
       width: 100%;
+      font-family: sans-serif;
     }
 
     body>div {
@@ -36,22 +37,39 @@
       border: 1px solid rgba (100,100,100,0.25);
     }
 
-    #box p {padding: 0 1em 0 1em; font-family: sans-serif; line-height: 2em;}
+    #box p {padding: 0 1em 0 1em; line-height: 2em;}
     #box a {color: #999; text-decoration:none}
     #box tt {padding: 0.25em 0.5em !important; color: #ccc; border-radius: 1em; background-color:#111; text-decoration:none; padding: 0.25em; border: 1px #333 solid}
 
     #menu {
-      margin: 1em;
+      padding: 1em;
       position: absolute;
-      top: 0;
-      left: 0;
-      color: #888;
-      font-family: monospace;
-      font-size: small;
-      opacity: 0.2;
+      bottom: 0;
+      right: 0;
+      color: #333;
+      text-align:right;
+      width: 100%;
+      text-shadow: 0px 0px 6px #000;
+      font-size: 0.8em;
     }
+    /* disabled for now, perhaps we will use it when we have more functions
     #menu:hover {
-      opacity: 1;
+      color: #888;
+      background-color: #1B1B1B;
+      box-shadow: 0px -5px 10px rgba(0,0,0,0.4);
+      text-shadow: none;
+    }
+    */
+    #menu a {
+      display: inline-block;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    #menu a:hover {
+      color: #888;
+    }
+    #shortened {
+      color: #fff !important;
     }
 
   </style>
@@ -60,7 +78,9 @@
 </head>
 
 <body>
-<div id="menu">A Kitty!</div>
+<div id="menu">
+  <a id="shorten" title="click to get a short URL for current playlist">short url</a>
+</div>
 <div><div id="box">
 </div></div>
 

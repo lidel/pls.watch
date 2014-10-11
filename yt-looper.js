@@ -8,6 +8,21 @@ document.head = typeof document.head != 'object'
               ? document.getElementsByTagName('head')[0]
               : document.head;
 
+function showShortUrl() {
+  $.ajax({
+    url: 'https://www.googleapis.com/urlshortener/v1/url',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    data: '{ longUrl: "' + window.location.href +'"}',
+    dataType: 'json',
+    success: function(data) {
+      console.log(data);
+      $('#shorten').hide();
+      $('#menu').prepend('<a id="shortened" href="' + data.id + '">'+ data.id +'</a>');
+    }
+  });
+}
+
 function changeFavicon(src) {
   var oldIcon = document.getElementById('dynamic-favicon');
   if (oldIcon || (!src && oldIcon)) {
@@ -269,15 +284,27 @@ function renderPage() {
   }
 }
 
+// various init tasks on page load
+(function ($) {
 
-$(window).bind('hashchange', function() {
-  console.log('hash change: ' + window.location.hash);
-  // reset player or entire page
-  if ($('#player').length > 0) {
-    onYouTubeIframeAPIReady();
-  } else {
-    renderPage();
-  }
-});
+  $(window).bind('hashchange', function() {
+    console.log('hash change: ' + window.location.hash);
+
+    // reset things that depend on URL
+    $('#shortened').remove();
+    $('#shorten').show();
+
+    // reset player or entire page
+    if ($('#player').length > 0) {
+      onYouTubeIframeAPIReady();
+    } else {
+      renderPage();
+    }
+
+  });
+
+  $('#shorten').click(showShortUrl);
+
+}(jQuery));
 
 // vim:ts=2:sw=2:et:
