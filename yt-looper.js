@@ -24,7 +24,7 @@ function changeFavicon(src) {
 
 
 function getParam(params, key) {
-  var rslt = new RegExp(key + '=([^&:]*)', 'i').exec(params);
+  var rslt = new RegExp(key + '=([^:]*)', 'i').exec(params);
   return rslt && _.unescape(rslt[1]) || '';
 }
 
@@ -33,14 +33,14 @@ function urlParam(key) {
 }
 
 function urlFlag(key) {
-  var ptrn = '(?:[#?&:]' + key + '[&:])|(?:[#?&:]' + key + '$)';
+  var ptrn = '(?:[#:]' + key + '[:])|(?:[#:]' + key + '$)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
   return !rslt ? urlParam(key) == 'true' : true;
 }
 
 
 function parseVideos(url) {
-  var regx = /v=[^&:]*(?:[&:]t=[^&:]*)?/g, rslt;
+  var regx = /v=[^:]*(?:[:]t=[^:]*)?/g, rslt;
   var vids = [];
   while ((rslt = regx.exec(url))) vids.push(rslt[0]);
   return vids;
@@ -72,6 +72,16 @@ function parseIntervals(v) {
                    end: tt.length > 1 ? getSeconds(tt[1]) : null };
       })
     : [];
+}
+
+function normalizeUrl(url) {
+  var apiUrl = url;
+  apiUrl = apiUrl.replace('&',':');
+  apiUrl = apiUrl.replace('?','#');
+  if (url != apiUrl) {
+    document.location.replace(apiUrl);
+  }
+  return url;
 }
 
 function jackiechanMyIntervals(href, shuffle) { // such name
@@ -121,7 +131,6 @@ function jackiechanMyIntervals(href, shuffle) { // such name
      intervals: computeDirections(extendIntervals(vs))
   };
 }
-
 
 function playlist(href) {
   console.log('playlist()');
@@ -226,7 +235,7 @@ function onYouTubeIframeAPIReady() {
     if (current) newPlayer(current);
   });
 
-  playlist(window.location.href);
+  playlist(normalizeUrl(window.location.href));
   playlist.log();
   newPlayer(playlist.current());
 }
