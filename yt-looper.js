@@ -16,24 +16,6 @@ document.head = typeof document.head != 'object'
               ? document.getElementsByTagName('head')[0]
               : document.head;
 
-function responsivePlayerSetup() {
-  var cookieKey     = 'responsive';
-  var cookie        = $.cookie(cookieKey);
-  var cookieOptions = { expires: 365, path: '/', secure: false };
-  var $responsive   = $('#responsive');
-
-  if (cookie === undefined) {
-    $.cookie(cookieKey, true, cookieOptions);
-    $responsive.addClass('ticker');
-  } else {
-    $.removeCookie(cookieKey, cookieOptions);
-    $responsive.removeClass('ticker');
-  }
-
-  // force player reload with new setting
-  $(window).trigger('hashchange');
-
-}
 
 function showShortUrl() {
   $.ajax({
@@ -63,6 +45,7 @@ function showShortUrl() {
   });
 }
 
+
 function changeFavicon(src) {
   var oldIcon = document.getElementById('dynamic-favicon');
   if (oldIcon || (!src && oldIcon)) {
@@ -76,6 +59,7 @@ function changeFavicon(src) {
     document.head.appendChild(icon);
   }
 }
+
 
 function getPlayerSize() {
   var $box      = $('#box');
@@ -97,9 +81,7 @@ function getPlayerSize() {
       // fix undesired padding in some browsers
       $box.css('max-width',  playerSize.width);
       $box.css('max-height', playerSize.height);
-
     });
-
   }
 
   return playerSize;
@@ -129,6 +111,7 @@ function parseVideos(url) {
   return vids;
 }
 
+
 function parseIntervals(v) {
   var getSeconds = function(t) {
     // convert from 1h2m3s
@@ -157,6 +140,7 @@ function parseIntervals(v) {
     : [];
 }
 
+
 function normalizeUrl() {
   var url = window.location.href;
   var apiUrl = url;
@@ -173,6 +157,7 @@ function normalizeUrl() {
     document.location.replace(apiUrl);
   }
 }
+
 
 function jackiechanMyIntervals(href, shuffle) { // such name
   var extendIntervals = function(videos) {
@@ -222,37 +207,37 @@ function jackiechanMyIntervals(href, shuffle) { // such name
   };
 }
 
-function playlist(href) {
-  console.log('playlist()');
 
-  _.extend(playlist, jackiechanMyIntervals(href, urlFlag('shuffle')));
-  playlist.index = 0;
+function Playlist(href) {
+  console.log('Playlist()');
 
-  playlist.log = function() {
-    _(playlist.intervals).each(_.compose(function(x){console.log(x);}, JSON.stringify));
+  _.extend(Playlist, jackiechanMyIntervals(href, urlFlag('shuffle')));
+  Playlist.index = 0;
+
+  Playlist.log = function() {
+    _(Playlist.intervals).each(_.compose(function(x){console.log(x);}, JSON.stringify));
   };
 
-  playlist.current = function() {
-    return playlist.intervals[playlist.index];
+  Playlist.current = function() {
+    return Playlist.intervals[Playlist.index];
   };
 
-  playlist.go = function(direction) { // 'nextI' 'prevI' 'nextV' 'prevV'
-    return playlist.intervals[playlist.index = playlist.current()[direction]];
+  Playlist.go = function(direction) { // 'nextI' 'prevI' 'nextV' 'prevV'
+    return Playlist.intervals[Playlist.index = Playlist.current()[direction]];
   };
 
-  playlist.cycle = function() {
-    return playlist.index >= playlist.current().nextI ? playlist.go('nextV')
-                                                      : playlist.go('nextI');
+  Playlist.cycle = function() {
+    return Playlist.index >= Playlist.current().nextI ? Playlist.go('nextV')
+                                                      : Playlist.go('nextI');
   };
 }
 
 
-function onYouTubeIframeAPIReady() {
-  console.log('onYouTubeIframeAPIReady()');
+function Player() {
+  console.log('Player()');
 
-  var newPlayer = function(playback) {
-    console.log('newPlayer()');
-    console.log(JSON.stringify(playback));
+  Player.newPlayer = function(playback) {
+    console.log('Player.newPlayer(): ' + JSON.stringify(playback));
 
     var $player = $('#player');
     if ($player.length) {
@@ -260,27 +245,34 @@ function onYouTubeIframeAPIReady() {
     }
 
     $('#box').html('<div id="player"></div>');
-    var size = getPlayerSize();
-    new YT.Player('player',{
-      height: size.height,
-      width:  size.width,
-      videoId: playback.videoId,
-      playerVars: {
-        start: playback.start,
-        end: playback.end,
-        autohide: '1',
-        html5: '1',
-        iv_load_policy: '3',
-        modestbranding: '1',
-        showinfo: '0',
-        rel: '0',
-        theme: 'dark',
-      },
-      events: {
-        onReady: onPlayerReady,
-        onStateChange: onPlayerStateChange
-      }
-    });
+
+    (function(){
+      var size = getPlayerSize();
+      var player = new YT.Player('player',{
+        height: size.height,
+        width:  size.width,
+        videoId: playback.videoId,
+        playerVars: {
+          start: playback.start,
+          end: playback.end,
+          autohide: '1',
+          html5: '1',
+          iv_load_policy: '3',
+          modestbranding: '1',
+          showinfo: '0',
+          rel: '0',
+          theme: 'dark',
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange
+        }
+      });
+      Player.autosize = function() {
+        var size = getPlayerSize();
+        player.setSize(size.width, size.height);
+      };
+    }());
   };
 
   var onPlayerReady = function(event) {
@@ -298,10 +290,10 @@ function onYouTubeIframeAPIReady() {
     if (event.data == YT.PlayerState.ENDED) {
       changeFavicon(faviconWait);
 
-      if (playlist.multivideo) {
-        newPlayer(playlist.cycle());
+      if (Playlist.multivideo) {
+        Player.newPlayer(Playlist.cycle());
       } else {
-        event.target.seekTo(playlist.current().start);
+        event.target.seekTo(Playlist.current().start);
         event.target.playVideo();
       }
 
@@ -312,30 +304,17 @@ function onYouTubeIframeAPIReady() {
     } else {
       changeFavicon(faviconWait);
     }
-
   };
 
-  $(document).unbind('keypress').keypress(function(e) {
-    var k = String.fromCharCode(e.which);
-    if (k=='s') {
-      var $shorten = $('#shorten');
-      if ($shorten.is(':visible')) {
-        $shorten.click();
-      }
-    } else {
-      var current = 
-        k=='h' ? playlist.go('prevV')
-               : k=='j' ? playlist.go('prevI')
-                        : k=='k' ? playlist.go('nextI')
-                                 : k=='l' ? playlist.go('nextV')
-                                          : null;
-      if (current) newPlayer(current);
-    }
-  });
+  Playlist(window.location.href);
+  Playlist.log();
+  Player.newPlayer(Playlist.current());
+}
 
-  playlist(window.location.href);
-  playlist.log();
-  newPlayer(playlist.current());
+
+function onYouTubeIframeAPIReady() {
+  console.log('onYouTubeIframeAPIReady()');
+  Player();
 }
 
 
@@ -367,9 +346,27 @@ function renderPage() {
   }
 }
 
-// various init tasks on page load
-(function ($) {
 
+function responsivePlayerSetup() {
+  var cookieKey     = 'responsive';
+  var cookie        = $.cookie(cookieKey);
+  var cookieOptions = { expires: 365, path: '/', secure: false };
+  var $responsive   = $('#responsive');
+
+  if (cookie === undefined) {
+    $.cookie(cookieKey, true, cookieOptions);
+    $responsive.addClass('ticker');
+  } else {
+    $.removeCookie(cookieKey, cookieOptions);
+    $responsive.removeClass('ticker');
+  }
+
+  Player.autosize();
+}
+
+
+// various init tasks on page load
+(function($) {
   $(window).bind('hashchange', function() {
     console.log('hash change: ' + window.location.hash);
 
@@ -385,11 +382,9 @@ function renderPage() {
     } else {
       renderPage();
     }
-
   });
 
   // menu items
-
   $('#shorten').click(showShortUrl);
 
   var $responsive = $('#responsive');
@@ -400,10 +395,27 @@ function renderPage() {
   // reload player on window resize if autosize is enabled
   $(window).on('resize', _.debounce(function() {
     if ($.cookie('responsive')) {
-      $(window).trigger('hashchange');
+      Player.autosize();
     }
   }, 300));
 
+  $(document).unbind('keypress').keypress(function(e) {
+    var k = String.fromCharCode(e.which);
+    if (k=='s') {
+      var $shorten = $('#shorten');
+      if ($shorten.is(':visible')) {
+        $shorten.click();
+      }
+    } else {
+      var current = 
+        k=='h' ? Playlist.go('prevV')
+               : k=='j' ? Playlist.go('prevI')
+                        : k=='k' ? Playlist.go('nextI')
+                                 : k=='l' ? Playlist.go('nextV')
+                                          : null;
+      if (current) Player.newPlayer(current);
+    }
+  });
 }(jQuery));
 
 // vim:ts=2:sw=2:et:

@@ -170,7 +170,7 @@ QUnit.module('Basic playlist directions');
 QUnit.test('scheme: 3 2 1 : +I +I +I +I -V -I +V +V +V +V -I +I -V -V -V -V -V -I -I -I +V', function (assert) {
   var href = '#v=abcdefghij0:t=1s;2s+3s;4s+5s;6s:v=abcdefghij1:t=7s;8s+9s;10s:v=abcdefghij2:t=11s;12s';
 
-  playlist(href);
+  Playlist(href);
 
   var steps = [
     ['nextI', {videoId:'abcdefghij0', start: 3,end: 4, prevI:0,nextI:2, prevV:5,nextV:3} ], // 0
@@ -196,8 +196,8 @@ QUnit.test('scheme: 3 2 1 : +I +I +I +I -V -I +V +V +V +V -I +I -V -V -V -V -V -
     ['nextV', {videoId:'abcdefghij2', start:11,end:12, prevI:5,nextI:5, prevV:3,nextV:0} ], // 20
   ];
 
-  _(steps).each(function (step, i) {
-    assert.deepEqual(playlist.go(step[0]), step[1], 'incorrect playlist step #' + i);
+  _(steps).each(function (tuple, i) {
+    assert.deepEqual(Playlist.go(tuple[0]), tuple[1], 'incorrect playlist step #' + i);
   });
 });
 
