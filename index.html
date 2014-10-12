@@ -7,7 +7,6 @@
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/labjs/2.0.3/LAB.min.js"></script>
   <style>
-
     body {
       background: #333 url('zwartevilt.png'); /* image from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
       display: table;
@@ -73,10 +72,40 @@
     #shortened {
       color: #fff !important;
     }
-
+    #shortened>input {
+      color: inherit;
+      background: inherit;
+      border: none;
+      text-align: right;
+    }
+    #shortened>input::selection {
+        background-color: black;
+    }
+    #shortened>input::-moz-selection {
+        background-color: black;
+    }
+    #shortened>input::-o-selection {
+        background-color: black;
+    }
+    #shortened>input::-ms-selection {
+        background-color: black;
+    }
+    #shortened>input::-webkit-selection {
+        background-color: black;
+    }
+    #shortened>a {
+      font-size:1.5em;
+    }
+    #shortened>a:link {
+      color: darkgray;
+    }
+    #shortened>a:visited {
+      color: darkgray;
+    }
+    #shortened>a:hover {
+      color: darkgray;
+    }
   </style>
-
-
 </head>
 
 <body>
