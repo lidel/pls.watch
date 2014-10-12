@@ -1,0 +1,104 @@
+body {
+  display: table;
+  position: absolute;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  font-family: sans-serif;
+  margin: 0;
+  background: url(zwartevilt.png) #333; 
+  /* zwartevilt.png from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
+}
+body>div {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+
+#box {
+  display: inline-block;
+  text-align: left;
+  color: #EEE;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+  border: 1px solid rgba(100,100,100,0.25);
+  max-height: 360px;
+  max-width: 640px;
+  background-color: #1B1B1B;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+#box p {
+  line-height: 2em;
+  padding: 0 1em;
+}
+#box a {
+  color: #999;
+  text-decoration: none;
+}
+#box tt {
+  color: #ccc;
+  border-radius: 1em;
+  text-decoration: none;
+  border: 1px #333 solid;
+  padding: .25em .5em!important;
+  background: #111;
+}
+
+
+#menu {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: #333;
+  text-align: right;
+  width: 100%;
+  text-shadow: 0 0 6px #000;
+  font-size: .8em;
+  padding: 1em;
+}
+#menu a {
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: none;
+}
+#menu a:hover {
+  color: #888;
+}
+
+
+#shortened>input {
+  color: #fff !important;
+  text-align: center;
+  border-radius: 1em;
+  text-decoration: none;
+  border: 1px #333 solid;
+  padding: .25em 0!important;
+  background-color: #111;
+}
+#shortened>input::selection {
+  background-color: #111;
+}
+#shortened>input::-moz-selection {
+  background-color: #111;
+}
+#shortened>input::-o-selection {
+  background-color: #111;
+}
+#shortened>input::-ms-selection {
+  background-color: #111;
+}
+#shortened>input::-webkit-selection {
+  background-color: #111;
+}
+#shortened>a {
+  font-size:1.5em;
+}
+#shortened>a:link,
+#shortened>a:visited {
+  color: #555;
+}
+#shortened>a:hover {
+  color: #888;
+}

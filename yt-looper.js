@@ -21,14 +21,16 @@ function showShortUrl() {
       $('#shorten').hide();
 
       var input = '<input type="text" value="'+ data.id +'" readonly>';
-      var     a = '<a href="'+ data.id +'" target="_blank">&#10548;</a>';
-      var   div = '<div id="shortened">'+ input + a +'</div>';
+      var     a = '<a href="'+ data.id +'" target="_blank" title="click to test short url in a new tab">&#10548;</a>';
+      var   div = '<div id="shortened">ctrl+c to copy '+ input + a +'</div>';
 
       $('#menu').prepend(div);
 
-      $('#shortened>input').select();
-      $('#shortened>input').click(function() {
-        $('#shortened>input').select();
+      var $input = $('#shortened>input');
+      $input.width($input.val().length/2 + 'em');
+      $input.select();
+      $input.click(function() {
+        $input.select();
       });
     }
   });

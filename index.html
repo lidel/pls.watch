@@ -4,116 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=640">
   <title>Minimalistic Youtube Looper</title>
-
+  <link href="/style.css" media="all" rel="stylesheet" />
   <script src="//cdnjs.cloudflare.com/ajax/libs/labjs/2.0.3/LAB.min.js"></script>
-  <style>
-    body {
-      background: #333 url('zwartevilt.png'); /* image from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
-      display: table;
-      position: absolute;
-      overflow: hidden;
-      margin: 0;
-      height: 100%;
-      width: 100%;
-      font-family: sans-serif;
-    }
-
-    body>div {
-      display: table-cell;
-      vertical-align: middle;
-      text-align: center;
-    }
-
-    #box {
-      display: inline-block;
-      text-align: left;
-      background-color: #1B1B1B;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center center;
-      color: #EEE;
-      box-shadow: 0px 5px 10px rgba(0,0,0,0.4);
-      border: 1px solid rgba (100,100,100,0.25);
-      max-height: 360px;
-      max-width: 640px;
-    }
-
-    #box p {padding: 0 1em 0 1em; line-height: 2em;}
-    #box a {color: #999; text-decoration:none}
-    #box tt {padding: 0.25em 0.5em !important; color: #ccc; border-radius: 1em; background-color:#111; text-decoration:none; padding: 0.25em; border: 1px #333 solid}
-
-    #menu {
-      padding: 1em;
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      color: #333;
-      text-align:right;
-      width: 100%;
-      text-shadow: 0px 0px 6px #000;
-      font-size: 0.8em;
-    }
-    /* disabled for now, perhaps we will use it when we have more functions
-    #menu:hover {
-      color: #888;
-      background-color: #1B1B1B;
-      box-shadow: 0px -5px 10px rgba(0,0,0,0.4);
-      text-shadow: none;
-    }
-    */
-    #menu a {
-      display: inline-block;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    #menu a:hover {
-      color: #888;
-    }
-    #shortened {
-      color: #fff !important;
-    }
-    #shortened>input {
-      color: inherit;
-      background: inherit;
-      border: none;
-      text-align: right;
-    }
-    #shortened>input::selection {
-        background-color: black;
-    }
-    #shortened>input::-moz-selection {
-        background-color: black;
-    }
-    #shortened>input::-o-selection {
-        background-color: black;
-    }
-    #shortened>input::-ms-selection {
-        background-color: black;
-    }
-    #shortened>input::-webkit-selection {
-        background-color: black;
-    }
-    #shortened>a {
-      font-size:1.5em;
-    }
-    #shortened>a:link {
-      color: darkgray;
-    }
-    #shortened>a:visited {
-      color: darkgray;
-    }
-    #shortened>a:hover {
-      color: darkgray;
-    }
-  </style>
 </head>
 
 <body>
+
 <div id="menu">
   <a id="shorten" title="click to get a short URL for current playlist">short url</a>
 </div>
-<div><div id="box">
-</div></div>
+
+<div><div id="box"></div></div>
 
 <script>
   $LAB
