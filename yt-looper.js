@@ -270,7 +270,11 @@ function Player() {
       });
       Player.autosize = function() {
         var size = getPlayerSize();
-        player.setSize(size.width, size.height);
+        $('#player').animate({width: size.width, height: size.height}, 400)
+          .done(function() {
+            // just to be sure player noticed resize..
+            player.setSize(size.width, size.height);
+          });
       };
     }());
   };
