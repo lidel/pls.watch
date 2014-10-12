@@ -388,13 +388,21 @@ function renderPage() {
 
   });
 
-  // init menu items
+  // menu items
+
   $('#shorten').click(showShortUrl);
 
   var $responsive = $('#responsive');
   $responsive.click(responsivePlayerSetup);
+  // display current autosize setting in menu
   if ($.cookie('responsive')) { $responsive.addClass('ticker');    }
   else                        { $responsive.removeClass('ticker'); }
+  // reload player on window resize if autosize is enabled
+  $(window).on('resize', _.debounce(function() {
+    if ($.cookie('responsive')) {
+      $(window).trigger('hashchange');
+    }
+  }, 300));
 
 }(jQuery));
 
