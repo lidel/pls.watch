@@ -17,8 +17,19 @@ function showShortUrl() {
     dataType: 'json',
     success: function(data) {
       console.log(data);
+
       $('#shorten').hide();
-      $('#menu').prepend('<a id="shortened" href="' + data.id + '">'+ data.id +'</a>');
+
+      var input = '<input type="text" value="'+ data.id +'" readonly>';
+      var     a = '<a href="'+ data.id +'" target="_blank">&#10548;</a>';
+      var   div = '<div id="shortened">'+ input + a +'</div>';
+
+      $('#menu').prepend(div);
+
+      $('#shortened>input').select();
+      $('#shortened>input').click(function() {
+        $('#shortened>input').select();
+      });
     }
   });
 }
