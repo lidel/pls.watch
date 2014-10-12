@@ -259,7 +259,7 @@ function onYouTubeIframeAPIReady() {
 
   };
 
-  $(document).keypress(function(e) {
+  $(document).unbind('keypress').keypress(function(e) {
     var k = String.fromCharCode(e.which);
     if (k=='s') {
       var $shorten = $('#shorten');
