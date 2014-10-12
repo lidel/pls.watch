@@ -261,13 +261,20 @@ function onYouTubeIframeAPIReady() {
 
   $(document).keypress(function(e) {
     var k = String.fromCharCode(e.which);
-    var current = 
-      k=='h' ? playlist.go('prevV')
-             : k=='j' ? playlist.go('prevI')
-                      : k=='k' ? playlist.go('nextI')
-                               : k=='l' ? playlist.go('nextV')
-                                        : null;
-    if (current) newPlayer(current);
+    if (k=='s') {
+      var $shorten = $('#shorten');
+      if ($shorten.is(':visible')) {
+        $shorten.click();
+      }
+    } else {
+      var current = 
+        k=='h' ? playlist.go('prevV')
+               : k=='j' ? playlist.go('prevI')
+                        : k=='k' ? playlist.go('nextI')
+                                 : k=='l' ? playlist.go('nextV')
+                                          : null;
+      if (current) newPlayer(current);
+    }
   });
 
   playlist(window.location.href);
