@@ -25,10 +25,11 @@ To chain intervals from multiple videos just append them at the end of URL:
 #v=VIDEO_ID:t=start1;end1+start2;end2:v=VIDEO2_ID:t=start1;end1+start2;end2`
 ```
 
-YouTube-compatible syntax is also supported: `?v=VIDEO_ID[&t=start[;end]]`
+YouTube-compatible syntax is also supported: `?v=VIDEO_ID[[&|#]t=start[;end]]`
 
 
 ## Keyboard Commands
 
 - <kbd>h</kbd> , <kbd>l</kbd>  – jump to previous/next video (in playlists with multiple videos)
 - <kbd>j</kbd> , <kbd>k</kbd>  – jump to previous/next interval of current video
+- <kbd>s</kbd> – display short URL for current playlist
