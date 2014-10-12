@@ -70,12 +70,12 @@ body>div {
 
 #shortened>input {
   color: #fff !important;
+  background-color: #111;
   text-align: center;
-  border-radius: 1em;
   text-decoration: none;
   border: 1px #333 solid;
-  padding: .25em 0!important;
-  background-color: #111;
+  border-radius: 1em;
+  padding: .25em 0 !important;
 }
 #shortened>input::selection {
   background-color: #111;
@@ -92,11 +92,10 @@ body>div {
 #shortened>input::-webkit-selection {
   background-color: #111;
 }
-#shortened>a {
-  font-size:1.5em;
-}
+#shortened>a,
 #shortened>a:link,
 #shortened>a:visited {
+  font-size:1.5em;
   color: #555;
 }
 #shortened>a:hover {

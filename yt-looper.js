@@ -27,7 +27,7 @@ function showShortUrl() {
       $('#menu').prepend(div);
 
       var $input = $('#shortened>input');
-      $input.width($input.val().length/2 + 'em');
+      $input.width(Math.ceil($input.val().length/1.9) + 'em');
       $input.select();
       $input.click(function() {
         $input.select();
