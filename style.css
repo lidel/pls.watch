@@ -101,3 +101,7 @@ body>div {
 #shortened>a:hover {
   color: #888;
 }
+
+.ticker:before {
+    content: '\2714';
+}

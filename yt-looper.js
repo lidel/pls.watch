@@ -3,10 +3,37 @@ var faviconPlay = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAA
 var faviconPause = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wgOlf8IDpX///////////8KEbv/CA6V////////////CQ6e/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JD6T/CxHE////////////ChG7/wgOlf///////////woRu/8JD6T/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6r/CQ+q/wsRxP///////////woRu/8IDpX///////////8KEbv/CQ+q/wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv/woQr/8LEcT///////////8KEbv/CxHE////////////ChG7/woQr/8KEK//ChCv/woQr/8KELX8ChC1/woQtf8KELX/CxHE////////////ChG7/wsRxP///////////woRu/8KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChG7/wsRxP///////////woRu/8LEcT///////////8KEbv/ChG7/woRu/8KEbv/ChG76goRwMwKEcD/ChHA/woRwP8LEcT///////////8KEbv/CxHE////////////ChHA/woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAD//wAA//8AAA==';
 var faviconWait = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgNk/8IDZT/CA6V/ggOlfwIDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CA6X/wgOl/8IDpX/CA6V/wgOlf8IDpX/CA6V/wkOmP8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wkOm/8JDpv/DBGY/wsRmP8JDpn/CA2Z/wkOmf8JDpv/CQ6d/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JDqH/CQ6f/wsQnf8JDpz/CQ6d/wkOn/8JDp7/CA6e/wkOoP8JD6L/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6n///////////8JDqH+CQ6i/v//////////CQ+j/gkPov///////////wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv////////////ChCn/woQpv///////////wkPqf8JD6r///////////8KEK//ChCv/woQr/8KELX8ChC1/woQtP8KELL/ChCw/wkPrf8JD6z/CQ+t/goQrv4KEK/+ChCv/goQsf4KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChC4/woQtf8KELP/ChCx/woQsv8KELT+ChC1/woQtf4KELf+ChG7/woRu/8KEbv/ChG76goRwNgKEcD4ChHA+woRvv0KELz+CxG5/goQuP4MErf+ChG6/goRu/4KEbv+ChG//woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT+ChHB/wsSvv8MEr//ChG+/woRwP8LEcT/ChHD/woRw/8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/woRxf8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAD//wAA//8AAA==';
 
+var YT_PLAYER_SIZES = { // size reference: http://goo.gl/45VxXT
+                        small:   {width:  320,  height:  240},
+                        medium:  {width:  640,  height:  360},
+                        large:   {width:  853,  height:  480},
+                        hd720:   {width: 1280,  height:  720},
+                        hd1080:  {width: 1920,  height: 1080}
+                      };
+
 // document.head (http://jsperf.com/document-head) failsafe init for old browsers
 document.head = typeof document.head != 'object'
               ? document.getElementsByTagName('head')[0]
               : document.head;
+
+function responsivePlayerSetup() {
+  var cookieKey     = 'responsive';
+  var cookie        = $.cookie(cookieKey);
+  var cookieOptions = { expires: 365, path: '/', secure: false };
+  var $responsive   = $('#responsive');
+
+  if (cookie === undefined) {
+    $.cookie(cookieKey, true, cookieOptions);
+    $responsive.addClass('ticker');
+  } else {
+    $.removeCookie(cookieKey, cookieOptions);
+    $responsive.removeClass('ticker');
+  }
+
+  // force player reload with new setting
+  $(window).trigger('hashchange');
+
+}
 
 function showShortUrl() {
   $.ajax({
@@ -22,9 +49,9 @@ function showShortUrl() {
 
       var input = '<input type="text" value="'+ data.id +'" readonly>';
       var     a = '<a href="'+ data.id +'" target="_blank" title="click to test short url in a new tab">&#10548;</a>';
-      var   div = '<div id="shortened">ctrl+c to copy '+ input + a +'</div>';
+      var  span = '<span id="shortened">ctrl+c to copy '+ input + a +'</span>';
 
-      $('#menu').prepend(div);
+      $('#menu').append(span);
 
       var $input = $('#shortened>input');
       $input.width(Math.ceil($input.val().length/1.9) + 'em');
@@ -48,6 +75,34 @@ function changeFavicon(src) {
     icon.href = src;
     document.head.appendChild(icon);
   }
+}
+
+function getPlayerSize() {
+  var $box      = $('#box');
+  var cookie    = $.cookie('responsive');
+  var docWidth  = $(document).width()  * 0.8; // UX hack
+  var docHeight = $(document).height() * 0.8;
+  var playerSize  = YT_PLAYER_SIZES.medium;       // default when responsive scaling is disabled
+
+  if (cookie !== undefined) {
+    playerSize  = YT_PLAYER_SIZES.small;
+
+    $.when($.each(YT_PLAYER_SIZES, function(k, v) {
+      if (v.width > playerSize.width && v.width < docWidth && v.height < docHeight) {
+        playerSize = YT_PLAYER_SIZES[k];
+      }
+    })).done(function() {
+      console.log('Calculated player size: ' + JSON.stringify(playerSize));
+
+      // fix undesired padding in some browsers
+      $box.css('max-width',  playerSize.width);
+      $box.css('max-height', playerSize.height);
+
+    });
+
+  }
+
+  return playerSize;
 }
 
 
@@ -205,9 +260,10 @@ function onYouTubeIframeAPIReady() {
     }
 
     $('#box').html('<div id="player"></div>');
-
+    var size = getPlayerSize();
     new YT.Player('player',{
-      width: '640',
+      height: size.height,
+      width:  size.width,
       videoId: playback.videoId,
       playerVars: {
         start: playback.start,
@@ -332,7 +388,13 @@ function renderPage() {
 
   });
 
+  // init menu items
   $('#shorten').click(showShortUrl);
+
+  var $responsive = $('#responsive');
+  $responsive.click(responsivePlayerSetup);
+  if ($.cookie('responsive')) { $responsive.addClass('ticker');    }
+  else                        { $responsive.removeClass('ticker'); }
 
 }(jQuery));
 

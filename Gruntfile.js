@@ -1,7 +1,10 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     qunit: {
-      files: ['test/index.html']
+      files: ['test/index.html'],
+      options: {
+        timeout: 30000,
+      }
     },
     jshint: {
       all: ['Gruntfile.js', 'yt-looper.js', 'test/**/*.js'],

@@ -200,4 +200,5 @@ QUnit.test('scheme: 3 2 1 : +I +I +I +I -V -I +V +V +V +V -I +I -V -V -V -V -V -
     assert.deepEqual(playlist.go(step[0]), step[1], 'incorrect playlist step #' + i);
   });
 });
+
 // vim:ts=2:sw=2:et:
