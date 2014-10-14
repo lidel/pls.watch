@@ -163,7 +163,7 @@ function showShuffleUi(multivideo) {
   var $shuffleUi = $('#shuffle-ui').hide();
   if (multivideo) {
     var shuffleFlag = urlFlag('shuffle');
-    var toggleUrl   = document.location.href.replace(/[:]?shuffle[^:]*/g, '');
+    var toggleUrl   = document.location.href.replace(/shuffle[^:]*:|:shuffle[^:]*$/g, '');
     var $shuffle    = $('#shuffle', $shuffleUi);
 
     if (shuffleFlag) {
