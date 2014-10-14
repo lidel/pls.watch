@@ -159,6 +159,29 @@ function normalizeUrl() {
 }
 
 
+function showShuffleUi(multivideo) {
+  var $shuffleUi = $('#shuffle-ui').hide();
+  if (multivideo) {
+    var shuffleFlag = urlFlag('shuffle');
+    var toggleUrl   = document.location.href.replace(/[:]?shuffle[^:]*/g, '');
+    var $shuffle    = $('#shuffle', $shuffleUi);
+
+    if (shuffleFlag) {
+      $shuffle.addClass('ticker');
+    } else {
+      $shuffle.removeClass('ticker');
+      toggleUrl = toggleUrl + ':shuffle';
+    }
+
+    $shuffle.unbind('click').click(function() {
+      document.location.replace(toggleUrl);
+    });
+
+    $shuffleUi.show();
+  }
+}
+
+
 function jackiechanMyIntervals(href, shuffle) { // such name
   var extendIntervals = function(videos) {
     var r = // stuped halper
@@ -313,6 +336,7 @@ function Player() {
   Playlist(window.location.href);
   Playlist.log();
   Player.newPlayer(Playlist.current());
+  showShuffleUi(Playlist.multivideo);
 }
 
 
@@ -386,23 +410,30 @@ function responsivePlayerSetup() {
     } else {
       renderPage();
     }
+
   });
 
-  // menu items
+
+  // menu items will now commence!
+
+  // SHORTEN
   $('#shorten').click(_.debounce(showShortUrl, 1000, true));
 
+  // AUTOSIZE
   var $responsive = $('#responsive');
   $responsive.click(responsivePlayerSetup);
   // display current autosize setting in menu
   if ($.cookie('responsive')) { $responsive.addClass('ticker');    }
   else                        { $responsive.removeClass('ticker'); }
-  // reload player on window resize if autosize is enabled
+  // update player on window resize if autosize is enabled
   $(window).on('resize', _.debounce(function() {
     if ($.cookie('responsive')) {
       Player.autosize();
     }
   }, 300));
 
+
+  // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
     var k = String.fromCharCode(e.which);
     if (k=='s') {
@@ -420,6 +451,7 @@ function responsivePlayerSetup() {
       if (current) Player.newPlayer(current);
     }
   });
+
 }(jQuery));
 
 // vim:ts=2:sw=2:et:
