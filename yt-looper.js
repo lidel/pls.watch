@@ -389,7 +389,7 @@ function responsivePlayerSetup() {
   });
 
   // menu items
-  $('#shorten').click(showShortUrl);
+  $('#shorten').click(_.debounce(showShortUrl, 1000, true));
 
   var $responsive = $('#responsive');
   $responsive.click(responsivePlayerSetup);
