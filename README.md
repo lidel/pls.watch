@@ -33,3 +33,16 @@ YouTube-compatible syntax is also supported: `?v=VIDEO_ID[[&|#]t=start[;end]]`
 - <kbd>h</kbd> , <kbd>l</kbd>  – jump to previous/next video (in playlists with multiple videos)
 - <kbd>j</kbd> , <kbd>k</kbd>  – jump to previous/next interval of current video
 - <kbd>s</kbd> – display short URL for current playlist
+
+## Companion userscript
+
+Script adds a button on YouTube pages to open current video in yt.aergia.eu looper:
+
+> ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
+
+Click to install: https://github.com/lidel/yt-looper/raw/master/yt-looper.user.js
+
+Handy addons:
+
+- Firefox: [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
+- Chrome/Opera: [Tampermonkey](http://tampermonkey.net)
