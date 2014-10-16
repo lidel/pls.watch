@@ -7,7 +7,7 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      all: ['Gruntfile.js', 'yt-looper.js', 'test/**/*.js'],
+      all: ['*.js', 'test/**/*.js'],
       options: {
         'jquery': true,
         'quotmark': 'single',
