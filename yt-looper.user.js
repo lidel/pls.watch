@@ -7,7 +7,7 @@
 // @include     http://youtube.com/watch*
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
-// @version     1.2
+// @version     1.2.1
 // @updateURL   https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @downloadURL https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
@@ -42,7 +42,7 @@ var ytLooperLoaded = false;
       var start = humanize(ytplayer.getCurrentTime());
       var end = humanize(ytplayer.getDuration());
 
-      var $intervals = $('<span id="yt-looper-interval"></span>');
+      var $intervals = $('<span id="yt-looper-interval"></span>').hide();
       var input = '<input class="yt-uix-form-input-text title-input" style="width:50px!important;margin-right:0.25em;" />';
       var $start = $(input).attr('id','yt-looper-start').val(start).attr('title','Start of loop');
       var $end   = $(input).attr('id','yt-looper-end').val(end).attr('title','End of loop');
