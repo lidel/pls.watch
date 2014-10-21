@@ -2,15 +2,16 @@
 // @name        yt-looper
 // @description Adds a button on YouTube to open current video in yt.aergia.eu looper
 // @namespace   http://yt.aergia.eu
-// @icon        http://youtube.com/favicon.ico
+// @icon        http://i.imgur.com/EGgL1nx.png
 // @include     http://www.youtube.com/watch*
 // @include     http://youtube.com/watch*
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
-// @version     1.1
+// @version     1.2
 // @updateURL   https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @downloadURL https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
+// @grant       none
 // ==/UserScript==
 
 var ytLooperLoaded = false;
@@ -52,8 +53,11 @@ var ytLooperLoaded = false;
       ytLooperLoaded = true;
 
       $button.click(function () {
-        window.open(window.location.href.replace(/.*youtube.com\/watch/, 'https://yt.aergia.eu/')
-                    + ':t=' + $('#yt-looper-start').val() + ';' + $('#yt-looper-end').val());
+        var url = window.location.href;
+        url = url.replace(/.*youtube.com\/watch/, 'https://yt.aergia.eu/');
+        url = url.replace(/&?feature=[^&#]*/g, '');
+        url = url.replace(/[&#]?t=[^&#]*/g, '');
+        window.open(url + ':t=' + $('#yt-looper-start').val() + ';' + $('#yt-looper-end').val());
       });
 
       window.ytPlayerStateChanged = function (state) {
@@ -63,6 +67,7 @@ var ytLooperLoaded = false;
           $button.attr('title','Click to loop selected fragment');
         } else {
           $('#yt-looper-interval').hide();
+          $('#yt-looper-start').val(0);
           $button.attr('title','Click to loop entire video (or pause to select fragment)');
         }
       };
