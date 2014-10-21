@@ -7,7 +7,7 @@
 // @include     http://youtube.com/watch*
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
-// @version     1.2.1
+// @version     1.2.2
 // @updateURL   https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @downloadURL https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
@@ -28,7 +28,7 @@ var ytLooperLoaded = false;
     minutes = minutes > 0 ? (minutes + 'm') : '';
     seconds = seconds > 0 ? (seconds + 's') : '';
 
-    return hours+minutes+seconds;
+    return sec === 0 ? '0s' : hours+minutes+seconds;
   };
 
   window.onYouTubePlayerReady = function() {
@@ -39,7 +39,7 @@ var ytLooperLoaded = false;
 
       var doc = window.document;
       var ytplayer = doc.getElementById('movie_player') || doc.getElementById('movie_player-flash');
-      var start = humanize(ytplayer.getCurrentTime());
+      var start = humanize(0);
       var end = humanize(ytplayer.getDuration());
 
       var $intervals = $('<span id="yt-looper-interval"></span>').hide();
