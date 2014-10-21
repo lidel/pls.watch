@@ -7,7 +7,7 @@
 // @include     http://youtube.com/watch*
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
-// @version     1.2.2
+// @version     1.2.3
 // @updateURL   https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @downloadURL https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
@@ -67,7 +67,7 @@ var ytLooperLoaded = false;
           $button.attr('title','Click to loop selected fragment');
         } else {
           $('#yt-looper-interval').hide();
-          $('#yt-looper-start').val(0);
+          $('#yt-looper-start').val(humanize(0));
           $button.attr('title','Click to loop entire video (or pause to select fragment)');
         }
       };
