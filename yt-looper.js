@@ -448,7 +448,7 @@ function renderPage() {
     $('#box').css('background-image', 'url(//img.youtube.com/vi/' + video.videoId + '/hqdefault.jpg)');
     initYT();
   } else if (video.urlKey == 'i') {
-    // nothing to do here
+    initYT();
   } else {
     changeFavicon();
     $('#box').html(
