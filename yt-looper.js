@@ -3,6 +3,10 @@ var faviconPlay = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAA
 var faviconPause = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wgOlf8IDpX///////////8KEbv/CA6V////////////CQ6e/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JD6T/CxHE////////////ChG7/wgOlf///////////woRu/8JD6T/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6r/CQ+q/wsRxP///////////woRu/8IDpX///////////8KEbv/CQ+q/wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv/woQr/8LEcT///////////8KEbv/CxHE////////////ChG7/woQr/8KEK//ChCv/woQr/8KELX8ChC1/woQtf8KELX/CxHE////////////ChG7/wsRxP///////////woRu/8KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChG7/wsRxP///////////woRu/8LEcT///////////8KEbv/ChG7/woRu/8KEbv/ChG76goRwMwKEcD/ChHA/woRwP8LEcT///////////8KEbv/CxHE////////////ChHA/woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAD//wAA//8AAA==';
 var faviconWait = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgNk/8IDZT/CA6V/ggOlfwIDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CA6X/wgOl/8IDpX/CA6V/wgOlf8IDpX/CA6V/wkOmP8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wkOm/8JDpv/DBGY/wsRmP8JDpn/CA2Z/wkOmf8JDpv/CQ6d/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JDqH/CQ6f/wsQnf8JDpz/CQ6d/wkOn/8JDp7/CA6e/wkOoP8JD6L/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6n///////////8JDqH+CQ6i/v//////////CQ+j/gkPov///////////wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv////////////ChCn/woQpv///////////wkPqf8JD6r///////////8KEK//ChCv/woQr/8KELX8ChC1/woQtP8KELL/ChCw/wkPrf8JD6z/CQ+t/goQrv4KEK/+ChCv/goQsf4KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChC4/woQtf8KELP/ChCx/woQsv8KELT+ChC1/woQtf4KELf+ChG7/woRu/8KEbv/ChG76goRwNgKEcD4ChHA+woRvv0KELz+CxG5/goQuP4MErf+ChG6/goRu/4KEbv+ChG//woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT+ChHB/wsSvv8MEr//ChG+/woRwP8LEcT/ChHD/woRw/8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/woRxf8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAD//wAA//8AAA==';
 
+// PROTOTYPES (fufufuf jshitn!)
+var Player, YouTubePlayer, ImgurPlayer;
+
+
 var YT_PLAYER_SIZES = { // size reference: http://goo.gl/45VxXT
                         small:   {width:  320,  height:  240},
                         medium:  {width:  640,  height:  360},
@@ -10,6 +14,12 @@ var YT_PLAYER_SIZES = { // size reference: http://goo.gl/45VxXT
                         hd720:   {width: 1280,  height:  720},
                         hd1080:  {width: 1920,  height: 1080}
                       };
+
+var PLAYER_TYPES = { v: {urlKey: 'v', name: 'youtube', player: YouTubePlayer},
+                     i: {urlKey: 'i', name: 'imgur'  , player: ImgurPlayer  } };
+
+var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
+
 
 // document.head (http://jsperf.com/document-head) failsafe init for old browsers
 document.head = typeof document.head != 'object'
@@ -93,9 +103,18 @@ function getParam(params, key) {
   return rslt && _.unescape(rslt[1]) || '';
 }
 
+
+function getVideo(params) {
+  var rslt = new RegExp('('+ PLAYER_TYPES_REGX +')=([^:]*)', 'i').exec(params);
+  return rslt ? { urlKey: rslt[1], videoId: _.unescape(rslt[2]) }
+              : { urlKey:    null, videoId:                  '' };
+}
+
+
 function urlParam(key) {
   return getParam(window.location.href, key);
 }
+
 
 function urlFlag(key) {
   var ptrn = '(?:[#:]' + key + '[:])|(?:[#:]' + key + '$)';
@@ -105,7 +124,8 @@ function urlFlag(key) {
 
 
 function parseVideos(url) {
-  var regx = /v=[^:]*(?:[:]t=[^:]*)?/g, rslt;
+  var ptrn = PLAYER_TYPES_REGX + '=[^:]*(?:[:]t=[^:]*)?';
+  var regx = new RegExp(ptrn, 'g'), rslt;
   var vids = [];
   while ((rslt = regx.exec(url))) vids.push(rslt[0]);
   return vids;
@@ -189,11 +209,10 @@ function jackiechanMyIntervals(href, shuffle) { // such name
         var ys = parseIntervals(video);
         return ys.length
           ? _(ys).map(function(y) {
-              return _.extend({ videoId: getParam(video, 'v') }, y);
+              return _.extend(getVideo(video), y);
             })
-          : [{ videoId: getParam(video, 'v'),
-                 start: 0,
-                   end: null }];
+          : [ _.extend(getVideo(video), { start: 0,
+                                            end: null }) ];
       });
     return r;
   };
@@ -256,54 +275,45 @@ function Playlist(href) {
 }
 
 
-function Player() {
-  console.log('Player()');
+function YouTubePlayer() {
+  console.log('YouTubePlayer()');
 
-  Player.newPlayer = function(playback) {
-    console.log('Player.newPlayer(): ' + JSON.stringify(playback));
+  YouTubePlayer.newPlayer = function(playback) {
+    var size = getPlayerSize();
 
-    var $player = $('#player');
-    if ($player.length) {
-      $player.remove();
-    }
+    var player = new YT.Player('player',{
+      height: size.height,
+      width:  size.width,
+      videoId: playback.videoId,
+      playerVars: {
+        start: playback.start,
+        end: playback.end,
+        autohide: '1',
+        html5: '1',
+        iv_load_policy: '3',
+        modestbranding: '1',
+        showinfo: '0',
+        rel: '0',
+        theme: 'dark',
+      },
+      events: {
+        onReady: onYouTubePlayerReady,
+        onStateChange: onYouTubePlayerStateChange
+      }
+    });
 
-    $('#box').html('<div id="player"></div>');
-
-    (function(){
+    Player.autosize = function() {
       var size = getPlayerSize();
-      var player = new YT.Player('player',{
-        height: size.height,
-        width:  size.width,
-        videoId: playback.videoId,
-        playerVars: {
-          start: playback.start,
-          end: playback.end,
-          autohide: '1',
-          html5: '1',
-          iv_load_policy: '3',
-          modestbranding: '1',
-          showinfo: '0',
-          rel: '0',
-          theme: 'dark',
-        },
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange
-        }
-      });
-      Player.autosize = function() {
-        var size = getPlayerSize();
-        $('#player').animate({width: size.width, height: size.height}, 400)
-          .done(function() {
-            // just to be sure player noticed resize..
-            player.setSize(size.width, size.height);
-          });
-      };
-    }());
+      $('#player').animate(_.pick(size, 'height', 'width'), 400)
+        .done(function() {
+          // just to be sure player noticed resize..
+          player.setSize(size.width, size.height);
+        });
+    };
   };
 
-  var onPlayerReady = function(event) {
-    console.log('onPlayerReady()');
+  var onYouTubePlayerReady = function(event) {
+    console.log('onYouTubePlayerReady()');
 
     $(document).prop('title', event.target.getVideoData().title);
     $('#box').css('background-image', 'none');
@@ -311,8 +321,8 @@ function Player() {
     event.target.playVideo();
   };
 
-  var onPlayerStateChange = function(event) {
-    console.log('onPlayerStateChange(): ' + event.data);
+  var onYouTubePlayerStateChange = function(event) {
+    console.log('onYouTubePlayerStateChange(): ' + event.data);
 
     if (event.data == YT.PlayerState.ENDED) {
       changeFavicon(faviconWait);
@@ -332,9 +342,73 @@ function Player() {
       changeFavicon(faviconWait);
     }
   };
+}
+
+
+function ImgurPlayer() {
+  console.log('ImgurPlayer()');
+  
+  var imgurHome = 'http://i.imgur.com';
+  var timerId;
+
+  ImgurPlayer.newPlayer = function(playback) {
+    var imgUrl = imgurHome +'/'+ playback.videoId;
+    var size   = getPlayerSize();
+
+    var $player = $('#player');
+    $player.height(size.height);
+    $player.width(size.width);
+    $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
+    $player.css('background-size', 'contain'); // compatibility warning! (FIXME?)
+
+    Player.autosize = function() {
+      var size = getPlayerSize();
+      $player.animate(_.pick(size, 'height', 'width'), 400);
+    };
+
+    if (Playlist.multivideo) {
+      timerId = null;
+      $player.on('destroyed', onImgurPlayerRemove);
+      timerId = _.delay(onImgurPlayerStateChange, 1000*(playback.start || 3)); // milis
+    }
+  };
+
+  var onImgurPlayerStateChange = function() {
+    Player.newPlayer(Playlist.cycle());
+  };
+
+  var onImgurPlayerRemove = function() {
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+  };
+}
+
+
+function Player() {
+  console.log('Player()');
+
+  Player.newPlayer = function(playback) {
+    console.log('Player.newPlayer(): ' + JSON.stringify(playback));
+
+    var $player = $('#player');
+    if ($player.length) {
+      $player.remove();
+    }
+
+    $('#box').html('<div id="player"></div>');
+
+    // prevalidated! no need to check ^e_
+    PLAYER_TYPES[playback.urlKey].player.newPlayer(playback);
+  };
 
   Playlist(window.location.href);
   Playlist.log();
+
+  YouTubePlayer();
+  ImgurPlayer();
+
   Player.newPlayer(Playlist.current());
   showShuffleUi(Playlist.multivideo);
 }
@@ -355,11 +429,13 @@ function initYT() {
 
 
 function renderPage() {
-  var v = urlParam('v');
-  if (v) {
+  var video = getVideo(window.location.href);
+  if (video.urlKey == 'v') {
     // splash screen
-    $('#box').css('background-image', 'url(//img.youtube.com/vi/' + v + '/hqdefault.jpg)');
+    $('#box').css('background-image', 'url(//img.youtube.com/vi/' + video.videoId + '/hqdefault.jpg)');
     initYT();
+  } else if (video.urlKey == 'i') {
+    // nothing to do here
   } else {
     changeFavicon();
     $('#box').html(
@@ -451,6 +527,10 @@ function responsivePlayerSetup() {
       if (current) Player.newPlayer(current);
     }
   });
+
+
+  // enable dom element removal notification
+  $.event.special.destroyed = { remove: function(o){ if (o.handler) {o.handler();} } };
 
 }(jQuery));
 
