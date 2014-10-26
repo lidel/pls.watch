@@ -1,3 +1,4 @@
+
 QUnit.test('qunit self-test', function (assert) {
   assert.ok(1 == '1', 'Passed!');
 });
@@ -7,9 +8,9 @@ QUnit.module('Basic URL parsing');
 QUnit.test('one video, one interval', function (assert) {
   var url = 'http://yt.aergia.eu/#v=T0rs3R4E1Sk:t=23;30';
   var urls = [url, url.replace(':','&')];
-  var expected_intervals = [{'start':23,'end':30}];
+  var expected_intervals = [{start:23,end:30}];
 
-  _(urls).each(function (test_url, i) {
+  _(urls).chain().map(normalizeUrl).each(function (test_url, i) {
     var videos = parseVideos(test_url);
     assert.ok(videos.length == 1, 'incorrect number of detected videos for test_url #' + i);
     test_url = videos[0];
@@ -24,9 +25,9 @@ QUnit.test('one video, one interval', function (assert) {
 QUnit.test('one video, multiple intervals', function (assert) {
   var url = 'http://yt.aergia.eu/#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s';
   var urls = [url, url.replace(':','&')];
-  var expected_intervals = [{'start':54,'end':80},{'start':93,'end':107},{'start':210,'end':226}];
+  var expected_intervals = [{start:54,end:80}, {start:93,end:107}, {start:210,end:226}];
 
-  _(urls).each(function (test_url, i) {
+  _(urls).chain().map(normalizeUrl).each(function (test_url, i) {
     var videos = parseVideos(test_url);
     assert.ok(videos.length == 1, 'incorrect number of detected videos');
     test_url = videos[0];
@@ -44,19 +45,19 @@ QUnit.test('two videos, mixed intervals', function (assert) {
   var urls = [url, url.replace(':','&')];
   var expected_intervals;
 
-  _(urls).each(function (test_url, i) {
+  _(urls).chain().map(normalizeUrl).each(function (test_url, i) {
     var videos = parseVideos(test_url);
     assert.ok(videos.length == 2, 'incorrect number of detected videos');
 
     test_url = videos[0];
-    expected_intervals = [{'start':54,'end':80},{'start':93,'end':107},{'start':210,'end':226}];
+    expected_intervals = [{start:54,end:80}, {start:93,end:107}, {start:210,end:226}];
     assert.deepEqual(getParam(test_url, 'v'), 'ZNno63ZO2Lw', 'incorrect video id for test_url #' + i);
     assert.deepEqual(getParam(test_url, 't'), '54;1m20s+1m33s;1m47s+3m30s;3m46s', 'incorrect interval data for test_url #' + i);
     assert.deepEqual(parseIntervals(test_url, 't'), expected_intervals, 'incorrect parseIntervals result for test_url #' + i);
 
 
     test_url = videos[1];
-    expected_intervals = [{'start':2,'end':16}];
+    expected_intervals = [{start:2,end:16}];
     assert.deepEqual(getParam(test_url, 'v'), 'TM1Jy3qPSCQ', 'incorrect video id for test_url #' + i);
     assert.deepEqual(getParam(test_url, 't'), '2;16s', 'incorrect interval data for test_url #' + i);
     assert.deepEqual(parseIntervals(test_url, 't'), expected_intervals, 'incorrect parseIntervals result for test_url #' + i);
@@ -82,7 +83,7 @@ QUnit.test('schemes: 0 ; 0 0 ; 0 0 0', function (assert) {
      {urlKey:'v', videoId:'abcdefghij2', start:0,end:null, prevI:2,nextI:2, prevV:1,nextV:0}],
   ];
 
-  _(_.zip(hrefs,expected_intervals)).each(function (tuple, i) {
+  _(hrefs).chain().map(normalizeUrl).zip(expected_intervals).each(function (tuple, i) {
     var generated = jackiechanMyIntervals(tuple[0]);
     assert.deepEqual(generated.intervals, tuple[1], 'incorrect intervals for input #' + i);
   });
@@ -104,7 +105,7 @@ QUnit.test('schemes: 1 ; 1 0 ; 1 0 0', function (assert) {
      {urlKey:'v', videoId:'abcdefghij2', start:0,end:null, prevI:2,nextI:2, prevV:1,nextV:0}],
   ];
 
-  _(_.zip(hrefs,expected_intervals)).each(function (tuple, i) {
+  _(hrefs).chain().map(normalizeUrl).zip(expected_intervals).each(function (tuple, i) {
     var generated = jackiechanMyIntervals(tuple[0]);
     assert.deepEqual(generated.intervals, tuple[1], 'incorrect intervals for input #' + i);
   });
@@ -129,7 +130,7 @@ QUnit.test('schemes: 2 ; 2 0 ; 2 0 0', function (assert) {
      {urlKey:'v', videoId:'abcdefghij2', start:0,end:null, prevI:3,nextI:3, prevV:2,nextV:0}],
   ];
 
-  _(_.zip(hrefs,expected_intervals)).each(function (tuple, i) {
+  _(hrefs).chain().map(normalizeUrl).zip(expected_intervals).each(function (tuple, i) {
     var generated = jackiechanMyIntervals(tuple[0]);
     assert.deepEqual(generated.intervals, tuple[1], 'incorrect intervals for input #' + i);
   });
@@ -159,7 +160,7 @@ QUnit.test('schemes: 3 ; 3 2 ; 3 2 1', function (assert) {
      {urlKey:'v', videoId:'abcdefghij2', start:11,end:12, prevI:5,nextI:5, prevV:3,nextV:0}],
   ];
 
-  _(_.zip(hrefs,expected_intervals)).each(function (tuple, i) {
+  _(hrefs).chain().map(normalizeUrl).zip(expected_intervals).each(function (tuple, i) {
     var generated = jackiechanMyIntervals(tuple[0]);
     assert.deepEqual(generated.intervals, tuple[1], 'incorrect intervals for input #' + i);
   });
@@ -170,7 +171,7 @@ QUnit.module('Basic playlist directions');
 QUnit.test('scheme: 3 2 1 : +I +I +I +I -V -I +V +V +V +V -I +I -V -V -V -V -V -I -I -I +V', function (assert) {
   var href = '#v=abcdefghij0:t=1s;2s+3s;4s+5s;6s:v=abcdefghij1:t=7s;8s+9s;10s:v=abcdefghij2:t=11s;12s';
 
-  Playlist(href);
+  Playlist(normalizeUrl(href));
 
   var steps = [
     ['nextI', {urlKey:'v', videoId:'abcdefghij0', start: 3,end: 4, prevI:0,nextI:2, prevV:5,nextV:3} ], // 0

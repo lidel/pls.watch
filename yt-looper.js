@@ -1,21 +1,19 @@
 
 // HALPERS
-var logLady = function(a, b) { // KEKEKE
-  if (_.isString(a)) {
-    console.log(b ? a +': '+ JSON.stringify(b) : a);
-  } else {
-    console.log(JSON.stringify(a));
-  }
-};
+function logLady(a, b) { // KEKEKE
+  console.log(!_.isString(a) ? JSON.stringify(a)
+                             : b ? a +': '+ JSON.stringify(b)
+                                 : a);
+}
 
 
 // ICONS
-var faviconPlay = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CQ6Z/wkOmf8JDpb/BQhc/wgMgf8JDpn/CQ6Z/wkOmf8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wkOnv8JDp7/Exed/8jIy/9RU4j/Bwp0/wkOm/8JDp7/CQ6e/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JD6T/CQ+k/xUbo//V1dX/1dXV/4yNrP8QFG//CA6Y/wkPpP8JD6T/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6r/CQ+q/wkPqv8WG6n/3d3d/93d3f/d3d3/v7/M/y0wjv8JD6r/CQ+q/wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv/woQr/8KEK//Fx2v/+fn5//n5+f/5+fn/+jo6P+YmtP/ChCv/woQr/8KEK//ChCv/woQr/8KELX8ChC1/woQtf8KELX/ChC1/xgdtf/x8fH/8fHx//Ly8v+bndv/Ehi3/woQtf8KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChG7/woRu/8YH77/+fn5/+/v9/9fY9H/ChG7/woRu/8KEbv/ChG7/woRu/8KEbv/ChG76goRwMwKEcD/ChHA/woRwP8KEcD/EBfB/6Ol5/8tM8n/ChHA/woRwP8KEcD/ChHA/woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAD//wAA//8AAA==';
+var faviconPlay  = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CQ6Z/wkOmf8JDpb/BQhc/wgMgf8JDpn/CQ6Z/wkOmf8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wkOnv8JDp7/Exed/8jIy/9RU4j/Bwp0/wkOm/8JDp7/CQ6e/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JD6T/CQ+k/xUbo//V1dX/1dXV/4yNrP8QFG//CA6Y/wkPpP8JD6T/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6r/CQ+q/wkPqv8WG6n/3d3d/93d3f/d3d3/v7/M/y0wjv8JD6r/CQ+q/wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv/woQr/8KEK//Fx2v/+fn5//n5+f/5+fn/+jo6P+YmtP/ChCv/woQr/8KEK//ChCv/woQr/8KELX8ChC1/woQtf8KELX/ChC1/xgdtf/x8fH/8fHx//Ly8v+bndv/Ehi3/woQtf8KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChG7/woRu/8YH77/+fn5/+/v9/9fY9H/ChG7/woRu/8KEbv/ChG7/woRu/8KEbv/ChG76goRwMwKEcD/ChHA/woRwP8KEcD/EBfB/6Ol5/8tM8n/ChHA/woRwP8KEcD/ChHA/woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAD//wAA//8AAA==';
 var faviconPause = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgOlf8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wgOlf8IDpX///////////8KEbv/CA6V////////////CQ6e/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JD6T/CxHE////////////ChG7/wgOlf///////////woRu/8JD6T/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6r/CQ+q/wsRxP///////////woRu/8IDpX///////////8KEbv/CQ+q/wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv/woQr/8LEcT///////////8KEbv/CxHE////////////ChG7/woQr/8KEK//ChCv/woQr/8KELX8ChC1/woQtf8KELX/CxHE////////////ChG7/wsRxP///////////woRu/8KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChG7/wsRxP///////////woRu/8LEcT///////////8KEbv/ChG7/woRu/8KEbv/ChG76goRwMwKEcD/ChHA/woRwP8LEcT///////////8KEbv/CxHE////////////ChHA/woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAD//wAA//8AAA==';
-var faviconWait = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgNk/8IDZT/CA6V/ggOlfwIDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CA6X/wgOl/8IDpX/CA6V/wgOlf8IDpX/CA6V/wkOmP8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wkOm/8JDpv/DBGY/wsRmP8JDpn/CA2Z/wkOmf8JDpv/CQ6d/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JDqH/CQ6f/wsQnf8JDpz/CQ6d/wkOn/8JDp7/CA6e/wkOoP8JD6L/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6n///////////8JDqH+CQ6i/v//////////CQ+j/gkPov///////////wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv////////////ChCn/woQpv///////////wkPqf8JD6r///////////8KEK//ChCv/woQr/8KELX8ChC1/woQtP8KELL/ChCw/wkPrf8JD6z/CQ+t/goQrv4KEK/+ChCv/goQsf4KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChC4/woQtf8KELP/ChCx/woQsv8KELT+ChC1/woQtf4KELf+ChG7/woRu/8KEbv/ChG76goRwNgKEcD4ChHA+woRvv0KELz+CxG5/goQuP4MErf+ChG6/goRu/4KEbv+ChG//woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT+ChHB/wsSvv8MEr//ChG+/woRwP8LEcT/ChHD/woRw/8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/woRxf8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAD//wAA//8AAA==';
+var faviconWait  = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgNkQkIDZGiCA2RzAgNkcwIDZH/CA2R/wgNkf8IDZH/CA2R/wgNkf8IDZH/CA2R2AgNkcwIDZHMCA2RhAgNkQYIDpWHCA6V/wgOlf8IDpX/CA6V/wgOlf8IDpX/CA6V/wgNk/8IDZT/CA6V/ggOlfwIDpX/CA6V/wgOlf8IDpWHCQ6ZzAkOmf8JDpn/CA6X/wgOl/8IDpX/CA6V/wgOlf8IDpX/CA6V/wkOmP8JDpn/CQ6Z/wkOmf8JDpn/CQ6ZzAkOnuoJDp7/CQ6e/wkOm/8JDpv/DBGY/wsRmP8JDpn/CA2Z/wkOmf8JDpv/CQ6d/wkOnv8JDp7/CQ6e/wkOnuoJD6T8CQ+k/wkPpP8JDqH/CQ6f/wsQnf8JDpz/CQ6d/wkOn/8JDp7/CA6e/wkOoP8JD6L/CQ+k/wkPpP8JD6T8CQ+q/wkPqv8JD6n///////////8JDqH+CQ6i/v//////////CQ+j/gkPov///////////wkPqv8JD6r/CQ+q/woQr/8KEK//ChCv////////////ChCn/woQpv///////////wkPqf8JD6r///////////8KEK//ChCv/woQr/8KELX8ChC1/woQtP8KELL/ChCw/wkPrf8JD6z/CQ+t/goQrv4KEK/+ChCv/goQsf4KELX/ChC1/woQtf8KELX8ChG76goRu/8KEbv/ChC4/woQtf8KELP/ChCx/woQsv8KELT+ChC1/woQtf4KELf+ChG7/woRu/8KEbv/ChG76goRwNgKEcD4ChHA+woRvv0KELz+CxG5/goQuP4MErf+ChG6/goRu/4KEbv+ChG//woRwP8KEcD/ChHA/woRwMwLEcSHCxHE/wsRxP8LEcT+ChHB/wsSvv8MEr//ChG+/woRwP8LEcT/ChHD/woRw/8LEcT/CxHE/wsRxP8LEcSHCxLICQsSyKULEsjMCxLI+QsSyP8LEsj/CxLI/woRxf8LEsj/CxLI/wsSyP8LEsj/CxLI0gsSyMwLEsiiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAD//wAA//8AAA==';
 
 
-// PROTOTYPES (fufufuf jshitn!)
+// PROTOTYPES (fufuf jshitn!)
 var Player, YouTubePlayer, ImgurPlayer;
 
 
@@ -29,7 +27,7 @@ var YT_PLAYER_SIZES = { // size reference: http://goo.gl/45VxXT
                       };
 
 var PLAYER_TYPES = { v: {urlKey: 'v', name: 'youtube', player: YouTubePlayer},
-                     i: {urlKey: 'i', name: 'imgur'  , player: ImgurPlayer  } };
+                     i: {urlKey: 'i', name: 'imgur'  , player:   ImgurPlayer} };
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
 
@@ -41,11 +39,16 @@ document.head = typeof document.head != 'object'
 
 
 function showShortUrl() {
+  var prepareHref = function(href) {
+    return href.replace(/#/g,'&')
+               .replace(/&/ ,'#'); // multiple #'s do not work sic!
+  };
+
   $.ajax({
     url: 'https://www.googleapis.com/urlshortener/v1/url',
     type: 'POST',
     contentType: 'application/json; charset=utf-8',
-    data: '{ longUrl: "' + window.location.href +'"}',
+    data: '{ longUrl: "'+ prepareHref(window.location.href) +'" }',
     dataType: 'json',
     success: function(data) {
       logLady('data', data);
@@ -61,9 +64,7 @@ function showShortUrl() {
       var $input = $('#shortened>input');
       $input.width(Math.ceil($input.val().length/1.9) + 'em');
       $input.select();
-      $input.click(function() {
-        $input.select();
-      });
+      $input.click(function(){ $input.select(); });
     }
   });
 }
@@ -89,7 +90,7 @@ function getPlayerSize() {
   var cookie    = $.cookie('responsive');
   var docWidth  = $(document).width()  * 0.8; // UX hack
   var docHeight = $(document).height() * 0.8;
-  var playerSize  = YT_PLAYER_SIZES.medium;       // default when responsive scaling is disabled
+  var playerSize  = YT_PLAYER_SIZES.medium; // default when responsive scaling is disabled
 
   if (cookie !== undefined) {
     playerSize  = YT_PLAYER_SIZES.small;
@@ -112,13 +113,13 @@ function getPlayerSize() {
 
 
 function getParam(params, key) {
-  var rslt = new RegExp(key + '=([^:]*)', 'i').exec(params);
+  var rslt = new RegExp(key + '=([^#]*)', 'i').exec(params);
   return rslt && _.unescape(rslt[1]) || '';
 }
 
 
 function getVideo(params) {
-  var rslt = new RegExp('('+ PLAYER_TYPES_REGX +')=([^:]*)', 'i').exec(params);
+  var rslt = new RegExp('('+ PLAYER_TYPES_REGX +')=([^#]*)', 'i').exec(params);
   return rslt ? { urlKey: rslt[1], videoId: _.unescape(rslt[2]) }
               : { urlKey:    null, videoId:                  '' };
 }
@@ -130,14 +131,14 @@ function urlParam(key) {
 
 
 function urlFlag(key) {
-  var ptrn = '(?:[#:]' + key + '[:])|(?:[#:]' + key + '$)';
+  var ptrn = '(?:[#]' + key + '[#])|(?:[#]' + key + '$)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
   return !rslt ? urlParam(key) == 'true' : true;
 }
 
 
 function parseVideos(url) {
-  var ptrn = PLAYER_TYPES_REGX + '=[^:]*(?:[:]t=[^:]*)?';
+  var ptrn = PLAYER_TYPES_REGX + '=[^#]*(?:[#]t=[^#]*)?';
   var regx = new RegExp(ptrn, 'g'), rslt;
   var vids = [];
   while ((rslt = regx.exec(url))) vids.push(rslt[0]);
@@ -147,8 +148,7 @@ function parseVideos(url) {
 
 function parseIntervals(v) {
   var getSeconds = function(t) {
-    // convert from 1h2m3s
-    var tokens = /(\d+h)?(\d+m)?(\d+s)?/.exec(t);
+    var tokens = /(\d+h)?(\d+m)?(\d+s)?/.exec(t); // converting from 1h2m3s
     var tt = 0;
     _(tokens).each(function(token, i) {
       if (token && i > 0) {
@@ -174,21 +174,21 @@ function parseIntervals(v) {
 }
 
 
-function normalizeUrl() {
-  var url = window.location.href;
+function normalizeUrl(href) {
+  var url    = href || window.location.href;
   var apiUrl = url;
 
-  // translate YouTube URL shenanigans
-  apiUrl = apiUrl.replace('&',':');
-  apiUrl = apiUrl.replace('#t=',':t=');
+  // force hash-based URLs and translate YouTube URL shenanigans
+  apiUrl = apiUrl.replace(/[?&]/g,'#');
   apiUrl = apiUrl.replace('/watch','');
 
-  // force hash-based URLs
-  apiUrl = apiUrl.replace('?','#');
+  // [:] shall be speshul
+  apiUrl = apiUrl.replace(/:([vit])=/g,'#$1=');
+  apiUrl = apiUrl.replace(':shuffle','#shuffle');
 
-  if (url != apiUrl) {
-    document.location.replace(apiUrl);
-  }
+  if (!href && url != apiUrl) document.location.replace(apiUrl);
+
+  return apiUrl;
 }
 
 
@@ -196,14 +196,14 @@ function showShuffleUi(multivideo) {
   var $shuffleUi = $('#shuffle-ui').hide();
   if (multivideo) {
     var shuffleFlag = urlFlag('shuffle');
-    var toggleUrl   = document.location.href.replace(/shuffle[^:]*:|:shuffle[^:]*$/g, '');
+    var toggleUrl   = document.location.href.replace(/shuffle[^#]*#|#shuffle[^#]*$/g, '');
     var $shuffle    = $('#shuffle', $shuffleUi);
 
     if (shuffleFlag) {
       $shuffle.addClass('ticker');
     } else {
       $shuffle.removeClass('ticker');
-      toggleUrl = toggleUrl + ':shuffle';
+      toggleUrl = toggleUrl + '#shuffle';
     }
 
     $shuffle.unbind('click').click(function() {
@@ -245,7 +245,7 @@ function jackiechanMyIntervals(href, shuffle) { // such name
       });
     });
     var r = // stuped halper
-      _.chain(xs).flatten(true).map(function(y) {
+      _(xs).chain().flatten(true).map(function(y) {
         y.nextI = zs[y.nextI]; // map
         y.prevI = zs[y.prevI]; //     to
         y.nextV = zs[y.nextV]; //        flat
@@ -318,7 +318,7 @@ function YouTubePlayer() {
     Player.autosize = function() {
       var size = getPlayerSize();
       $('#player').animate(_.pick(size, 'height', 'width'), 400)
-        .done(function() {
+        .promise().done(function() {
           // just to be sure player noticed resize..
           player.setSize(size.width, size.height);
         });
@@ -372,15 +372,16 @@ function ImgurPlayer() {
     $player.height(size.height);
     $player.width(size.width);
     $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
-    $player.css('background-size', 'contain'); // compatibility warning! (FIXME?)
+    $player.css('background-size', 'contain'); // browser compatibility warning!
 
     Player.autosize = function() {
-      var size = getPlayerSize();
-      $player.animate(_.pick(size, 'height', 'width'), 400);
+      $player.animate(_.pick(getPlayerSize(), 'height', 'width'), 400);
     };
 
     if (Playlist.multivideo) {
-      timerId = null;
+      // no need to worry about potentially badly defined value of timerId, because:
+      // 1. we are single threaded
+      // 2. callbacks do not interrupt anything
       $player.on('destroyed', onImgurPlayerRemove);
       timerId = _.delay(onImgurPlayerStateChange, 1000*(playback.start || 3)); // milis
     }
@@ -391,10 +392,7 @@ function ImgurPlayer() {
   };
 
   var onImgurPlayerRemove = function() {
-    if (timerId) {
-      clearTimeout(timerId);
-      timerId = null;
-    }
+    clearTimeout(timerId);
   };
 }
 
@@ -453,11 +451,11 @@ function renderPage() {
     changeFavicon();
     $('#box').html(
           '<p><big>Usage:</big></p>'
-        + '<p>append <tt>#v=VIDEO_ID:t=start;end</tt> to current URL<br/>'
-        + 'alternative syntax: <tt>?v=VIDEO_ID&t=start;end</tt> will also work</p>'
-        + '<p style="font-size:small">eg. <tt><a href="#v=ZuHZSbPJhaY:t=1h1s;1h4s">#v=ZuHZSbPJhaY:t=1h1s;1h4s</a></tt> '
-        + 'or <tt><a href="#v=eSMeUPFjQHc:t=60;80:v=ZuHZSbPJhaY:t=1h;1h5s">#v=eSMeUPFjQHc:t=60;80:v=ZuHZSbPJhaY:t=1h;1h5s</a></tt><br/>'
-        + 'or even <tt><a href="#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2s;16s">#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2s;16s</a></tt></p>'
+        + '<p>append <tt>#v=VIDEO_ID#t=start;end</tt> to current URL<br/>'
+        + 'alternative syntax: <tt>?v=VIDEO_ID&t=start;end</tt> or <tt>?v=VIDEO_ID:t=start;end</tt></p>'
+        + '<p style="font-size:small">eg. <tt><a href="#v=ZuHZSbPJhaY#t=1h1s;1h4s">#v=ZuHZSbPJhaY#t=1h1s;1h4s</a></tt> '
+        + 'or <tt><a href="#v=eSMeUPFjQHc#t=60;80#v=ZuHZSbPJhaY#t=1h;1h5s">#v=eSMeUPFjQHc#t=60;80#v=ZuHZSbPJhaY#t=1h;1h5s</a></tt><br/>'
+        + 'or even <tt><a href="#v=ZNno63ZO2Lw#t=54s;1m20s+1m33s;1m47s+3m30s;3m46s#v=TM1Jy3qPSCQ#t=2s;16s">#v=ZNno63ZO2Lw#t=54s;1m20s+1m33s;1m47s+3m30s;3m46s#v=TM1Jy3qPSCQ#t=2s;16s</a></tt></p>'
         + '<p style="text-align:right;font-size:xx-small">More at <a href="https://github.com/lidel/yt-looper">GitHub</a></p>'
     );
   }
@@ -499,7 +497,6 @@ function responsivePlayerSetup() {
     } else {
       renderPage();
     }
-
   });
 
 
@@ -542,7 +539,7 @@ function responsivePlayerSetup() {
   });
 
 
-  // enable dom element removal notification
+  // enable dom element removal notification (because of reasons sic)
   $.event.special.destroyed = { remove: function(o){ if (o.handler) {o.handler();} } };
 
 }(jQuery));
