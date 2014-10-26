@@ -316,7 +316,7 @@ function YouTubePlayer() {
     Player.autosize = function() {
       var size = getPlayerSize();
       $('#player').animate(_.pick(size, 'height', 'width'), 400)
-        .done(function() {
+        .promise().done(function() {
           // just to be sure player noticed resize..
           player.setSize(size.width, size.height);
         });
