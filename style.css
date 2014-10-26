@@ -21,7 +21,7 @@ body>div {
   text-align: left;
   color: #EEE;
   box-shadow: 0 5px 10px rgba(0,0,0,0.4);
-  border: 1px solid rgba(100,100,100,0.25);
+  border: 1px solid #111;
   max-height: 360px;
   max-width: 640px;
   background-color: #1B1B1B;
