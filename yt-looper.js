@@ -108,13 +108,13 @@ function getPlayerSize() {
 
 
 function getParam(params, key) {
-  var rslt = new RegExp(key + '=([^:]*)', 'i').exec(params);
+  var rslt = new RegExp(key + '=([^#]*)', 'i').exec(params);
   return rslt && _.unescape(rslt[1]) || '';
 }
 
 
 function getVideo(params) {
-  var rslt = new RegExp('('+ PLAYER_TYPES_REGX +')=([^:]*)', 'i').exec(params);
+  var rslt = new RegExp('('+ PLAYER_TYPES_REGX +')=([^#]*)', 'i').exec(params);
   return rslt ? { urlKey: rslt[1], videoId: _.unescape(rslt[2]) }
               : { urlKey:    null, videoId:                  '' };
 }
@@ -126,14 +126,14 @@ function urlParam(key) {
 
 
 function urlFlag(key) {
-  var ptrn = '(?:[#:]' + key + '[:])|(?:[#:]' + key + '$)';
+  var ptrn = '(?:[#]' + key + '[#])|(?:[#]' + key + '$)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
   return !rslt ? urlParam(key) == 'true' : true;
 }
 
 
 function parseVideos(url) {
-  var ptrn = PLAYER_TYPES_REGX + '=[^:]*(?:[:]t=[^:]*)?';
+  var ptrn = PLAYER_TYPES_REGX + '=[^#]*(?:[#]t=[^#]*)?';
   var regx = new RegExp(ptrn, 'g'), rslt;
   var vids = [];
   while ((rslt = regx.exec(url))) vids.push(rslt[0]);
@@ -169,21 +169,21 @@ function parseIntervals(v) {
 }
 
 
-function normalizeUrl() {
-  var url = window.location.href;
+function normalizeUrl(href) {
+  var url    = href || window.location.href;
   var apiUrl = url;
 
-  // translate YouTube URL shenanigans
-  apiUrl = apiUrl.replace('&',':');
-  apiUrl = apiUrl.replace('#t=',':t=');
+  // force hash-based URLs and translate YouTube URL shenanigans
+  apiUrl = apiUrl.replace(/[?&]/g,'#');
   apiUrl = apiUrl.replace('/watch','');
 
-  // force hash-based URLs
-  apiUrl = apiUrl.replace('?','#');
+  // [:] shall be speshul
+  apiUrl = apiUrl.replace(/:([vit])=/g,'#$1=');
+  apiUrl = apiUrl.replace(':shuffle','#shuffle');
 
-  if (url != apiUrl) {
-    document.location.replace(apiUrl);
-  }
+  if (!href && url != apiUrl) document.location.replace(apiUrl);
+
+  return apiUrl;
 }
 
 
@@ -191,14 +191,14 @@ function showShuffleUi(multivideo) {
   var $shuffleUi = $('#shuffle-ui').hide();
   if (multivideo) {
     var shuffleFlag = urlFlag('shuffle');
-    var toggleUrl   = document.location.href.replace(/shuffle[^:]*:|:shuffle[^:]*$/g, '');
+    var toggleUrl   = document.location.href.replace(/shuffle[^#]*#|#shuffle[^#]*$/g, '');
     var $shuffle    = $('#shuffle', $shuffleUi);
 
     if (shuffleFlag) {
       $shuffle.addClass('ticker');
     } else {
       $shuffle.removeClass('ticker');
-      toggleUrl = toggleUrl + ':shuffle';
+      toggleUrl = toggleUrl + '#shuffle';
     }
 
     $shuffle.unbind('click').click(function() {
@@ -446,11 +446,11 @@ function renderPage() {
     changeFavicon();
     $('#box').html(
           '<p><big>Usage:</big></p>'
-        + '<p>append <tt>#v=VIDEO_ID:t=start;end</tt> to current URL<br/>'
-        + 'alternative syntax: <tt>?v=VIDEO_ID&t=start;end</tt> will also work</p>'
-        + '<p style="font-size:small">eg. <tt><a href="#v=ZuHZSbPJhaY:t=1h1s;1h4s">#v=ZuHZSbPJhaY:t=1h1s;1h4s</a></tt> '
-        + 'or <tt><a href="#v=eSMeUPFjQHc:t=60;80:v=ZuHZSbPJhaY:t=1h;1h5s">#v=eSMeUPFjQHc:t=60;80:v=ZuHZSbPJhaY:t=1h;1h5s</a></tt><br/>'
-        + 'or even <tt><a href="#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2s;16s">#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2s;16s</a></tt></p>'
+        + '<p>append <tt>#v=VIDEO_ID#t=start;end</tt> to current URL<br/>'
+        + 'alternative syntax: <tt>?v=VIDEO_ID&t=start;end</tt> or <tt>?v=VIDEO_ID:t=start;end</tt></p>'
+        + '<p style="font-size:small">eg. <tt><a href="#v=ZuHZSbPJhaY#t=1h1s;1h4s">#v=ZuHZSbPJhaY#t=1h1s;1h4s</a></tt> '
+        + 'or <tt><a href="#v=eSMeUPFjQHc#t=60;80#v=ZuHZSbPJhaY#t=1h;1h5s">#v=eSMeUPFjQHc#t=60;80#v=ZuHZSbPJhaY#t=1h;1h5s</a></tt><br/>'
+        + 'or even <tt><a href="#v=ZNno63ZO2Lw#t=54s;1m20s+1m33s;1m47s+3m30s;3m46s#v=TM1Jy3qPSCQ#t=2s;16s">#v=ZNno63ZO2Lw#t=54s;1m20s+1m33s;1m47s+3m30s;3m46s#v=TM1Jy3qPSCQ#t=2s;16s</a></tt></p>'
         + '<p style="text-align:right;font-size:xx-small">More at <a href="https://github.com/lidel/yt-looper">GitHub</a></p>'
     );
   }
