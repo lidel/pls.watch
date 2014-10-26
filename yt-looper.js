@@ -39,11 +39,16 @@ document.head = typeof document.head != 'object'
 
 
 function showShortUrl() {
+  var prepareHref = function(href) {
+    return href.replace(/#/ ,'?')
+               .replace(/#/g,'&'); // multiple #'s do not work sic!
+  };
+
   $.ajax({
     url: 'https://www.googleapis.com/urlshortener/v1/url',
     type: 'POST',
     contentType: 'application/json; charset=utf-8',
-    data: '{ longUrl: "'+ window.location.href +'" }',
+    data: '{ longUrl: "'+ prepareHref(window.location.href) +'" }',
     dataType: 'json',
     success: function(data) {
       logLady('data', data);
