@@ -40,8 +40,8 @@ document.head = typeof document.head != 'object'
 
 function showShortUrl() {
   var prepareHref = function(href) {
-    return href.replace(/#/ ,'?')
-               .replace(/#/g,'&'); // multiple #'s do not work sic!
+    return href.replace(/#/g,'&')
+               .replace(/&/ ,'#'); // multiple #'s do not work sic!
   };
 
   $.ajax({
