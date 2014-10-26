@@ -1,11 +1,9 @@
 
 // HALPERS
-var logLady = function(a, b) { // KEKEKE
-  if (_.isString(a)) {
-    console.log(b ? a +': '+ JSON.stringify(b) : a);
-  } else {
-    console.log(JSON.stringify(a));
-  }
+function logLady(a, b) { // KEKEKE
+  console.log(!_.isString(a) ? JSON.stringify(a)
+                             : b ? a +': '+ JSON.stringify(b)
+                                 : a);
 };
 
 
