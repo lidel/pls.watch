@@ -173,13 +173,14 @@ function normalizeUrl(href) {
   var url    = href || window.location.href;
   var apiUrl = url;
 
-  // force hash-based URLs and translate YouTube URL shenanigans
-  apiUrl = apiUrl.replace(/[?#]|%23/g,'&').replace(/[&]/,'#');
+  // translate YouTube URL shenanigans (yes, this is redundant, but was broken in past..)
+  apiUrl = apiUrl.replace('#t=','&t=');
   apiUrl = apiUrl.replace('/watch','');
 
-  // [:] shall be speshul
+  // support legacy URLs
+  apiUrl = apiUrl.replace(/[?#]|%23/g,'&').replace(/[&]/,'#');
   apiUrl = apiUrl.replace(/:([vit])=/g,'&$1=');
-  apiUrl = apiUrl.replace(':shuffle','#shuffle');
+  apiUrl = apiUrl.replace(':shuffle','&shuffle');
 
   if (!href && url != apiUrl) document.location.replace(apiUrl);
 
