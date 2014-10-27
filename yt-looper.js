@@ -180,6 +180,7 @@ function normalizeUrl(href) {
 
   // force hash-based URLs and translate YouTube URL shenanigans
   apiUrl = apiUrl.replace(/[?&]/g,'#');
+  apiUrl = apiUrl.replace(/%23/g,'#');
   apiUrl = apiUrl.replace('/watch','');
 
   // [:] shall be speshul
