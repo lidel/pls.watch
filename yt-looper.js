@@ -175,7 +175,8 @@ function normalizeUrl(href) {
 
   // translate YouTube URL shenanigans (yes, this is redundant, but was broken in past..)
   apiUrl = apiUrl.replace('#t=','&t=');
-  apiUrl = apiUrl.replace('/watch','');
+  apiUrl = apiUrl.replace('/watch','/');
+  apiUrl = apiUrl.replace(/feature=[^&#]+[&#]/,'');
 
   // support legacy URLs
   apiUrl = apiUrl.replace(/[?#]|%23/g,'&').replace(/[&]/,'#');

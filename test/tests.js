@@ -202,4 +202,43 @@ QUnit.test('scheme: 3 2 1 : +I +I +I +I -V -I +V +V +V +V -I +I -V -V -V -V -V -
   });
 });
 
+
+QUnit.module('URL Normalizer');
+
+QUnit.test('YouTube with start parameter', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/watch?v=T0rs3R4E1Sk#t=23;30'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+                                'regression');
+});
+
+QUnit.test('YouTube with feature parameter', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/watch?feature=player_detailpage&v=n0CJfPsPOqE#t=245'),
+                                'http://yt.aergia.eu/#v=n0CJfPsPOqE&t=245',
+                                'regression');
+});
+
+QUnit.test('Classic GET with parameters', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/?v=T0rs3R4E1Sk&t=23;30'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+                                'regression');
+});
+
+QUnit.test('Legacy with ":"', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk:t=23;30'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+                                'regression');
+});
+
+QUnit.test('Legacy with multiple "#"', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk#t=23;30'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+                                'regression');
+});
+
+QUnit.test('Legacy with multiple "#" as "%23"', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk%23t=23;30'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+                                'regression');
+});
+
 // vim:ts=2:sw=2:et:
