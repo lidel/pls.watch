@@ -253,9 +253,10 @@ function jackiechanMyIntervals(href, shuffle) { // such name
   };
   var vs = shuffle ? _.shuffle(parseVideos(href))
                    :           parseVideos(href);
+  var intervals = computeDirections(extendIntervals(vs));
   return {
-    multivideo: vs.length > 1,
-     intervals: computeDirections(extendIntervals(vs))
+    multivideo: intervals.length > 1,
+     intervals: intervals
   };
 }
 
