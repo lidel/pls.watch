@@ -386,6 +386,8 @@ function ImgurPlayer() {
         var size = getImagePlayerSize(image);
         $player.height(size.height);
         $player.width(size.width);
+        $box.css('max-width',  size.width);
+        $box.css('max-height', size.height);
         $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
         $player.css('background-size', 'contain'); // browser compatibility warning!
 
