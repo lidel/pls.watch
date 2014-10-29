@@ -18,16 +18,18 @@ var Player, YouTubePlayer, ImgurPlayer;
 
 
 // ENUMS
-var YT_PLAYER_SIZES = { // size reference: http://goo.gl/45VxXT
+var YT_PLAYER_SIZES = Object.freeze({ // size reference: http://goo.gl/45VxXT
                         small:   {width:  320,  height:  240},
                         medium:  {width:  640,  height:  360},
                         large:   {width:  853,  height:  480},
                         hd720:   {width: 1280,  height:  720},
                         hd1080:  {width: 1920,  height: 1080}
-                      };
+                      });
 
-var PLAYER_TYPES = { v: {urlKey: 'v', name: 'youtube', player: YouTubePlayer},
-                     i: {urlKey: 'i', name: 'imgur'  , player:   ImgurPlayer} };
+var PLAYER_TYPES = Object.freeze({
+                     v: {urlKey: 'v', name: 'youtube', player: YouTubePlayer},
+                     i: {urlKey: 'i', name: 'imgur'  , player:   ImgurPlayer}
+                   });
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
 
@@ -358,23 +360,37 @@ function YouTubePlayer() {
 
 function ImgurPlayer() {
   logLady('ImgurPlayer()');
-  
-  var imgurHome = 'http://i.imgur.com';
+
+  var imgurHome = '//i.imgur.com';
   var timerId;
 
   ImgurPlayer.newPlayer = function(playback) {
     var imgUrl = imgurHome +'/'+ playback.videoId;
-    var size   = getPlayerSize();
+    var $player = $('div#player');
 
-    var $player = $('#player');
-    $player.height(size.height);
-    $player.width(size.width);
-    $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
-    $player.css('background-size', 'contain'); // browser compatibility warning!
-
-    Player.autosize = function() {
-      $player.animate(_.pick(getPlayerSize(), 'height', 'width'), 400);
+    var getImagePlayerSize = function(image) {
+      var pSize = _.extend({}, getPlayerSize());
+      var iSize = {width: image.naturalWidth, height: image.naturalHeight}; // fcuk IE8
+      pSize.width = iSize.width * (pSize.height / iSize.height);
+      return pSize;
     };
+
+    $(document).prop('title', playback.videoId);
+    $('<img/>')
+      .attr('src', imgUrl)
+      .load(function() {
+        var image = this;
+        var size = getImagePlayerSize(image);
+        $player.height(size.height);
+        $player.width(size.width);
+        $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
+        $player.css('background-size', 'contain'); // browser compatibility warning!
+
+        Player.autosize = function() {
+          $player.animate(_.pick(getImagePlayerSize(image), 'height', 'width'), 400);
+        };
+
+      });
 
     if (Playlist.multivideo) {
       // no need to worry about potentially badly defined value of timerId, because:
