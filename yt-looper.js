@@ -365,7 +365,8 @@ function ImgurPlayer() {
   var timerId;
 
   ImgurPlayer.newPlayer = function(playback) {
-    var imgUrl = imgurHome +'/'+ playback.videoId;
+    var imgUrl  = imgurHome +'/'+ playback.videoId;
+    var $box    = $('#box');
     var $player = $('div#player');
 
     var getImagePlayerSize = function(image) {
@@ -376,9 +377,11 @@ function ImgurPlayer() {
     };
 
     $(document).prop('title', playback.videoId);
+    $box.addClass('spinner');
     $('<img/>')
       .attr('src', imgUrl)
       .load(function() {
+        $box.removeClass('spinner');
         var image = this;
         var size = getImagePlayerSize(image);
         $player.height(size.height);
@@ -390,15 +393,16 @@ function ImgurPlayer() {
           $player.animate(_.pick(getImagePlayerSize(image), 'height', 'width'), 400);
         };
 
+        if (Playlist.multivideo) {
+          // no need to worry about potentially badly defined value of timerId, because:
+          // 1. we are single threaded
+          // 2. callbacks do not interrupt anything
+          $player.on('destroyed', onImgurPlayerRemove);
+          timerId = _.delay(onImgurPlayerStateChange, 1000*(playback.start || 3)); // milis
+        }
+
       });
 
-    if (Playlist.multivideo) {
-      // no need to worry about potentially badly defined value of timerId, because:
-      // 1. we are single threaded
-      // 2. callbacks do not interrupt anything
-      $player.on('destroyed', onImgurPlayerRemove);
-      timerId = _.delay(onImgurPlayerStateChange, 1000*(playback.start || 3)); // milis
-    }
   };
 
   var onImgurPlayerStateChange = function() {
