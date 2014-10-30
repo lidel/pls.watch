@@ -190,7 +190,6 @@ function normalizeUrl(href) {
   return apiUrl;
 }
 
-
 function showShuffleUi(multivideo) {
   var $shuffleUi = $('#shuffle-ui').hide();
   if (multivideo) {
@@ -406,12 +405,20 @@ function ImgurPlayer() {
         changeFavicon(faviconPlay);
         $player.empty();
         var image = this;
+        var $this = $(this).height('100%').width('100%');
         var size = getImagePlayerSize(image);
-        $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
-        $player.css('background-size', 'contain');
-        $box.css('background-image', 'none');
         $player.height(size.height);
         $player.width(size.width);
+        $player.append($this);
+
+        /*jshint -W030*/
+        $this.attr('src','');
+        image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
+        $this.attr('src',imgUrl);
+        /*jshint +W030*/
+
+        // remove splash
+        $box.css('background-image', 'none');
 
         Player.autosize = function() {
           $player.animate(_.pick(getImagePlayerSize(image), 'height', 'width'), 400);
