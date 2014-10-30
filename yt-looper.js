@@ -405,16 +405,16 @@ function ImgurPlayer() {
         changeFavicon(faviconPlay);
         $player.empty();
         var image = this;
-        var $this = $(this).height('100%').width('100%');
+        var $image = $(image).height('100%').width('100%');
         var size = getImagePlayerSize(image);
         $player.height(size.height);
         $player.width(size.width);
-        $player.append($this);
+        $player.append($image);
 
         /*jshint -W030*/
-        $this.attr('src','');
+        $image.attr('src','');
         image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
-        $this.attr('src',imgUrl);
+        $image.attr('src',imgUrl);
         /*jshint +W030*/
 
         // remove splash
