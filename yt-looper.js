@@ -377,19 +377,41 @@ function ImgurPlayer() {
     };
 
     $(document).prop('title', playback.videoId);
-    $box.addClass('spinner');
+
+    // smart splash screen
+    changeFavicon(faviconWait);
+    $player.html('<div class="spinner"></div>');
+    if (imgUrl.indexOf('imgur.com') > -1) {
+      // imgur provides thumbs, which enables us to set splash screen
+      // and resize player to proper ratio
+      var thumbUrl = imgUrl.replace(/^(.*)\.(png|gif|jpe?g)$/i, '$1m.$2');
+      $('<img/>')
+        .attr('src', thumbUrl)
+        .load(function() {
+          var size = getImagePlayerSize(this);
+          $box.css('background-image', 'url(' + thumbUrl + ')');
+          $player.height(size.height);
+          $player.width(size.width);
+        });
+    } else {
+      // fallback for future support of 'non-imgur' images
+      var size = getPlayerSize();
+      $player.height(size.height);
+      $player.width(size.width);
+    }
+
     $('<img/>')
       .attr('src', imgUrl)
       .load(function() {
-        $box.removeClass('spinner');
+        changeFavicon(faviconPlay);
+        $player.empty();
         var image = this;
         var size = getImagePlayerSize(image);
+        $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
+        $player.css('background-size', 'contain');
+        $box.css('background-image', 'none');
         $player.height(size.height);
         $player.width(size.width);
-        $box.css('max-width',  size.width);
-        $box.css('max-height', size.height);
-        $player.css('background', 'url("'+ imgUrl +'") no-repeat center');
-        $player.css('background-size', 'contain'); // browser compatibility warning!
 
         Player.autosize = function() {
           $player.animate(_.pick(getImagePlayerSize(image), 'height', 'width'), 400);
