@@ -185,6 +185,9 @@ function normalizeUrl(href) {
   apiUrl = apiUrl.replace(/:([vit])=/g,'&$1=');
   apiUrl = apiUrl.replace(':shuffle','&shuffle');
 
+  // fix URLs butchered by IM clients
+  apiUrl = decodeURIComponent(apiUrl);
+
   if (!href && url != apiUrl) document.location.replace(apiUrl);
 
   return apiUrl;

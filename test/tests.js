@@ -241,4 +241,10 @@ QUnit.test('Legacy with multiple "#" as "%23"', function (assert) {
                                 'regression');
 });
 
+QUnit.test('URLs butchered by IM clients', function (assert) {
+  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=aLcHJN1soY4%26t=41s%3b45s'),
+                                'https://yt.aergia.eu/#v=aLcHJN1soY4&t=41s;45s',
+                                'regression');
+});
+
 // vim:ts=2:sw=2:et:
