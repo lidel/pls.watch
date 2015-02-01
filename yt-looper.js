@@ -84,12 +84,12 @@ function changeFavicon(src) {
 
 function getPlayerSize() {
   var $box      = $('#box');
-  var cookie    = $.cookie('responsive');
+  var cookie    = $.cookie('no_autosize');
   var docWidth  = $(document).width()  * 0.8; // UX hack
   var docHeight = $(document).height() * 0.8;
   var playerSize  = YT_PLAYER_SIZES.medium; // default when responsive scaling is disabled
 
-  if (cookie !== undefined) {
+  if (cookie === undefined) {
     playerSize  = YT_PLAYER_SIZES.small;
 
     $.when($.each(YT_PLAYER_SIZES, function(k, v) {
@@ -515,17 +515,17 @@ function renderPage() {
 
 
 function responsivePlayerSetup() {
-  var cookieKey     = 'responsive';
+  var cookieKey     = 'no_autosize';
   var cookie        = $.cookie(cookieKey);
   var cookieOptions = { expires: 365, path: '/', secure: false };
   var $responsive   = $('#responsive');
 
   if (cookie === undefined) {
     $.cookie(cookieKey, true, cookieOptions);
-    $responsive.addClass('ticker');
+    $responsive.removeClass('ticker');
   } else {
     $.removeCookie(cookieKey, cookieOptions);
-    $responsive.removeClass('ticker');
+    $responsive.addClass('ticker');
   }
 
   Player.autosize();
@@ -561,11 +561,11 @@ function responsivePlayerSetup() {
   var $responsive = $('#responsive');
   $responsive.click(responsivePlayerSetup);
   // display current autosize setting in menu
-  if ($.cookie('responsive')) { $responsive.addClass('ticker');    }
-  else                        { $responsive.removeClass('ticker'); }
+  if ($.cookie('no_autosize')) { $responsive.removeClass('ticker'); }
+  else                         { $responsive.addClass('ticker');    }
   // update player on window resize if autosize is enabled
   $(window).on('resize', _.debounce(function() {
-    if ($.cookie('responsive')) {
+    if ($.cookie('no_autosize') === undefined) {
       Player.autosize();
     }
   }, 300));
