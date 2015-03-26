@@ -42,7 +42,9 @@ document.head = typeof document.head != 'object'
 
 function showShortUrl() {
   var request = $.ajax({
-    url: 'https://www.googleapis.com/urlshortener/v1/url',
+    // This API key works only with yt.aergia.eu domain
+    // Key for different referer can be generated at https://console.developers.google.com
+    url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU',
     type: 'POST',
     contentType: 'application/json; charset=utf-8',
     data: '{ longUrl: "'+ window.location.href +'" }',
@@ -65,7 +67,7 @@ function showShortUrl() {
     $input.click(function(){ $input.select(); });
   });
   request.fail(function(jqxhr, textStatus) {
-    logLady('Unable to get short URL: ', jqxhr);
+    logLady('Unable to get short URL ('+ textStatus +'): ', jqxhr);
 
   });
 }
