@@ -1,6 +1,6 @@
 
 // HALPERS
-function logLady(a, b) { // KEKEKE
+function logLady(a, b) { // kek
   console.log(!_.isString(a) ? JSON.stringify(a)
                              : b ? a +': '+ JSON.stringify(b)
                                  : a);
@@ -192,6 +192,7 @@ function normalizeUrl(href) {
 
   return apiUrl;
 }
+
 
 function showShuffleUi(multivideo) {
   var $shuffleUi = $('#shuffle-ui').hide();
@@ -452,6 +453,18 @@ function ImgurPlayer() {
 function Player() {
   logLady('Player()');
 
+  var editorNotification = null;
+
+  Player.registerEditorNotification = function(handler) {
+    if (_.isFunction(handler)) {
+      editorNotification = handler;
+    }
+  };
+
+  Player.unregisterEditorNotification = function() {
+    editorNotification = null;
+  };
+
   Player.newPlayer = function(playback) {
     logLady('Player.newPlayer()', playback);
 
@@ -461,6 +474,11 @@ function Player() {
     }
 
     $('#box').html('<div id="player"></div>');
+
+    if (editorNotification) {
+      // inform editor about player change
+      editorNotification();
+    }
 
     // prevalidated! no need to check ^e_
     PLAYER_TYPES[playback.urlKey].player.newPlayer(playback);
@@ -480,6 +498,11 @@ function Player() {
 function onYouTubeIframeAPIReady() {
   logLady('onYouTubeIframeAPIReady()');
   Player();
+  if (urlFlag('shuffle')) { // TODO: rewrite shuffle handling
+    unregisterEditor();
+  } else {
+    registerEditor();
+  }
 }
 
 

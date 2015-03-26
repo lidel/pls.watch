@@ -11,6 +11,7 @@
 <body>
 
 <div id="menu">
+  <span id="editor-ui" class="hidden"><a id="shuffle" title="click to open playlist editor">editor</a> | </span>
   <span id="shuffle-ui"><a id="shuffle" title="click to toggle shuffle between videos (interval order stays the same)">shuffle</a> | </span>
   <span id="responsive-ui"><a id="responsive" title="click to toggle responsive player size">autosize</a> | </span>
   <span id="shorten-ui"><a id="shorten" title="click to get a short URL for current playlist">short url</a></span>
@@ -25,6 +26,7 @@
   .script('//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js')
   .wait()
   .script('yt-looper.js')
+  .script('yt-looper.editor.js')
   .wait(function(){
     normalizeUrl();
     renderPage();

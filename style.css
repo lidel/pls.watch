@@ -1,3 +1,76 @@
+
+.hidden {
+  display: none;
+}
+.highlighted {
+  color: white;
+}
+#editor {
+  height: 100%;
+  border: 1px solid black;
+  background: #111;
+  color: #888;
+  opacity: 0.9;
+  z-index: 69;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#editor a {
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+#editor a:hover {
+  color: #888;
+}
+#editor>table {
+  font-family: monospace;
+  table-layout: fixed;
+}
+.editor-col1 {
+  width: 8px;
+  text-align: center;
+}
+.editor-col2 {
+  min-width: 160px;
+  text-align: left;
+}
+.editor-col1,
+.editor-col3,
+.editor-col4 {
+  width: 8px;
+  text-align: center;
+}
+
+#editor input {
+  color: #fff !important;
+  background-color: #111;
+  text-align: center;
+  text-decoration: none;
+  border: 1px #333 solid;
+  border-radius: 1em;
+  padding: .25em 0 !important;
+  outline: 0;
+}
+#editor input::selection {
+  background-color: #888;
+}
+#editor input::-moz-selection {
+  background-color: #888;
+}
+#editor input::-o-selection {
+  background-color: #888;
+}
+#editor input::-ms-selection {
+  background-color: #888;
+}
+#editor input::-webkit-selection {
+  background-color: #888;
+}
+
+
 body {
   display: table;
   position: absolute;
@@ -137,3 +210,5 @@ body>div {
     opacity: 0;
   }
 }
+
+// vim:ts=2:sw=2:et:
