@@ -131,7 +131,7 @@ _updatePageAfterEditorEvent = function () {
         Playlist.index = index;
         Player.newPlayer(Playlist.current());
       });
-      
+
       var text = $(this).text();
       var part = text.split('&');
 
@@ -186,7 +186,7 @@ function _toggleEditor() {
         $('#editor-ui').toggleClass('ticker');
         _updateHighlight(); // update on slide
       });
-  }  
+  }
 }
 
 function registerEditor() { // jshint ignore:line
