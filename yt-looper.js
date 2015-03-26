@@ -41,28 +41,32 @@ document.head = typeof document.head != 'object'
 
 
 function showShortUrl() {
-  $.ajax({
+  var request = $.ajax({
     url: 'https://www.googleapis.com/urlshortener/v1/url',
     type: 'POST',
     contentType: 'application/json; charset=utf-8',
     data: '{ longUrl: "'+ window.location.href +'" }',
     dataType: 'json',
-    success: function(data) {
-      logLady('data', data);
+  });
+  request.done(function(data) {
+    logLady('data', data);
 
-      $('#shorten').hide();
+    $('#shorten').hide();
 
-      var input = '<input type="text" value="'+ data.id +'" readonly>';
-      var     a = '<a href="'+ data.id +'" target="_blank" title="click to test short url in a new tab">&#10548;</a>';
-      var  span = '<span id="shortened">ctrl+c to copy '+ input + a +'</span>';
+    var input = '<input type="text" value="'+ data.id +'" readonly>';
+    var     a = '<a href="'+ data.id +'" target="_blank" title="click to test short url in a new tab">&#10548;</a>';
+    var  span = '<span id="shortened">ctrl+c to copy '+ input + a +'</span>';
 
-      $('#menu').append(span);
+    $('#menu').append(span);
 
-      var $input = $('#shortened>input');
-      $input.width(Math.ceil($input.val().length/1.9) + 'em');
-      $input.select();
-      $input.click(function(){ $input.select(); });
-    }
+    var $input = $('#shortened>input');
+    $input.width(Math.ceil($input.val().length/1.9) + 'em');
+    $input.select();
+    $input.click(function(){ $input.select(); });
+  });
+  request.fail(function(jqxhr, textStatus) {
+    logLady('Unable to get short URL: ', jqxhr);
+
   });
 }
 
