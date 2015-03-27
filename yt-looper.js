@@ -223,7 +223,7 @@ function showShuffleUi(multivideo) {
 }
 
 
-function jackiechanMyIntervals(href, shuffle) { // such name
+function jackiechanMyIntervals(href) { // kek
   var extendIntervals = function(videos) {
     var r = // stuped halper
       _(videos).map(function(video) {
@@ -262,9 +262,7 @@ function jackiechanMyIntervals(href, shuffle) { // such name
       }).value();
     return r;
   };
-  var vs = shuffle ? _.shuffle(parseVideos(href))
-                   :           parseVideos(href);
-  var intervals = computeDirections(extendIntervals(vs));
+  var intervals = computeDirections(extendIntervals(parseVideos(href)));
   return {
     multivideo: intervals.length > 1,
      intervals: intervals
@@ -275,7 +273,7 @@ function jackiechanMyIntervals(href, shuffle) { // such name
 function Playlist(href) {
   logLady('Playlist()');
 
-  _.extend(Playlist, jackiechanMyIntervals(href, urlFlag('shuffle')));
+  _.extend(Playlist, jackiechanMyIntervals(href));
   Playlist.index = 0;
 
   Playlist.log = function() {
@@ -287,12 +285,30 @@ function Playlist(href) {
   };
 
   Playlist.go = function(direction) { // 'nextI' 'prevI' 'nextV' 'prevV'
+    if (urlFlag('shuffle')) {
+      return Playlist.random();
+    }
     return Playlist.intervals[Playlist.index = Playlist.current()[direction]];
+  };
+
+  Playlist.jumpTo = function(index) {
+    return Playlist.intervals[Playlist.index = index];
   };
 
   Playlist.cycle = function() {
     return Playlist.index >= Playlist.current().nextI ? Playlist.go('nextV')
                                                       : Playlist.go('nextI');
+  };
+
+  Playlist.random = function() {
+    var list = Playlist.intervals;
+    var current = Playlist.index;
+    var random = current;
+    // normalized random: ignore current one
+    while (list.length > 1 && random === current) {
+      random = Math.floor(Math.random()*list.length);
+    }
+    return Playlist.jumpTo(random);
   };
 }
 
@@ -506,11 +522,7 @@ function Player() {
 function onYouTubeIframeAPIReady() {
   logLady('onYouTubeIframeAPIReady()');
   Player();
-  if (urlFlag('shuffle')) { // TODO: rewrite shuffle handling
-    unregisterEditor();
-  } else {
-    registerEditor();
-  }
+  registerEditor();
 }
 
 
@@ -604,20 +616,20 @@ function responsivePlayerSetup() {
 
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
-    var k = String.fromCharCode(e.which);
+    var k = String.fromCharCode(e.which).toLowerCase();
     //logLady('key/code:'+k+'/'+e.which);
     if (k=='s') {
       var $shorten = $('#shorten');
       if ($shorten.is(':visible')) {
         $shorten.click();
       }
+
     } else if (k=='b') {
       $('#box').toggle();
+
     } else if (k=='x') {
       var $box = $('#box');
-      if (Player.engine === ImgurPlayer) {
-        $box.toggle();
-      } else if (Player.engine === YouTubePlayer) {
+      if (Player.engine === YouTubePlayer) {
         if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
           YouTubePlayer.instance.pauseVideo();
           $box.hide();
@@ -625,6 +637,13 @@ function responsivePlayerSetup() {
           YouTubePlayer.instance.playVideo();
           $box.show();
         }
+      } else {
+        $box.toggle();
+      }
+
+    } else if (k=='r') {
+      if (Playlist.intervals) {
+        Player.newPlayer(Playlist.random());
       }
     } else if (k==' ') {
       if (Player.engine === YouTubePlayer) {
@@ -634,14 +653,15 @@ function responsivePlayerSetup() {
           YouTubePlayer.instance.playVideo();
         }
       }
-    } else {
-      var current =
+
+    } else if (Playlist.go) {
+      var change =
         k=='h' ? Playlist.go('prevV')
                : k=='j' ? Playlist.go('prevI')
                         : k=='k' ? Playlist.go('nextI')
                                  : k=='l' ? Playlist.go('nextV')
                                           : null;
-      if (current) Player.newPlayer(current);
+      if (change) Player.newPlayer(change);
     }
   });
 
