@@ -189,7 +189,7 @@ function normalizeUrl(href) {
   // support legacy URLs
   apiUrl = apiUrl.replace(/[?#]|%23/g,'&').replace(/[&]/,'#');
   apiUrl = apiUrl.replace(/:([vit])=/g,'&$1=');
-  apiUrl = apiUrl.replace(':shuffle','&shuffle');
+  apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
   // fix URLs butchered by IM clients
   apiUrl = decodeURIComponent(apiUrl);
@@ -200,25 +200,25 @@ function normalizeUrl(href) {
 }
 
 
-function showShuffleUi(multivideo) {
-  var $shuffleUi = $('#shuffle-ui').hide();
+function showRandomUi(multivideo) {
+  var $randomUi = $('#random-ui').hide();
   if (multivideo) {
-    var shuffleFlag = urlFlag('shuffle');
-    var toggleUrl   = document.location.href.replace(/shuffle[^&]*&|&shuffle[^&]*$/g, '');
-    var $shuffle    = $('#shuffle', $shuffleUi);
+    var randomFlag = urlFlag('random');
+    var toggleUrl   = document.location.href.replace(/random[^&]*&|&random[^&]*$/g, '');
+    var $random    = $('#random', $randomUi);
 
-    if (shuffleFlag) {
-      $shuffle.addClass('ticker');
+    if (randomFlag) {
+      $random.addClass('ticker');
     } else {
-      $shuffle.removeClass('ticker');
-      toggleUrl = toggleUrl + '&shuffle';
+      $random.removeClass('ticker');
+      toggleUrl = toggleUrl + '&random';
     }
 
-    $shuffle.unbind('click').click(function() {
+    $random.unbind('click').click(function() {
       document.location.replace(toggleUrl);
     });
 
-    $shuffleUi.show();
+    $randomUi.show();
   }
 }
 
@@ -285,7 +285,7 @@ function Playlist(href) {
   };
 
   Playlist.go = function(direction) { // 'nextI' 'prevI' 'nextV' 'prevV'
-    if (urlFlag('shuffle')) {
+    if (urlFlag('random')) {
       return Playlist.random();
     }
     return Playlist.intervals[Playlist.index = Playlist.current()[direction]];
@@ -515,7 +515,7 @@ function Player() {
   ImgurPlayer();
 
   Player.newPlayer(Playlist.current());
-  showShuffleUi(Playlist.multivideo);
+  showRandomUi(Playlist.multivideo);
 }
 
 
