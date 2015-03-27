@@ -27,8 +27,8 @@ var YT_PLAYER_SIZES = Object.freeze({ // size reference: http://goo.gl/45VxXT
                       });
 
 var PLAYER_TYPES = Object.freeze({
-                     v: {urlKey: 'v', name: 'youtube', player: YouTubePlayer},
-                     i: {urlKey: 'i', name: 'imgur'  , player:   ImgurPlayer}
+                     v: {urlKey: 'v', name: 'youtube', engine: YouTubePlayer},
+                     i: {urlKey: 'i', name: 'imgur'  , engine:   ImgurPlayer}
                    });
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
@@ -303,7 +303,7 @@ function YouTubePlayer() {
   YouTubePlayer.newPlayer = function(playback) {
     var size = getPlayerSize();
 
-    var player = new YT.Player('player',{
+    YouTubePlayer.instance = new YT.Player('player',{
       height: size.height,
       width:  size.width,
       videoId: playback.videoId,
@@ -329,7 +329,7 @@ function YouTubePlayer() {
       $('#player').animate(_.pick(size, 'height', 'width'), 400)
         .promise().done(function() {
           // just to be sure player noticed resize..
-          player.setSize(size.width, size.height);
+          YouTubePlayer.instance.setSize(size.width, size.height);
         });
     };
   };
@@ -487,7 +487,9 @@ function Player() {
     }
 
     // prevalidated! no need to check ^e_
-    PLAYER_TYPES[playback.urlKey].player.newPlayer(playback);
+    Player.engine = PLAYER_TYPES[playback.urlKey].engine;
+    Player.engine.newPlayer(playback);
+
   };
 
   Playlist(window.location.href);
@@ -603,13 +605,37 @@ function responsivePlayerSetup() {
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
     var k = String.fromCharCode(e.which);
+    //logLady('key/code:'+k+'/'+e.which);
     if (k=='s') {
       var $shorten = $('#shorten');
       if ($shorten.is(':visible')) {
         $shorten.click();
       }
+    } else if (k=='b') {
+      $('#box').toggle();
+    } else if (k=='x') {
+      var $box = $('#box');
+      if (Player.engine === ImgurPlayer) {
+        $box.toggle();
+      } else if (Player.engine === YouTubePlayer) {
+        if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
+          YouTubePlayer.instance.pauseVideo();
+          $box.hide();
+        } else {
+          YouTubePlayer.instance.playVideo();
+          $box.show();
+        }
+      }
+    } else if (k==' ') {
+      if (Player.engine === YouTubePlayer) {
+        if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
+          YouTubePlayer.instance.pauseVideo();
+        } else {
+          YouTubePlayer.instance.playVideo();
+        }
+      }
     } else {
-      var current = 
+      var current =
         k=='h' ? Playlist.go('prevV')
                : k=='j' ? Playlist.go('prevI')
                         : k=='k' ? Playlist.go('nextI')
