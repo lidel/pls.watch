@@ -177,6 +177,36 @@ function parseIntervals(v) {
     : [];
 }
 
+// Fix for problem #2 described in:
+// https://github.com/lidel/yt-looper/issues/68#issuecomment-87316655
+function normalizeYouTubePlaylistURI(urlMatch, videoId, playlistId, index) {
+  var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
+                  + '?part=snippet&playlistId=' + playlistId
+                  + '&videoId=' + videoId
+                  + '&maxResults=50'
+                  + '&fields=items(kind%2Csnippet(position%2CresourceId))%2CnextPageToken'
+                  + '&key=' + GOOGLE_API_KEY;
+  var normalizedUrl = urlMatch;
+  var retries = 3;
+  $.ajax({ url: apiRequest, async: false}).done(function(data) {
+    var item = data.items[0];
+    // if position does match, remove duplicate from URL
+    if (item.kind === 'youtube#playlistItem' && item.snippet.position == parseInt(index,10)-1) {
+      normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+)/, '$1$3');
+    }
+  }).fail(function(jqxhr, textStatus) {
+    if (jqxhr.status === 404) {
+      // videoId is not a member of playlistId
+      // no need to change URL
+    } else {
+      logLady('Unable to get YouTube playlistId='+playlistId+' ('+ textStatus +'): ', jqxhr);
+      retries = retries - 1;
+    }
+  });
+
+  return normalizedUrl;
+}
+
 function inlineYouTubePlaylist(urlMatch, playlistId) {
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
@@ -248,6 +278,7 @@ function normalizeUrl(href) {
   apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
   // inline items from YouTuble playlist
+  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, normalizeYouTubePlaylistURI);
   apiUrl = apiUrl.replace(/list=([^&:#]+)/, inlineYouTubePlaylist);
 
   if (!href && url != apiUrl) document.location.replace(apiUrl);
