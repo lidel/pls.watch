@@ -181,7 +181,7 @@ function inlineYouTubePlaylist(urlMatch, playlistId) {
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
                   + '&maxResults=50'
-                  + '&fields=items(kind%2Csnippet(position%2CresourceId))'
+                  + '&fields=items(kind%2Csnippet(position%2CresourceId))%2CnextPageToken'
                   + '&key=' + GOOGLE_API_KEY;
 
   // hack to provide static API response then run in Travis CI
