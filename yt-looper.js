@@ -655,12 +655,11 @@ function responsivePlayerSetup() {
       }
 
     } else if (Playlist.go) {
-      var change =
-        k=='h' ? Playlist.go('prevV')
-               : k=='j' ? Playlist.go('prevI')
-                        : k=='k' ? Playlist.go('nextI')
-                                 : k=='l' ? Playlist.go('nextV')
-                                          : null;
+      var change = k=='k' ? Playlist.go('prevV')
+                 : k=='j' ? Playlist.go('nextV')
+                 : k=='h' ? Playlist.go('prevI')
+                 : k=='l' ? Playlist.go('nextI')
+                 : null;
       if (change) Player.newPlayer(change);
     }
   });

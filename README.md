@@ -30,8 +30,8 @@ YouTube-compatible syntax is also supported: `?v=VIDEO_ID[[#|&|:]t=start[;end]]`
 
 ## Keyboard Commands
 
-- <kbd>h</kbd> , <kbd>l</kbd>  – jump to previous/next video (in playlists with multiple videos)
-- <kbd>j</kbd> , <kbd>k</kbd>  – jump to previous/next segment of current video
+- <kbd>h</kbd> , <kbd>l</kbd>  – jump to previous/next interval (if a video has more than one)
+- <kbd>k</kbd> , <kbd>j</kbd>  – jump to previous/next video (in playlists with multiple videos)
 - <kbd>s</kbd> – display short URL for current playlist
 - <kbd>b</kbd> – hide player, but keep playing audio in background (toggle)
 - <kbd>x</kbd> – panic button: pause and hide player (toggle)

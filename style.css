@@ -7,7 +7,7 @@
 }
 #editor {
   height: 100%;
-  border: 1px solid black;
+  border: 1px solid #0A0A0A;
   background: #111;
   color: #888;
   opacity: 0.9;
@@ -15,6 +15,7 @@
   position: absolute;
   left: 0;
   top: 0;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.4);
 }
 #editor a {
   display: inline-block;
