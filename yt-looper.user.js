@@ -8,9 +8,9 @@
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
 // @version     1.3.0
-// @updateURL   https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
-// @downloadURL https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
-// @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
+// @updateURL   https://yt.aergia.eu/yt-looper.user.js
+// @downloadURL https://yt.aergia.eu/yt-looper.user.js
+// @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
 // @grant       none
 // ==/UserScript==
 
