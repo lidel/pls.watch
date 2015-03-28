@@ -120,6 +120,57 @@ body>div {
   background: #111;
 }
 
+#help {
+  display: none;
+  color: #ccc;
+  text-align: left;
+  max-width: 640px;
+  border: 1px solid #0A0A0A;
+  background: #111;
+  opacity: 0.9;
+  z-index: 69;
+  position: absolute;
+  right: 0;
+  top: 0;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+  padding:1em;
+}
+#help h1, #help h2 {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #0A0A0A;
+  font-weight: normal;
+}
+#help h1 {
+  font-size: 1.75em;
+  line-height: 1.2;
+}
+#help h2 {
+  font-size: 1.25em;
+  line-height: 1.225;
+}
+#help ul {
+  font-size: 0.9em;
+  padding:0;
+  list-style-type: none;
+}
+#help ul>li {
+  padding:0.5em 0;
+}
+#help kbd {
+  display:inline-block;
+  padding: 3px 5px;
+  font-weight: bold;
+  font-size:11px;
+  line-height:10px;
+  color:#111;
+  vertical-align:middle;
+  background-color:#aaa;
+  border:solid 1px #ccc;
+  border-bottom-color:#bbb;
+  border-radius:3px;
+  box-shadow:inset 0 -1px 0 #bbb
+}
+
 
 #menu {
   position: absolute;

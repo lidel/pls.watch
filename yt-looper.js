@@ -200,6 +200,18 @@ function normalizeUrl(href) {
 }
 
 
+function showHelpUi() {
+  var $help = $('#help');
+  var $helpUi = $('#help-ui');
+  var $helpToggle = $('#help-toggle', $helpUi);
+  if (!$help.is(':visible')) {
+    $helpToggle.addClass('ticker');
+  } else {
+    $helpToggle.removeClass('ticker');
+  }
+  $help.slideToggle();
+}
+
 function showRandomUi(multivideo) {
   var $randomUi = $('#random-ui').hide();
   if (multivideo) {
@@ -597,10 +609,10 @@ function responsivePlayerSetup() {
 
   // menu items will now commence!
 
-  // SHORTEN
   $('#shorten').click(_.debounce(showShortUrl, 1000, true));
+  $('#help-toggle').click(_.debounce(showHelpUi, 1000, true));
 
-  // AUTOSIZE
+  // #autosize
   var $responsive = $('#responsive');
   $responsive.click(responsivePlayerSetup);
   // display current autosize setting in menu
@@ -618,14 +630,17 @@ function responsivePlayerSetup() {
   $(document).unbind('keypress').keypress(function(e) {
     var k = String.fromCharCode(e.which).toLowerCase();
     //logLady('key/code:'+k+'/'+e.which);
-    if (k=='s') {
+    if (k=='?') {
+      showHelpUi();
+
+    } else if (k=='s') {
       var $shorten = $('#shorten');
       if ($shorten.is(':visible')) {
         $shorten.click();
       }
 
     } else if (k=='b') {
-      $('#box').toggle();
+      $('#box').slideToggle();
 
     } else if (k=='x') {
       var $box = $('#box');
