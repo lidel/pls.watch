@@ -180,7 +180,8 @@ function parseIntervals(v) {
 function inlineYouTubePlaylist(urlMatch, playlistId) {
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
-                  + '&maxResults=25'
+                  + '&maxResults=50'
+                  + '&fields=items(kind%2Csnippet(position%2CresourceId))'
                   + '&key=' + GOOGLE_API_KEY;
 
   // hack to provide static API response then run in Travis CI
@@ -196,7 +197,7 @@ function inlineYouTubePlaylist(urlMatch, playlistId) {
       $.ajax({ url: apiRequest+pageToken, async: false}).done(function(data) {
         for (var i=0;i<data.items.length;i++) {
           var item = data.items[i];
-          if (item.snippet.resourceId.kind === 'youtube#video') {
+          if (item.kind === 'youtube#playlistItem' && item.snippet.resourceId.kind === 'youtube#video') {
             playlist[item.snippet.position] = item.snippet.resourceId.videoId;
           }
         }
