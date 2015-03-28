@@ -7,7 +7,7 @@
 // @include     http://youtube.com/watch*
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
-// @version     1.2.4
+// @version     1.3.0
 // @updateURL   https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @downloadURL https://raw.github.com/lidel/yt-looper/master/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
@@ -62,7 +62,7 @@ var ytLooperLoaded = false;
         var url = window.location.href;
         url = url.replace(/.*youtube.com\/watch/, 'https://yt.aergia.eu/');
         url = url.replace(/&?feature=[^&#]*/g, '');
-        url = url.replace(/[&#]?t=[^&#]*/g, '');
+        url = url.replace(/[&#]t=[^&#]*/g, '');
         if (getYtPlayer().getPlayerState() === 2) {
           url = url + '#t=' + $('#yt-looper-start').val() + ';' + $('#yt-looper-end').val();
         }
