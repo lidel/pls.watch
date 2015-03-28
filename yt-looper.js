@@ -33,6 +33,9 @@ var PLAYER_TYPES = Object.freeze({
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
 
+// This API key works only with yt.aergia.eu domain
+// Key for different referer can be generated at https://console.developers.google.com
+var GOOGLE_API_KEY = 'AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU';
 
 // document.head (http://jsperf.com/document-head) failsafe init for old browsers
 document.head = typeof document.head != 'object'
@@ -42,9 +45,7 @@ document.head = typeof document.head != 'object'
 
 function showShortUrl() {
   var request = $.ajax({
-    // This API key works only with yt.aergia.eu domain
-    // Key for different referer can be generated at https://console.developers.google.com
-    url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU',
+    url: 'https://www.googleapis.com/urlshortener/v1/url?key=' + GOOGLE_API_KEY,
     type: 'POST',
     contentType: 'application/json; charset=utf-8',
     data: '{ longUrl: "'+ window.location.href +'" }',
@@ -176,10 +177,64 @@ function parseIntervals(v) {
     : [];
 }
 
+function inlineYouTubePlaylist(urlMatch, playlistId) {
+  var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
+                  + '?part=snippet&playlistId=' + playlistId
+                  + '&maxResults=25'
+                  + '&key=' + GOOGLE_API_KEY;
+
+  // hack to provide static API response then run in Travis CI
+  var playlist = urlMatch.hasOwnProperty('testData') ? urlMatch.testData : {};
+  var pageToken = null;
+  var retries = 3;
+  var inlinedPlaylist = '';
+
+  if (!Object.keys(playlist).length) { // hit API only if there is no 'testData'
+    /*jshint -W083*/
+    while (retries>0 && (pageToken || !Object.keys(playlist).length)) {
+      pageToken = (pageToken ? '&pageToken=' + pageToken : '');
+      $.ajax({ url: apiRequest+pageToken, async: false}).done(function(data) {
+        for (var i=0;i<data.items.length;i++) {
+          var item = data.items[i];
+          if (item.snippet.resourceId.kind === 'youtube#video') {
+            playlist[item.snippet.position] = item.snippet.resourceId.videoId;
+          }
+        }
+        pageToken = data.nextPageToken;
+        retries = 3;
+      }).fail(function(jqxhr, textStatus) {
+        logLady('Unable to get YouTube playlistId='+playlistId+' ('+ textStatus +'): ', jqxhr);
+        retries = retries - 1;
+      });
+    }
+    /*jshint +W083*/
+  }
+
+  var keys = [];
+  for (var position in playlist) {
+    if (playlist.hasOwnProperty(position)) {
+      keys.push(parseInt(position,10));
+    }
+  }
+  keys.sort(function(a,b){return a-b;}); // I know, right?
+
+  for (var i=0; i<keys.length;i++) {
+    if (inlinedPlaylist.length) {
+      inlinedPlaylist += '&';
+    }
+    inlinedPlaylist += 'v=' + playlist[keys[i]];
+  }
+
+  return inlinedPlaylist;
+}
+
 
 function normalizeUrl(href) {
   var url    = href || window.location.href;
   var apiUrl = url;
+
+  // fix URLs butchered by IM clients
+  apiUrl = decodeURIComponent(apiUrl);
 
   // translate YouTube URL shenanigans (yes, this is redundant, but was broken in past..)
   apiUrl = apiUrl.replace('#t=','&t=');
@@ -191,8 +246,8 @@ function normalizeUrl(href) {
   apiUrl = apiUrl.replace(/:([vit])=/g,'&$1=');
   apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
-  // fix URLs butchered by IM clients
-  apiUrl = decodeURIComponent(apiUrl);
+  // inline items from YouTuble playlist
+  apiUrl = apiUrl.replace(/list=([^&:#]+)/, inlineYouTubePlaylist);
 
   if (!href && url != apiUrl) document.location.replace(apiUrl);
 
