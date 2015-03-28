@@ -38,7 +38,7 @@ Script adds a button on YouTube pages to open current video in yt.aergia.eu loop
 
 > ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
 
-Click to install: https://github.com/lidel/yt-looper/raw/master/yt-looper.user.js
+Click to install: https://yt.aergia.eu/yt-looper.user.js
 
 Handy addons:
 
