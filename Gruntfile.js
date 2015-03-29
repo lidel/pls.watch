@@ -23,7 +23,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  // Default task.
+  grunt.registerTask('default', 'travis');
   grunt.registerTask('test', 'qunit');
   // Travis CI task.
   grunt.registerTask('travis', ['test','jshint']);
