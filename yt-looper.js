@@ -117,13 +117,13 @@ function getPlayerSize() {
 
 
 function getParam(params, key) {
-  var rslt = new RegExp(key + '=([^&]*)', 'i').exec(params);
+  var rslt = new RegExp(key + '=([^&]+)', 'i').exec(params);
   return rslt && _.unescape(rslt[1]) || '';
 }
 
 
 function getVideo(params) {
-  var rslt = new RegExp('('+ PLAYER_TYPES_REGX +')=([^&]*)', 'i').exec(params);
+  var rslt = new RegExp('('+ PLAYER_TYPES_REGX +')=([^&]+)', 'i').exec(params);
   return rslt ? { urlKey: rslt[1], videoId: _.unescape(rslt[2]) }
               : { urlKey:    null, videoId:                  '' };
 }
@@ -385,7 +385,21 @@ function Playlist(href) {
   logLady('Playlist()');
 
   _.extend(Playlist, jackiechanMyIntervals(href));
-  Playlist.index = 0;
+
+  // &index=<n>
+  var index = getParam(href, 'index');
+  if (index) {
+    index = parseInt(index,10)-1;
+    // bound gently
+    if (index < 0) {
+      index = 0;
+    } else if (index >= Playlist.intervals.length) {
+      index = Playlist.intervals.length-1;
+    }
+  } else {
+    index = 0;
+  }
+  Playlist.index = index;
 
   Playlist.log = function() {
     _(Playlist.intervals).each(logLady);
