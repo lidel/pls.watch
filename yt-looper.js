@@ -730,7 +730,7 @@ function responsivePlayerSetup() {
   else                         { $responsive.addClass('ticker');    }
   // update player on window resize if autosize is enabled
   $(window).on('resize', _.debounce(function() {
-    if ($.cookie('no_autosize') === undefined) {
+    if ($.cookie('no_autosize') === undefined && Player.autosize) {
       Player.autosize();
     }
   }, 300));
