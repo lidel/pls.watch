@@ -253,7 +253,7 @@ QUnit.module('YouTube Playlist Import');
 QUnit.test('Import public playlist with 21 items', function (assert) {
   // sample YouTube API response for playlistId=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS
   var testData = {testData: {'0':'nJBxKT7EGKI','1':'eRs_U6eYl-c','2':'cWn9JN4gSsk','3':'vnncm3MbMLs','4':'3Hv1DElPXV0','5':'PLb57RNlqJc','6':'S0COlNTizwo','7':'phrRu6lACcE','8':'FGs57y4nA_Y','9':'U8-rNMPTnyg','10':'XCzdTxRBDW8','11':'wY-kAnvOY80','12':'QaLFAlUp1U8','13':'4bnb8ti0JGU','14':'uxp54wEhQi8','15':'RyZU9ptzy68','16':'vCVN5pLXoo4','17':'jA8inmHhx8c','18':'GINpKSkZawk','19':'qk2_IY9w4Og','20':'_G04b2sZvSM','21':'rLrtEyisDMU'}};
-  assert.deepEqual(inlineYouTubePlaylist(testData,'PLyALKMPGOR5evINIHBRgtioZBuujYFaeS'),
+  assert.deepEqual(inlineYTPlaylist(testData,'PLyALKMPGOR5evINIHBRgtioZBuujYFaeS'),
                                 'v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=vnncm3MbMLs&v=3Hv1DElPXV0&v=PLb57RNlqJc&v=S0COlNTizwo&v=phrRu6lACcE&v=FGs57y4nA_Y&v=U8-rNMPTnyg&v=XCzdTxRBDW8&v=wY-kAnvOY80&v=QaLFAlUp1U8&v=4bnb8ti0JGU&v=uxp54wEhQi8&v=RyZU9ptzy68&v=vCVN5pLXoo4&v=jA8inmHhx8c&v=GINpKSkZawk&v=qk2_IY9w4Og&v=_G04b2sZvSM&v=rLrtEyisDMU',
                                 'regression in inlineYouTubePlaylist()');
 });
@@ -263,6 +263,23 @@ QUnit.test('Support index attribute in URL', function (assert) {
   assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2'),
                                 'https://yt.aergia.eu/#v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2',
                                 'regression');
+});
+
+QUnit.test('Recalculate index before YT playlist import', function (assert) {
+  // This is intermediate step triggered by &list= element, performed AFTER deduplication
+  // In this test we have 3 videos before imported playlist, so index should be changed from 13 to 16
+  var originalUrl = 'https://yt.aergia.eu/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=13';
+  var recalculatedUrl = originalUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/, recalculateYTPlaylistIndex);
+  var expectedUrl = 'https://yt.aergia.eu/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=16';
+  assert.deepEqual(recalculatedUrl, expectedUrl, 'regression');
+});
+
+QUnit.test('Recalculate index before YT playlist import', function (assert) {
+  // This is intermediate step triggered by &list= element, performed AFTER deduplication
+  // In this test we have no videos before imported playlist, so index should remain 13
+  var originalUrl = 'https://yt.aergia.eu/#list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=13';
+  var recalculatedUrl = originalUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/, recalculateYTPlaylistIndex);
+  assert.deepEqual(recalculatedUrl, originalUrl, 'regression');
 });
 
 // vim:ts=2:sw=2:et:

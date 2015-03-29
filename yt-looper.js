@@ -179,7 +179,7 @@ function parseIntervals(v) {
 
 // Fix for problem #2 described in:
 // https://github.com/lidel/yt-looper/issues/68#issuecomment-87316655
-function normalizeYouTubePlaylistURI(urlMatch, videoId, playlistId, index) {
+function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
                   + '&videoId=' + videoId
@@ -207,7 +207,18 @@ function normalizeYouTubePlaylistURI(urlMatch, videoId, playlistId, index) {
   return normalizedUrl;
 }
 
-function inlineYouTubePlaylist(urlMatch, playlistId) {
+// Fix for problem #1 described in:
+// https://github.com/lidel/yt-looper/issues/68#issuecomment-87316655
+function recalculateYTPlaylistIndex(urlMatch, oldPlaylist, index) {
+  var videosBefore = oldPlaylist.match(/[#&]v=/g);
+  if (videosBefore) {
+    return urlMatch.replace(/&index=\d+/, '&index='+(videosBefore.length+parseInt(index,10)));
+  } else {
+    return urlMatch;
+  }
+}
+
+function inlineYTPlaylist(urlMatch, playlistId) {
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
                   + '&maxResults=50'
@@ -278,8 +289,9 @@ function normalizeUrl(href) {
   apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
   // inline items from YouTuble playlist
-  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, normalizeYouTubePlaylistURI);
-  apiUrl = apiUrl.replace(/list=([^&:#]+)/, inlineYouTubePlaylist);
+  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, deduplicateYTPlaylist);
+  apiUrl = apiUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/, recalculateYTPlaylistIndex);
+  apiUrl = apiUrl.replace(/list=([^&:#]+)/, inlineYTPlaylist);
 
   if (!href && url != apiUrl) document.location.replace(apiUrl);
 
