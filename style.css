@@ -120,19 +120,18 @@ body>div {
   padding:1em;
 }
 #help h1, #help h2 {
-  border-bottom: 1px solid #0A0A0A;
   font-weight: normal;
-  padding-bottom: 0.25em;
 }
 #help h1 {
   font-size: 1.75em;
-  line-height: 1.2;
-  margin: 0 0 1em 0;
+  margin: 0 0 -0.25em 0;
   text-align: right;
 }
 #help h2 {
   font-size: 1.25em;
-  line-height: 1.225;
+  line-height: 1.225em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid #0A0A0A;
 }
 #help a {
   color: #999;
@@ -145,6 +144,7 @@ body>div {
   padding: .25em .5em!important;
   background: #111;
   color: #888;
+  line-height: 2em;
 }
 #help p, ul {
   font-size: 0.9em;
@@ -154,7 +154,7 @@ body>div {
 #help p {
   line-height:1.5em;
 }
-#help p.example {
+#help .example {
   font-size:small;
   color: #888;
 }
