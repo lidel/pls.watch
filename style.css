@@ -103,22 +103,6 @@ body>div {
   background-repeat: no-repeat;
   background-position: center center;
 }
-#box p {
-  line-height: 2em;
-  padding: 0 1em;
-}
-#box a {
-  color: #999;
-  text-decoration: none;
-}
-#box tt {
-  color: #ccc;
-  border-radius: 1em;
-  text-decoration: none;
-  border: 1px #333 solid;
-  padding: .25em .5em!important;
-  background: #111;
-}
 
 #help {
   display: none;
@@ -136,22 +120,43 @@ body>div {
   padding:1em;
 }
 #help h1, #help h2 {
-  padding-bottom: 0.3em;
   border-bottom: 1px solid #0A0A0A;
   font-weight: normal;
+  padding-bottom: 0.25em;
 }
 #help h1 {
   font-size: 1.75em;
   line-height: 1.2;
+  margin: 0 0 1em 0;
+  text-align: right;
 }
 #help h2 {
   font-size: 1.25em;
   line-height: 1.225;
 }
-#help ul {
+#help a {
+  color: #999;
+  text-decoration: none;
+}
+#help tt {
+  border-radius: 1em;
+  text-decoration: none;
+  border: 1px #333 solid;
+  padding: .25em .5em!important;
+  background: #111;
+  color: #888;
+}
+#help p, ul {
   font-size: 0.9em;
   padding:0;
   list-style-type: none;
+}
+#help p {
+  line-height:1.5em;
+}
+#help p.example {
+  font-size:small;
+  color: #888;
 }
 #help ul>li {
   padding:0.5em 0;
@@ -165,7 +170,7 @@ body>div {
   color:#111;
   vertical-align:middle;
   background-color:#aaa;
-  border:solid 1px #ccc;
+  border:solid 1px #888;
   border-bottom-color:#bbb;
   border-radius:3px;
   box-shadow:inset 0 -1px 0 #bbb

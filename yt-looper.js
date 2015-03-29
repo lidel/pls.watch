@@ -299,16 +299,17 @@ function normalizeUrl(href) {
 }
 
 
-function showHelpUi() {
+function showHelpUi(show) {
   var $help = $('#help');
   var $helpUi = $('#help-ui');
   var $helpToggle = $('#help-toggle', $helpUi);
-  if (!$help.is(':visible')) {
+  if (show && !$help.is(':visible')) {
     $helpToggle.addClass('ticker');
-  } else {
+    $help.slideDown();
+  } else if (!show && $help.is(':visible')) {
     $helpToggle.removeClass('ticker');
+    $help.slideUp();
   }
-  $help.slideToggle();
 }
 
 function showRandomUi(multivideo) {
@@ -661,23 +662,17 @@ function initYT() {
 
 function renderPage() {
   var video = getVideo(window.location.href);
+  var $box = $('#box').show();
   if (video.urlKey == 'v') {
     // splash screen
-    $('#box').css('background-image', 'url(//img.youtube.com/vi/' + video.videoId + '/hqdefault.jpg)');
+    $box.css('background-image', 'url(//img.youtube.com/vi/' + video.videoId + '/hqdefault.jpg)');
     initYT();
   } else if (video.urlKey == 'i') {
     initYT();
   } else {
     changeFavicon();
-    $('#box').html(
-          '<p><big>Usage:</big></p>'
-        + '<p>append <tt>#v=VIDEO_ID&t=start;end</tt> to current URL<br/>'
-        + 'alternative syntax: <tt>?v=VIDEO_ID&t=start;end</tt> or <tt>?v=VIDEO_ID:t=start;end</tt></p>'
-        + '<p style="font-size:small">eg. <tt><a href="#v=ZuHZSbPJhaY&t=1h1s;1h4s">#v=ZuHZSbPJhaY&t=1h1s;1h4s</a></tt> '
-        + 'or <tt><a href="#v=eSMeUPFjQHc&t=60;80&v=ZuHZSbPJhaY&t=1h;1h5s">#v=eSMeUPFjQHc&t=60;80&v=ZuHZSbPJhaY&t=1h;1h5s</a></tt><br/>'
-        + 'or even <tt><a href="#v=ZNno63ZO2Lw&t=54s;1m20s+1m33s;1m47s+3m30s;3m46s&v=TM1Jy3qPSCQ&t=2s;16s">&v=ZNno63ZO2Lw&t=54s;1m20s+1m33s;1m47s+3m30s;3m46s&v=TM1Jy3qPSCQ&t=2s;16s</a></tt></p>'
-        + '<p style="text-align:right;font-size:xx-small">More at <a href="https://github.com/lidel/yt-looper">GitHub</a></p>'
-    );
+    $box.hide();
+    showHelpUi(true);
   }
 }
 
@@ -710,6 +705,8 @@ function responsivePlayerSetup() {
     // reset things that depend on URL
     $('#shortened').remove();
     $('#shorten').show();
+    $('#box').show();
+    showHelpUi(false);
 
     // reset player or entire page
     if ($('#player').length > 0) {
@@ -723,7 +720,7 @@ function responsivePlayerSetup() {
   // menu items will now commence!
 
   $('#shorten').click(_.debounce(showShortUrl, 1000, true));
-  $('#help-toggle').click(_.debounce(showHelpUi, 1000, true));
+  $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
 
   // #autosize
   var $responsive = $('#responsive');
@@ -744,7 +741,7 @@ function responsivePlayerSetup() {
     var k = String.fromCharCode(e.which).toLowerCase();
     //logLady('key/code:'+k+'/'+e.which);
     if (k=='?') {
-      showHelpUi();
+      $('#help-toggle').click();
 
     } else if (k=='s') {
       var $shorten = $('#shorten');

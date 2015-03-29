@@ -15,18 +15,19 @@ Time format is `1h2m3s` or just a number of seconds.
 
 ## Playlists
 
-To create a playlist just chain multiple intervals with `+`: 
+To create a playlist just chain multiple intervals with `+`:
 ```
 #v=VIDEO_ID&t=start1;end1+start2;end2+...
 ```
 
-To chain intervals from multiple videos just append them at the end of URL:    
+To chain intervals from multiple videos just append them at the end of URL:
 ```
 #v=VIDEO_ID&t=start1;end1+start2;end2&v=VIDEO2_ID&t=start1;end1+start2;end2`
 ```
 
-YouTube-compatible syntax is also supported: `?v=VIDEO_ID[[#|&|:]t=start[;end]]`
+YouTube-compatible syntax is also supported for easy domain swap in URLs: `?v=VIDEO_ID[[#|&|:]t=start[;end]]`
 
+Playlist import with autoplay of 13th video: `#list=<playlistId>&index=<n>`
 
 ## Keyboard Commands
 
