@@ -192,7 +192,7 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
     var item = data.items[0];
     // if position does match, remove duplicate from URL
     if (item.kind === 'youtube#playlistItem' && item.snippet.position == parseInt(index,10)-1) {
-      normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+)/, '$1$3');
+      normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+|index=[^&]+&list=[^&]+)/, '$1$3');
     }
   }).fail(function(jqxhr, textStatus) {
     if (jqxhr.status === 404) {
@@ -290,8 +290,10 @@ function normalizeUrl(href) {
 
   // inline items from YouTuble playlist
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, deduplicateYTPlaylist);
-  apiUrl = apiUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/, recalculateYTPlaylistIndex);
-  apiUrl = apiUrl.replace(/list=([^&:#]+)/, inlineYTPlaylist);
+  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&index=([^&]+)&list=([^&]+)/g, function($0,$1,$2,$3){return deduplicateYTPlaylist($0,$1,$3,$2);});
+  apiUrl = apiUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/g, recalculateYTPlaylistIndex);
+  apiUrl = apiUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/g, recalculateYTPlaylistIndex);
+  apiUrl = apiUrl.replace(/list=([^&:#]+)/g, inlineYTPlaylist);
 
   if (!href && url != apiUrl) document.location.replace(apiUrl);
 
