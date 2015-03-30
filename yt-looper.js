@@ -781,7 +781,11 @@ function responsivePlayerSetup() {
       }
     } else if (k=='m') {
         if (Player.engine === YouTubePlayer) {
-          YouTubePlayer.instance.isMuted() ? YouTubePlayer.instance.unMute() : YouTubePlayer.instance.mute();
+          if (YouTubePlayer.instance.isMuted()) {
+            YouTubePlayer.instance.unMute();
+          } else {
+            YouTubePlayer.instance.mute();
+          }
         }
     } else if (k==' ') {
       if (Player.engine === YouTubePlayer) {
