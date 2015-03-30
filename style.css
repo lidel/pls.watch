@@ -133,6 +133,12 @@ body>div {
   padding-bottom: 0.25em;
   border-bottom: 1px solid #0A0A0A;
 }
+#help > div#version {
+  float: right;
+  margin: 0.3em 5em 0 0;
+  font-size: x-small;
+  color: #666;
+}
 #help a {
   color: #999;
   text-decoration: none;
