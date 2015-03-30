@@ -5,43 +5,55 @@ yt-looper
 
 Minimalistic Youtube Looper at https://yt.aergia.eu
 
+
 ## URL Parameters
 
+The most basic loop is one video with optional range:
 ```
-#v=VIDEO_ID[&t=start[;end]]
+#v=<videoId>[&t=<start>[;<end>]]
 ```
-
 Time format is `1h2m3s` or just a number of seconds.
+YouTube-compatible syntax is also supported, enabling use by a simple domain swap in URLs: `?v=<videoId>[[#|&|:]t=<start>[;<end>]]`
 
-## Playlists
 
-To create a playlist just chain multiple intervals with `+`:
-```
-#v=VIDEO_ID&t=start1;end1+start2;end2+...
-```
+### Advanced Loops
 
-To chain intervals from multiple videos just append them at the end of URL:
+A video can have more than one interval. Intervals are chained with the `+` sign:
 ```
-#v=VIDEO_ID&t=start1;end1+start2;end2&v=VIDEO2_ID&t=start1;end1+start2;end2`
+#v=<videoId>&t=<start1>;<end1>+<start2>;<end2>+...
 ```
 
-YouTube-compatible syntax is also supported for easy domain swap in URLs: `?v=VIDEO_ID[[#|&|:]t=start[;end]]`
+To chain intervals from multiple videos just append another `#v=(...)` at the end of URL:
+```
+#v=<videoId1>&t=<start1>;<end1>+<start2>;<end2>&v=<videoId2>&t=<start3>;<end3>+<start4>;<end4>`
+```
 
-Playlist import with autoplay of 13th video: `#list=<playlistId>&index=<n>`
+### Playlist Import
+
+To generate `v=(...)` items from `<playlistId>` and start autoplay from `<n>`-th element:
+```
+#list=<playlistId>&index=<n>
+```
+
+YouTube URLs are supported transparently: if `<videoId>` is inside of the playlist specified by `<playlistId>` on `<n>`-th position, it will be deduplicated:
+```
+#v=<videoId>&list=<playlistId>&index=<n>
+```
+If URL already had some videos `<n>` will be recalculated.
 
 ## Keyboard Commands
 
-Press <kbd>?</kbd> to display available shortcuts.
+Press <kbd>?</kbd> to toggle help screen with available shortcuts.
 
 ## Companion userscript
 
-Script adds a button on YouTube pages to open current video in yt.aergia.eu looper:
+There is a simple userscript that adds a button on YouTube pages to open current video in yt-looper:
 
 > ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
 
 Click to install: https://yt.aergia.eu/yt-looper.user.js
 
-Handy addons:
+It may require preinstalled browser extension:
 
 - Firefox: [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
 - Chrome/Opera: [Tampermonkey](http://tampermonkey.net)
