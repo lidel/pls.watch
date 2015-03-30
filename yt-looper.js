@@ -502,10 +502,12 @@ function YouTubePlayer() {
 
     } else if (event.data == YT.PlayerState.PLAYING) {
       changeFavicon(faviconPlay);
-    } else if (event.data == YT.PlayerState.PAUSED) {
-      changeFavicon(faviconPause);
-    } else {
-      changeFavicon(faviconWait);
+    } else if ($('#box').is(':visible') || !event.target.isMuted()) {
+      if (event.data == YT.PlayerState.PAUSED) {
+        changeFavicon(faviconPause);
+      } else {
+        changeFavicon(faviconWait);
+      }
     }
   };
 }
@@ -756,22 +758,31 @@ function responsivePlayerSetup() {
 
     } else if (k=='x') {
       var $box = $('#box');
-      if (Player.engine === YouTubePlayer) {
-        if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
+      if ($box.is(':visible')) {
+        $box.hide();
+        if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
+          YouTubePlayer.instance.mute();
           YouTubePlayer.instance.pauseVideo();
-          $box.hide();
-        } else {
-          YouTubePlayer.instance.playVideo();
-          $box.show();
         }
+        $(document).prop('title', 'Google');
+        changeFavicon('https://google.com/favicon.ico');
       } else {
-        $box.toggle();
+        $box.show();
+        if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING !== YouTubePlayer.instance.getPlayerState()) {
+          YouTubePlayer.instance.unMute();
+          YouTubePlayer.instance.playVideo();
+          $(document).prop('title', YouTubePlayer.instance.getVideoData().title);
+        }
       }
 
     } else if (k=='r') {
       if (Playlist.intervals) {
         Player.newPlayer(Playlist.random());
       }
+    } else if (k=='m') {
+        if (Player.engine === YouTubePlayer) {
+          YouTubePlayer.instance.isMuted() ? YouTubePlayer.instance.unMute() : YouTubePlayer.instance.mute();
+        }
     } else if (k==' ') {
       if (Player.engine === YouTubePlayer) {
         if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
