@@ -673,7 +673,7 @@ function renderPage() {
   var $box = $('#box').show();
   if (video.urlKey == 'v') {
     // splash screen
-    $box.css('background-image', 'url(//img.youtube.com/vi/' + video.videoId + '/hqdefault.jpg)');
+    $box.css('background-image', 'url(//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg)');
     initYT();
   } else if (video.urlKey == 'i') {
     initYT();

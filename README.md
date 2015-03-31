@@ -43,14 +43,18 @@ YouTube URLs are supported transparently: if `<videoId>` is inside of the playli
 ```
 If URL already had some videos `<n>` will be recalculated.
 
+
 **Video Quality**
+
 To cap video quality at preferred level (global setting):
 ```
 &quality=<level>
 ```
 Current list of available levels can be found in [YouTube Player API Reference](https://developers.google.com/youtube/iframe_api_reference#Playback_quality).
 
+
 **Random Mode**
+
 ```
 &random
 ```
