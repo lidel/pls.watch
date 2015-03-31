@@ -16,7 +16,7 @@ Time format is `1h2m3s` or just a number of seconds.
 YouTube-compatible syntax is also supported, enabling use by a simple domain swap in URLs: `?v=<videoId>[[#|&|:]t=<start>[;<end>]]`
 
 
-### Advanced Loops
+**Advanced Loops**
 
 A video can have more than one interval. Intervals are chained with the `+` sign:
 ```
@@ -28,7 +28,9 @@ To chain intervals from multiple videos just append another `#v=(...)` at the en
 #v=<videoId1>&t=<start1>;<end1>+<start2>;<end2>&v=<videoId2>&t=<start3>;<end3>+<start4>;<end4>`
 ```
 
-### Playlist Import
+### Additional Options
+
+**YouTube Playlist Import**
 
 To generate `v=(...)` items from `<playlistId>` and start autoplay from `<n>`-th element:
 ```
@@ -40,6 +42,20 @@ YouTube URLs are supported transparently: if `<videoId>` is inside of the playli
 #v=<videoId>&list=<playlistId>&index=<n>
 ```
 If URL already had some videos `<n>` will be recalculated.
+
+**Video Quality**
+To cap video quality at preferred level (global setting):
+```
+&quality=<level>
+```
+Current list of available levels can be found in [YouTube Player API Reference](https://developers.google.com/youtube/iframe_api_reference#Playback_quality).
+
+**Random Mode**
+```
+&random
+```
+This will play multiple videos in semi-random order (current video will not be played twice in a row).
+
 
 ## Keyboard Commands
 

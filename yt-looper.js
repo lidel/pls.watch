@@ -483,6 +483,11 @@ function YouTubePlayer() {
     $(document).prop('title', event.target.getVideoData().title);
     $('#box').css('background-image', 'none');
 
+    var quality = urlParam('quality');
+    if (quality) {
+      event.target.setPlaybackQuality(quality);
+    }
+
     event.target.playVideo();
   };
 
