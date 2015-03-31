@@ -3,7 +3,9 @@
 var _dropInterval,
     _gotoInterval,
     _editInterval,
-    _linkInterval, _updatePageAfterEditorEvent;
+    _linkInterval,
+    _asyncVideoTitle,
+    _updatePageAfterEditorEvent;
 
 
 function _createEditorColumns(interval, index, $tr) {
@@ -44,6 +46,25 @@ function _humanReadableTime(interval) {
   return time ? '&t=' + time : '';
 }
 
+function _asyncVideoTitle(videoId, intervalLink) {
+  var apiRequest = 'https://www.googleapis.com/youtube/v3/videos'
+                  + '?part=snippet&id=' + videoId
+                  + '&maxResults=1'
+                  + '&fields=kind%2Citems%2Fsnippet(title)'
+                  + '&key=' + GOOGLE_API_KEY;
+  var retries = 3;
+  $.ajax({ url: apiRequest, async: true}).done(function(data) {
+    if (data.kind === 'youtube#videoListResponse' && data.items.length) {
+      var title = data.items[0].snippet.title;
+      intervalLink.attr('title', title);
+    }
+  }).fail(function(jqxhr, textStatus) {
+    logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
+    retries = retries - 1;
+  });
+}
+
+
 
 function _assembleInterval(interval) {
   return interval.urlKey + '='
@@ -62,10 +83,16 @@ _dropInterval = function (interval, caption) {
 
 
 _gotoInterval = function(interval, index) {
-  return $('<a/>').unbind().click(function () {
+  var intervalLink = $('<a/>').unbind().click(function () {
     Playlist.index = index;
     Player.newPlayer(Playlist.current());
   }).append(_assembleInterval(interval));
+
+  if (interval.urlKey === 'v') {
+    _asyncVideoTitle(interval.videoId, intervalLink);
+  }
+
+  return intervalLink;
 };
 
 
