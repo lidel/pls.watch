@@ -47,6 +47,14 @@ function _humanReadableTime(interval) {
 }
 
 function _asyncVideoTitle(videoId, intervalLink) {
+
+  var setTitle = function(title, intervalLink) {
+      var intervalUri = intervalLink.text();
+      intervalLink.addClass('truncate');
+      intervalLink.attr('title', intervalUri);
+      intervalLink.text(title);
+  };
+
   var apiRequest = 'https://www.googleapis.com/youtube/v3/videos'
                   + '?part=snippet&id=' + videoId
                   + '&maxResults=1'
@@ -55,8 +63,7 @@ function _asyncVideoTitle(videoId, intervalLink) {
   var retries = 3;
   $.ajax({ url: apiRequest, async: true}).done(function(data) {
     if (data.kind === 'youtube#videoListResponse' && data.items.length) {
-      var title = data.items[0].snippet.title;
-      intervalLink.attr('title', title);
+      setTitle(data.items[0].snippet.title, intervalLink);
     }
   }).fail(function(jqxhr, textStatus) {
     logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
@@ -107,7 +114,8 @@ _editInterval = function (interval, index, caption) {
       $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
 
       $input.unbind().keypress(function (ev) {
-        if (ev.which == 13) { // enter
+        var key = ev.which;
+        if (key == 13 || key == 27 || key == 9) { // enter || escape || tab
           var val = $(this).val();
           var $tr = $(this).parent('td')
                            .parent('tr').empty();
@@ -153,13 +161,14 @@ _updatePageAfterEditorEvent = function () {
     var last = href;
 
     $('.editor-col2>a').each(function (index) {
+      var $this = $(this);
       // reindex 'goto' links
-      $(this).unbind().click(function () {
+      $this.unbind().click(function () {
         Playlist.index = index;
         Player.newPlayer(Playlist.current());
       });
 
-      var text = $(this).text();
+      var text = $this.attr('title') || $this.text();
       var part = text.split('&');
 
       if (last === part[0]) {

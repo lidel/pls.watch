@@ -70,6 +70,12 @@
 #editor input::-webkit-selection {
   background-color: #888;
 }
+#editor .truncate {
+  width: 20em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 
 body {
