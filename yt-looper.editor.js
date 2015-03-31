@@ -171,7 +171,7 @@ _updatePageAfterEditorEvent = function () {
       var text = $this.attr('title') || $this.text();
       var part = text.split('&');
 
-      if (last === part[0]) {
+      if (last === part[0] && part.length > 1) {
         // join time ranges
         var time = part[1].split('=')[1];
         if (time) {
