@@ -80,7 +80,7 @@ body {
   width: 100%;
   font-family: sans-serif;
   margin: 0;
-  background: url(zwartevilt.png) #333;
+  background: url(assets/zwartevilt.png) #121212;
   /* zwartevilt.png from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
 }
 body>div {
