@@ -580,12 +580,12 @@ function ImgurPlayer() {
           $player.animate(_.pick(getImagePlayerSize(image), 'height', 'width'), 400);
         };
 
-        if (Playlist.multivideo) {
+        if (Playlist.multivideo && playback.start > 0) {
           // no need to worry about potentially badly defined value of timerId, because:
           // 1. we are single threaded
           // 2. callbacks do not interrupt anything
           $player.on('destroyed', onImgurPlayerRemove);
-          timerId = _.delay(onImgurPlayerStateChange, 1000*(playback.start || 3)); // milis
+          timerId = _.delay(onImgurPlayerStateChange, 1000*playback.start); // milis
         }
 
       });
