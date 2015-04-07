@@ -1,3 +1,7 @@
+'use strict';
+
+/* global Player, Playlist, GOOGLE_API_KEY, jackiechanMyIntervals */
+/* global logLady */
 
 // PROTOTYPES (fufuf jshitn!)
 var _dropInterval,
@@ -253,5 +257,12 @@ function unregisterEditor() { // jshint ignore:line
   }
 }
 
+function reloadEditor() { // jshint ignore:line
+  var $editor = $('#editor');
+  if ($editor.length) {
+    // TODO: https://github.com/lidel/yt-looper/issues/81#issuecomment-88258499
+    unregisterEditor();
+  }
+}
 
 // vim:ts=2:sw=2:et:

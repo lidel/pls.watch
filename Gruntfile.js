@@ -16,6 +16,16 @@ module.exports = function(grunt) {
         'latedef': true,
         'unused': true,
         '-W014': true, // ignore [W014] Bad line breaking
+        '-W097': true, // global strict
+        'predef':[
+          'jQuery',
+          'window',
+          'console',
+          'document',
+          '$LAB',
+          '$',
+          '_',
+          ],
       },
     },
   });

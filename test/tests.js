@@ -1,3 +1,6 @@
+'use strict';
+/* global QUnit, recalculateYTPlaylistIndex, normalizeUrl, jackiechanMyIntervals */
+/* global Playlist, parseIntervals, getParam, parseVideos, inlineYTPlaylist */
 
 QUnit.test('qunit self-test', function (assert) {
   assert.ok(1 == '1', 'Passed!');
@@ -171,7 +174,7 @@ QUnit.module('Basic playlist directions');
 QUnit.test('scheme: 3 2 1 : +I +I +I +I -V -I +V +V +V +V -I +I -V -V -V -V -V -I -I -I +V', function (assert) {
   var href = '#v=abcdefghij0:t=1s;2s+3s;4s+5s;6s:v=abcdefghij1:t=7s;8s+9s;10s:v=abcdefghij2:t=11s;12s';
 
-  Playlist(normalizeUrl(href));
+  new Playlist(normalizeUrl(href));
 
   var steps = [
     ['nextI', {urlKey:'v', videoId:'abcdefghij0', start: 3,end: 4, prevI:0,nextI:2, prevV:5,nextV:3} ], // 0

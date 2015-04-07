@@ -1,3 +1,5 @@
+'use strict';
+/* global YT, registerEditor */
 
 // HALPERS
 function logLady(a, b) { // kek
@@ -601,7 +603,7 @@ function ImgurPlayer() {
   };
 
   var onImgurPlayerRemove = function() {
-    clearTimeout(timerId);
+    window.clearTimeout(timerId);
   };
 }
 
@@ -642,11 +644,11 @@ function Player() {
 
   };
 
-  Playlist(window.location.href);
+  new Playlist(window.location.href);
   Playlist.log();
 
-  YouTubePlayer();
-  ImgurPlayer();
+  new YouTubePlayer();
+  new ImgurPlayer();
 
   Player.newPlayer(Playlist.current());
   showRandomUi(Playlist.multivideo);
@@ -655,7 +657,7 @@ function Player() {
 
 function onYouTubeIframeAPIReady() {
   logLady('onYouTubeIframeAPIReady()');
-  Player();
+  new Player();
   registerEditor();
 }
 
@@ -715,6 +717,7 @@ function responsivePlayerSetup() {
     $('#shorten').show();
     $('#box').show();
     showHelpUi(false);
+    //reloadEditor();
 
     // reset player or entire page
     if ($('#player').length > 0) {
