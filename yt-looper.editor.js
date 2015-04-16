@@ -106,39 +106,47 @@ _gotoInterval = function(interval, index) {
   return intervalLink;
 };
 
-
 _editInterval = function (interval, index, caption) {
+  var saveIntervalItem = function($input) {
+    var val = $input.val();
+    var $tr = $input.parent('td').parent('tr').empty();
+    var newInterval = jackiechanMyIntervals(val).intervals[0];
+
+    // use original interval for failsafe
+    _createEditorColumns(newInterval || interval, index, $tr);
+
+    _editInterval.editInProgress = (function () { return; })();// kek'd safe undefined
+    _updatePageAfterEditorEvent();
+  };
+
   return $('<a/>').unbind().click(function () {
-    if (!_editInterval.editInProgress) {
-      // only single edit is allowed at a time
-      _editInterval.editInProgress = true;
-
-      var $input = $('<input type="text"/>');
-      $input.attr('value', _assembleInterval(interval));
-      $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
-
-      $input.unbind().keypress(function (ev) {
-        var key = ev.which;
-        if (key == 13 || key == 27 || key == 9) { // enter || escape || tab
-          var val = $(this).val();
-          var $tr = $(this).parent('td')
-                           .parent('tr').empty();
-
-          var newInterval = jackiechanMyIntervals(val).intervals[0];
-
-          // use original interval for failsafe
-          _createEditorColumns(newInterval || interval, index, $tr);
-
-          _editInterval.editInProgress = false;
-          _updatePageAfterEditorEvent();
-          return false;
-        }
-      });
-
-      var $td = $('<td/>').attr('colspan', 4).html($input);
-      $(this).parent('td')
-             .parent('tr').html($td);
+    var inProgress = _editInterval.editInProgress;
+    if (inProgress !== undefined) {
+      saveIntervalItem(inProgress);
     }
+
+    var $input = $('<input type="text"/>');
+    $input.attr('value', _assembleInterval(interval));
+    $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
+
+    // only single edit is allowed at a time
+    _editInterval.editInProgress = $input;
+
+    $input.unbind().keypress(function (ev) {
+      var key = ev.keyCode ? ev.keyCode : ev.which;
+      logLady(key);
+      if (key == 13 || key == 27 || key == 9) { // enter || escape || tab
+        saveIntervalItem($input);
+        return false;
+      }
+    });
+    $input.focusout(function() {
+      saveIntervalItem($input);
+    });
+
+    var $td = $('<td/>').attr('colspan', 4).html($input);
+    $(this).parent('td').parent('tr').html($td);
+
   }).append(caption);
 };
 
@@ -211,7 +219,6 @@ function _toggleEditor() {
 
         var $tbody = $('<tbody/>')
           .sortable({ update: _updatePageAfterEditorEvent })
-          .disableSelection()
           .appendTo($table);
 
         _(Playlist.intervals).each(function (interval, index) {
