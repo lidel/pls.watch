@@ -140,9 +140,6 @@ _editInterval = function (interval, index, caption) {
         return false;
       }
     });
-    $input.focusout(function() {
-      saveIntervalItem($input);
-    });
 
     var $td = $('<td/>').attr('colspan', 4).html($input);
     $(this).parent('td').parent('tr').html($td);
