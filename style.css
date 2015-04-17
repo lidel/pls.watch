@@ -26,21 +26,22 @@
 #editor a:hover {
   color: #888;
 }
-#editor>table {
+#editor table {
   font-family: monospace;
   table-layout: fixed;
   text-align: left;
+  position: relative;
 }
-#editor>table,
-.editor-col2 {
+#editor table,
+#editor .editor-col2 {
   min-width: 20em;
 }
-.editor-col2 {
+#editor .editor-col2 {
   text-align: left;
 }
-.editor-col1,
-.editor-col3,
-.editor-col4 {
+#editor .editor-col1,
+#editor .editor-col3,
+#editor .editor-col4 {
   width: 1em;
   text-align: center;
 }

@@ -153,19 +153,21 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
 
   Editor.updateHighlight = function () {
     logLady('Editor.updateHighlight()');
+    var $editor = $('#editor');
     // unhighlight multiple table rows (just to be safe)
-    $('#editor>table tr.highlighted').removeClass('highlighted');
+    $('table tr.highlighted', $editor).removeClass('highlighted');
     // highlight specific table row
-    $('#editor>table tr:nth-child('+ (Playlist.index + 1) +')').addClass('highlighted');
+    $('table tr:nth-child('+ (Playlist.index + 1) +')', $editor).addClass('highlighted');
   };
 
   Editor.updateHash = function () {
     logLady('Editor.updateHash()');
-    if ($('#editor').length) {
+    var $editor = $('#editor');
+    if ($editor.length) {
       var href = '';
       var last = href;
 
-      $('.editor-col2>a').each(function (index) {
+      $('.editor-col2>a', $editor).each(function (index) {
         var $this = $(this); // such optimization! c/\o
         // reindex 'goto' links
         $this.unbind().click(function () {
@@ -212,11 +214,11 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
 
   Editor.reload = function () {
     logLady('Editor.reload()');
- 
+
     var $editor = $('#editor');
     if ($editor.length > 0) {
-      var $table = $editor.children('table').first();
-      var $tbody = $table.children('tbody').first();
+      var $table = $('table', $editor).first();
+      var $tbody = $('tbody', $table).first();
       $tbody.children('tr').remove();
       Editor._renderRows($tbody);
     }
@@ -230,12 +232,36 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
       Editor.updateHighlight(); // update on slide
     } else {
       $LAB
-      // load only if editor has been requested
+      // load jQuery UI if editor has been requested for the first time
       .script('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js')
       .wait(function () {
         Editor.create();
         $('#editor').toggle('slide');
         $('#editor-ui').toggleClass('ticker');
+      })
+      .script(function () {
+        // load scrollbar assets only when potentially makes sense
+        if (Playlist.intervals.length > 10) {
+          // Load CDN version of mCustomScrollbar by malihu (MIT)
+          // http://manos.malihu.gr/jquery-custom-content-scroller/
+          $('<link>')
+            .appendTo('head')
+            .attr({type : 'text/css', rel : 'stylesheet'})
+            .attr('href', '//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.min.css');
+          return '//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js';
+        } else {
+          return null;
+        }
+      })
+      .wait(function() {
+        if ($.mCustomScrollbar) {
+          $('#editor').mCustomScrollbar({
+            axis: 'y',
+            mouseWheel: { axis: 'y' },
+            scrollInertia: 0,
+            theme: 'minimal'
+          }).css('padding-right','16px');
+        }
       });
     }
   };
