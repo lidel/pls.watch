@@ -63,8 +63,7 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
 
   Editor._createDrop = function (interval, caption) {
     return $('<a/>').unbind().click(function () {
-      $(this).parent('td')
-             .parent('tr').remove();
+      $(this).parent('td').parent('tr').remove();
       Editor.updateHash();
     }).append(caption);
   };
@@ -83,41 +82,43 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
   };
 
   Editor._createEdit = function (interval, index, caption) {
+    var saveIntervalItem = function ($input) {
+      var val = $input.val();
+      var $tr = $input.parent('td').parent('tr').empty();
+      var newInterval = jackiechanMyIntervals(val).intervals[0];
+
+      // use original interval for failsafe
+      Editor._createRow(newInterval || interval, index, $tr);
+
+      Editor._createEdit.editInProgress = (function () { return; })();// kek'd safe undefined
+      Editor.updateHash();
+    };
+
     return $('<a/>').unbind().click(function () {
-      if (!Editor._createEdit.editInProgress) {
-        // only single edit is allowed at a time
-        Editor._createEdit.editInProgress = true;
-
-        var $input = $('<input type="text"/>');
-        $input.attr('value', _assembleInterval(interval));
-        $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
-
-        $input.unbind().keypress(function (ev) {
-          var key = ev.which;
-
-          if (key == 13 || key == 27 || key == 9) { // enter || escape || tab
-            var $this = $(this); // such optimization! c/\o
-
-            var val = $this.val();
-            var $tr = $this.parent('td')
-                           .parent('tr').empty();
-
-            var newInterval = jackiechanMyIntervals(val).intervals[0];
-
-            // use original interval for failsafe
-            Editor._createRow(newInterval || interval, index, $tr);
-
-            Editor._createEdit.editInProgress = false;
-            Editor.updateHash();
-
-            return false;
-          }
-        });
-
-        var $td = $('<td/>').attr('colspan', 4).html($input);
-        $(this).parent('td')
-               .parent('tr').html($td);
+      var inProgress = Editor._createEdit.editInProgress;
+      if (inProgress !== undefined) {
+        saveIntervalItem(inProgress);
       }
+
+      var $input = $('<input type="text"/>');
+      $input.attr('value', _assembleInterval(interval));
+      $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
+
+      // only single edit is allowed at a time
+      Editor._createEdit.editInProgress = $input;
+
+      $input.unbind().keypress(function (ev) {
+        var key = ev.keyCode ? ev.keyCode : ev.which;
+        logLady(key);
+        if (key == 13 || key == 27 || key == 9) { // enter || escape || tab
+          saveIntervalItem($input);
+          return false;
+        }
+      });
+
+      var $td = $('<td/>').attr('colspan', 4).html($input);
+      $(this).parent('td').parent('tr').html($td);
+
     }).append(caption);
   };
 
@@ -185,52 +186,50 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     }
   };
 
-  Editor.reload = function () {
-    logLady('Editor.reload()');
-  
-    var $editor = $('#editor');
-    var $table = null;
-    var $tbody = null;
-
-    if ($editor.length > 0) {
-      $table = $editor.children('table').first();
-      $tbody = $table.children('tbody').first();
-      $tbody.children('tr').remove();
-    } else {
-      $editor = $('<div/>', { id: 'editor' });
-      $table = $('<table/>');
-      $tbody = $('<tbody/>').sortable({ update: Editor.updateHash })
-                            .disableSelection()
-                            .appendTo($table);
-
-      $table.appendTo($editor.hide());
-      $editor
-        .appendTo('body')
-        .toggle('slide');
-
-      $('#editor-ui').toggleClass('ticker');
-    }
-    
+  Editor._renderRows = function ($tbody) {
     _(_Playlist.intervals).each(function (interval, index) {
       Editor._createRow(interval, index, $('<tr/>').appendTo($tbody));
     });
-
     Editor.updateHighlight();
+  };
+
+  Editor.create = function () {
+    var $editor = $('<div/>', { id: 'editor' });
+    var $table = $('<table/>');
+    var $tbody = $('<tbody/>').sortable({ update: Editor.updateHash })
+                              .appendTo($table);
+    $table.appendTo($editor.hide());
+    $editor.appendTo('body');
+    Editor._renderRows($tbody);
+  };
+
+  Editor.reload = function () {
+    logLady('Editor.reload()');
+ 
+    var $editor = $('#editor');
+    if ($editor.length > 0) {
+      var $table = $editor.children('table').first();
+      var $tbody = $table.children('tbody').first();
+      $tbody.children('tr').remove();
+      Editor._renderRows($tbody);
+    }
   };
 
   Editor.toggle = function () {
     var $editor = $('#editor');
-
     if ($editor.length > 0) {
       $editor.toggle('slide');
-
       $('#editor-ui').toggleClass('ticker');
       Editor.updateHighlight(); // update on slide
     } else {
       $LAB
-        // load only if editor has been requested
-        .script('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js')
-        .wait(Editor.reload);
+      // load only if editor has been requested
+      .script('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js')
+      .wait(function () {
+        Editor.create();
+        $('#editor').toggle('slide');
+        $('#editor-ui').toggleClass('ticker');
+      });
     }
   };
 
