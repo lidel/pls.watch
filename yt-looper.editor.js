@@ -102,7 +102,6 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
 
       var $input = $('<input type="text"/>');
       $input.attr('value', _assembleInterval(interval));
-      $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
 
       // only single edit is allowed at a time
       Editor._createEdit.editInProgress = $input;
@@ -115,9 +114,18 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
           return false;
         }
       });
+      $input.focusout(function() {
+        saveIntervalItem($input);
+      });
 
-      var $td = $('<td/>').attr('colspan', 4).html($input);
-      $(this).parent('td').parent('tr').html($td);
+      var $td1 = $('<td/>').addClass('editor-col1').html('&#9998;');
+      var $td2 = $('<td/>').attr('colspan', 3).html($input);
+      var $tr = $(this).parent('td').parent('tr');
+      $tr.html($td2).prepend($td1);
+
+      // set focus to input and move cursor to its end
+      var inputVal = $input.focus().val();
+      $input.val('').val(inputVal);
 
     }).append(caption);
   };

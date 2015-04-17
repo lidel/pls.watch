@@ -29,46 +29,52 @@
 #editor>table {
   font-family: monospace;
   table-layout: fixed;
+  text-align: left;
 }
-.editor-col1 {
-  width: 8px;
-  text-align: center;
+#editor>table,
+.editor-col2 {
+  min-width: 20em;
 }
 .editor-col2 {
-  min-width: 160px;
   text-align: left;
 }
 .editor-col1,
 .editor-col3,
 .editor-col4 {
-  width: 8px;
+  width: 1em;
   text-align: center;
 }
 
 #editor input {
-  color: #fff !important;
-  background-color: #111;
-  text-align: center;
+  width: 100%;
+  display: inline-block;
+  font-family: monospace;
+  color: #DFBA92 !important;
+  background-color: transparent;
   text-decoration: none;
-  border: 1px #333 solid;
-  border-radius: 1em;
-  padding: .25em 0 !important;
   outline: 0;
+  border: none;
+  border-bottom: 1px #FFF dotted !important;
 }
 #editor input::selection {
-  background-color: #888;
+  background-color: #DFBA92;
+  color: #000;
 }
 #editor input::-moz-selection {
-  background-color: #888;
+  background-color: #DFBA92;
+  color: #000;
 }
 #editor input::-o-selection {
-  background-color: #888;
+  background-color: #DFBA92;
+  color: #000;
 }
 #editor input::-ms-selection {
-  background-color: #888;
+  background-color: #DFBA92;
+  color: #000;
 }
 #editor input::-webkit-selection {
-  background-color: #888;
+  background-color: #DFBA92;
+  color: #000;
 }
 #editor .truncate {
   width: 20em;
