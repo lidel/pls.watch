@@ -1,31 +1,6 @@
 'use strict';
 
-/* global Player, Playlist, GOOGLE_API_KEY, jackiechanMyIntervals */
-/* global logLady */
-
-// PROTOTYPES (fufuf jshitn!)
-var _dropInterval,
-    _gotoInterval,
-    _editInterval,
-    _linkInterval,
-    _asyncVideoTitle,
-    _updatePageAfterEditorEvent;
-
-
-function _createEditorColumns(interval, index, $tr) {
-  $tr
-    .append($('<td/>',{ class: 'editor-col1' })
-      .append(_dropInterval(interval, '&#10007;')))
-
-    .append($('<td/>',{ class: 'editor-col2' })
-      .append(_gotoInterval(interval, index)))
-
-    .append($('<td/>',{ class: 'editor-col3' })
-      .append(_editInterval(interval, index, '&#9998;')))
-
-    .append($('<td/>',{ class: 'editor-col4' })
-      .append(_linkInterval(interval, '&#10548;')));
-}
+/* global GOOGLE_API_KEY, jackiechanMyIntervals, logLady */
 
 
 function _humanReadableTime(interval) {
@@ -50,32 +25,6 @@ function _humanReadableTime(interval) {
   return time ? '&t=' + time : '';
 }
 
-function _asyncVideoTitle(videoId, intervalLink) {
-
-  var setTitle = function(title, intervalLink) {
-      var intervalUri = intervalLink.text();
-      intervalLink.addClass('truncate');
-      intervalLink.attr('title', intervalUri);
-      intervalLink.text(title);
-  };
-
-  var apiRequest = 'https://www.googleapis.com/youtube/v3/videos'
-                  + '?part=snippet&id=' + videoId
-                  + '&maxResults=1'
-                  + '&fields=kind%2Citems%2Fsnippet(title)'
-                  + '&key=' + GOOGLE_API_KEY;
-  var retries = 3;
-  $.ajax({ url: apiRequest, async: true}).done(function(data) {
-    if (data.kind === 'youtube#videoListResponse' && data.items.length) {
-      setTitle(data.items[0].snippet.title, intervalLink);
-    }
-  }).fail(function(jqxhr, textStatus) {
-    logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
-    retries = retries - 1;
-  });
-}
-
-
 
 function _assembleInterval(interval) {
   return interval.urlKey + '='
@@ -83,186 +32,240 @@ function _assembleInterval(interval) {
                          + _humanReadableTime(interval);
 }
 
+// reloadable singleton! d8> ...kek wat? fuf! o_0
+function Editor(Playlist, Player) { /*jshint ignore:line*/
+  var _Playlist = Playlist; // these are singletons!
+  var _Player = Player;     // but still we pass them in params to indicate dependency q:'V
 
-_dropInterval = function (interval, caption) {
-  return $('<a/>').unbind().click(function () {
-    $(this).parent('td')
-           .parent('tr').remove();
-    _updatePageAfterEditorEvent();
-  }).append(caption);
-};
+  Editor._createAsyncVideoTitle = function (videoId, intervalLink) {
+    var setTitle = function(title, intervalLink) {
+        var intervalUri = intervalLink.text();
+        intervalLink.addClass('truncate');
+        intervalLink.attr('title', intervalUri);
+        intervalLink.text(title);
+    };
 
+    var apiRequest = 'https://www.googleapis.com/youtube/v3/videos'
+                    + '?part=snippet&id=' + videoId
+                    + '&maxResults=1'
+                    + '&fields=kind%2Citems%2Fsnippet(title)'
+                    + '&key=' + GOOGLE_API_KEY;
+    var retries = 3;
+    $.ajax({ url: apiRequest, async: true }).done(function(data) {
+      if (data.kind === 'youtube#videoListResponse' && data.items.length) {
+        setTitle(data.items[0].snippet.title, intervalLink);
+      }
+    }).fail(function(jqxhr, textStatus) {
+      logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
+      retries = retries - 1;
+    });
+  };
 
-_gotoInterval = function(interval, index) {
-  var intervalLink = $('<a/>').unbind().click(function () {
-    Playlist.index = index;
-    Player.newPlayer(Playlist.current());
-  }).append(_assembleInterval(interval));
+  Editor._createDrop = function (interval, caption) {
+    return $('<a/>').unbind().click(function () {
+      $(this).parent('td')
+             .parent('tr').remove();
+      Editor.updateHash();
+    }).append(caption);
+  };
 
-  if (interval.urlKey === 'v') {
-    _asyncVideoTitle(interval.videoId, intervalLink);
-  }
+  Editor._createGoto = function(interval, index) {
+    var intervalLink = $('<a/>').unbind().click(function () {
+      _Playlist.index = index;
+      _Player.newPlayer(_Playlist.current());
+    }).append(_assembleInterval(interval));
 
-  return intervalLink;
-};
+    if (interval.urlKey === 'v') {
+      Editor._createAsyncVideoTitle(interval.videoId, intervalLink);
+    }
 
+    return intervalLink;
+  };
 
-_editInterval = function (interval, index, caption) {
-  return $('<a/>').unbind().click(function () {
-    if (!_editInterval.editInProgress) {
-      // only single edit is allowed at a time
-      _editInterval.editInProgress = true;
+  Editor._createEdit = function (interval, index, caption) {
+    return $('<a/>').unbind().click(function () {
+      if (!Editor._createEdit.editInProgress) {
+        // only single edit is allowed at a time
+        Editor._createEdit.editInProgress = true;
 
-      var $input = $('<input type="text"/>');
-      $input.attr('value', _assembleInterval(interval));
-      $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
+        var $input = $('<input type="text"/>');
+        $input.attr('value', _assembleInterval(interval));
+        $input.width(Math.ceil($input.val().length/1.9) + 2 + 'em');
 
-      $input.unbind().keypress(function (ev) {
-        var key = ev.which;
-        if (key == 13 || key == 27 || key == 9) { // enter || escape || tab
-          var val = $(this).val();
-          var $tr = $(this).parent('td')
+        $input.unbind().keypress(function (ev) {
+          var key = ev.which;
+
+          if (key == 13 || key == 27 || key == 9) { // enter || escape || tab
+            var $this = $(this); // such optimization! c/\o
+
+            var val = $this.val();
+            var $tr = $this.parent('td')
                            .parent('tr').empty();
 
-          var newInterval = jackiechanMyIntervals(val).intervals[0];
+            var newInterval = jackiechanMyIntervals(val).intervals[0];
 
-          // use original interval for failsafe
-          _createEditorColumns(newInterval || interval, index, $tr);
+            // use original interval for failsafe
+            Editor._createRow(newInterval || interval, index, $tr);
 
-          _editInterval.editInProgress = false;
-          _updatePageAfterEditorEvent();
-          return false;
-        }
-      });
+            Editor._createEdit.editInProgress = false;
+            Editor.updateHash();
 
-      var $td = $('<td/>').attr('colspan', 4).html($input);
-      $(this).parent('td')
-             .parent('tr').html($td);
-    }
-  }).append(caption);
-};
-
-
-_linkInterval = function (interval, caption) {
-  return $('<a/>', {
-      href: '#' + _assembleInterval(interval),
-    target: '_blank'
-  }).append(caption || interval.videoId);
-};
-
-
-function _updateHighlight() {
-  // unhighlight table multiple rows (just to be safe)
-  $('#editor>table tr.highlighted').removeClass('highlighted');
-  // highlight specific table row
-  $('#editor>table tr:nth-child('+ (Playlist.index + 1) +')').addClass('highlighted');
-}
-
-
-_updatePageAfterEditorEvent = function () {
-  if ($('#editor').length) {
-    var href = '';
-    var last = href;
-
-    $('.editor-col2>a').each(function (index) {
-      var $this = $(this);
-      // reindex 'goto' links
-      $this.unbind().click(function () {
-        Playlist.index = index;
-        Player.newPlayer(Playlist.current());
-      });
-
-      var text = $this.attr('title') || $this.text();
-      var part = text.split('&');
-
-      if (last === part[0] && part.length > 1) {
-        // join time ranges
-        var time = part[1].split('=')[1];
-        if (time) {
-          href += ('+' + time);
-        }
-      } else {
-        // add full interval
-        href += ('&' + text);
-        last = part[0];
-      }
-    });
-
-    document.location.replace('#' + href.substr(1));
-  }
-};
-
-
-function _toggleEditor() {
-  var $editor = $('#editor');
-
-  if ($editor.length) {
-    $editor.toggle('slide');
-
-    $('#editor-ui').toggleClass('ticker');
-    _updateHighlight(); // update on slide
-  } else {
-    $LAB
-      // load only if editor has been requested
-      .script('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js')
-      .wait(function () {
-        var $editor = $('<div/>',{ id: 'editor' });
-        var $table = $('<table/>');
-
-        var $tbody = $('<tbody/>')
-          .sortable({ update: _updatePageAfterEditorEvent })
-          .disableSelection()
-          .appendTo($table);
-
-        _(Playlist.intervals).each(function (interval, index) {
-          _createEditorColumns(interval, index, $('<tr/>').appendTo($tbody));
+            return false;
+          }
         });
 
-        $table.appendTo($editor.hide());
-        $editor
-          .appendTo('body')
-          .toggle('slide');
+        var $td = $('<td/>').attr('colspan', 4).html($input);
+        $(this).parent('td')
+               .parent('tr').html($td);
+      }
+    }).append(caption);
+  };
 
-        $('#editor-ui').toggleClass('ticker');
-        _updateHighlight(); // update on slide
+  Editor._createLink = function (interval, caption) {
+    return $('<a/>', {
+        href: '#' + _assembleInterval(interval),
+      target: '_blank'
+    }).append(caption || interval.videoId);
+  };
+
+  Editor._createRow = function (interval, index, $tr) {
+    $tr
+      .append($('<td/>',{ class: 'editor-col1' })
+        .append(Editor._createDrop(interval, '&#10007;'))) // x
+
+      .append($('<td/>',{ class: 'editor-col2' })
+        .append(Editor._createGoto(interval, index)))
+
+      .append($('<td/>',{ class: 'editor-col3' })
+        .append(Editor._createEdit(interval, index, '&#9998;'))) // pencil
+
+      .append($('<td/>',{ class: 'editor-col4' })
+        .append(Editor._createLink(interval, '&#10548;'))); // arrow
+  };
+
+  Editor.updateHighlight = function () {
+    logLady('Editor.updateHighlight()');
+    // unhighlight multiple table rows (just to be safe)
+    $('#editor>table tr.highlighted').removeClass('highlighted');
+    // highlight specific table row
+    $('#editor>table tr:nth-child('+ (Playlist.index + 1) +')').addClass('highlighted');
+  };
+
+  Editor.updateHash = function () {
+    logLady('Editor.updateHash()');
+    if ($('#editor').length) {
+      var href = '';
+      var last = href;
+
+      $('.editor-col2>a').each(function (index) {
+        var $this = $(this); // such optimization! c/\o
+        // reindex 'goto' links
+        $this.unbind().click(function () {
+          _Playlist.index = index;
+          _Player.newPlayer(_Playlist.current());
+        });
+
+        var text = $this.attr('title') || $this.text();
+        var part = text.split('&');
+
+        if (last === part[0] && part.length > 1) {
+          // join time ranges
+          var time = part[1].split('=')[1];
+          if (time) {
+            href += ('+' + time);
+          }
+        } else {
+          // add full interval
+          href += ('&' + text);
+          last = part[0];
+        }
       });
-  }
+
+      document.location.replace('#' + href.substr(1));
+    }
+  };
+
+  Editor.reload = function () {
+    logLady('Editor.reload()');
+  
+    var $editor = $('#editor');
+    var $table = null;
+    var $tbody = null;
+
+    if ($editor.length > 0) {
+      $table = $editor.children('table').first();
+      $tbody = $table.children('tbody').first();
+      $tbody.children('tr').remove();
+    } else {
+      $editor = $('<div/>', { id: 'editor' });
+      $table = $('<table/>');
+      $tbody = $('<tbody/>').sortable({ update: Editor.updateHash })
+                            .disableSelection()
+                            .appendTo($table);
+
+      $table.appendTo($editor.hide());
+      $editor
+        .appendTo('body')
+        .toggle('slide');
+
+      $('#editor-ui').toggleClass('ticker');
+    }
+    
+    _(_Playlist.intervals).each(function (interval, index) {
+      Editor._createRow(interval, index, $('<tr/>').appendTo($tbody));
+    });
+
+    Editor.updateHighlight();
+  };
+
+  Editor.toggle = function () {
+    var $editor = $('#editor');
+
+    if ($editor.length > 0) {
+      $editor.toggle('slide');
+
+      $('#editor-ui').toggleClass('ticker');
+      Editor.updateHighlight(); // update on slide
+    } else {
+      $LAB
+        // load only if editor has been requested
+        .script('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js')
+        .wait(Editor.reload);
+    }
+  };
+
+  Editor.register = function () {
+    logLady('Editor.register()');
+    $('#editor-ui').unbind()
+                   .click(Editor.toggle)
+                   .show();
+
+    _Player.registerEditorNotification(Editor.updateHighlight); // update on interval switch
+
+    Editor.reload(); // update on hash change
+  };
+
+/*
+  Editor.unregister = function () {
+    _Player.unregisterEditorNotification();
+
+    var $editor = $('#editor');
+    if ($editor.length) {
+      $editor.unbind()
+             .remove();
+    }
+
+    var $editor_ui = $('#editor-ui');
+    if ($editor_ui.length) {
+      $editor_ui.unbind()
+                .removeClass('ticker')
+                .hide();
+    }
+  };
+*/
+
+  Editor.register();
 }
 
-function registerEditor() { // jshint ignore:line
-  $('#editor-ui').unbind()
-                 .click(_toggleEditor)
-                 .show();
-
-  Player.registerEditorNotification(_updateHighlight); // update on interval switch
-
-  _updateHighlight(); // update on hash change
-}
-
-
-function unregisterEditor() { // jshint ignore:line
-  Player.unregisterEditorNotification();
-
-  var $editor = $('#editor');
-  if ($editor.length) {
-    $editor.unbind()
-           .remove();
-  }
-
-  var $editor_ui = $('#editor-ui');
-  if ($editor_ui.length) {
-    $editor_ui.unbind()
-              .removeClass('ticker')
-              .hide();
-  }
-}
-
-function reloadEditor() { // jshint ignore:line
-  var $editor = $('#editor');
-  if ($editor.length) {
-    // TODO: https://github.com/lidel/yt-looper/issues/81#issuecomment-88258499
-    unregisterEditor();
-  }
-}
 
 // vim:ts=2:sw=2:et:

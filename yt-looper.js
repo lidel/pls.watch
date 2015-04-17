@@ -1,5 +1,6 @@
 'use strict';
-/* global YT, registerEditor */
+
+/* global YT, Editor */
 
 // HALPERS
 function logLady(a, b) { // kek
@@ -385,6 +386,7 @@ function jackiechanMyIntervals(href) { // kek
 }
 
 
+// reloadable singleton! d8> ...kek wat? fuf! o_0
 function Playlist(href) {
   logLady('Playlist()');
 
@@ -442,6 +444,7 @@ function Playlist(href) {
 }
 
 
+// reloadable singleton! d8> ...kek wat? fuf! o_0
 function YouTubePlayer() {
   logLady('YouTubePlayer()');
 
@@ -519,6 +522,7 @@ function YouTubePlayer() {
 }
 
 
+// reloadable singleton! d8> ...kek wat? fuf! o_0
 function ImgurPlayer() {
   logLady('ImgurPlayer()');
 
@@ -608,6 +612,7 @@ function ImgurPlayer() {
 }
 
 
+// reloadable singleton! d8> ...kek wat? fuf! o_0
 function Player() {
   logLady('Player()');
 
@@ -638,17 +643,18 @@ function Player() {
       editorNotification();
     }
 
-    // prevalidated! no need to check ^e_
+    // no need to check _e^   >o_
     Player.engine = PLAYER_TYPES[playback.urlKey].engine;
     Player.engine.newPlayer(playback);
-
   };
 
-  new Playlist(window.location.href);
+  /*jshint -W064*/
+  Playlist(window.location.href);
   Playlist.log();
 
-  new YouTubePlayer();
-  new ImgurPlayer();
+  YouTubePlayer();
+  ImgurPlayer();
+  /*jshint +W064*/
 
   Player.newPlayer(Playlist.current());
   showRandomUi(Playlist.multivideo);
@@ -657,8 +663,10 @@ function Player() {
 
 function onYouTubeIframeAPIReady() {
   logLady('onYouTubeIframeAPIReady()');
-  new Player();
-  registerEditor();
+  /*jshint -W064*/
+  Player();
+  Editor(Playlist, Player);
+  /*jshint +W064*/
 }
 
 
@@ -717,7 +725,6 @@ function responsivePlayerSetup() {
     $('#shorten').show();
     $('#box').show();
     showHelpUi(false);
-    //reloadEditor();
 
     // reset player or entire page
     if ($('#player').length > 0) {
