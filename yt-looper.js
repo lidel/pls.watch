@@ -756,24 +756,24 @@ function responsivePlayerSetup() {
 
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
-    var k = String.fromCharCode(e.which).toLowerCase();
+    var k = (Editor.editInProgress === undefined) ? String.fromCharCode(e.which).toLowerCase() : undefined;
     //logLady('key/code:'+k+'/'+e.which);
-    if (k=='?') {
+    if (k==='?') {
       $('#help-toggle').click();
 
-    } else if (k=='e') {
+    } else if (k==='e') {
       $('#editor-toggle').click();
 
-    } else if (k=='s') {
+    } else if (k==='s') {
       var $shorten = $('#shorten');
       if ($shorten.is(':visible')) {
         $shorten.click();
       }
 
-    } else if (k=='b') {
+    } else if (k==='b') {
       $('#box').slideToggle();
 
-    } else if (k=='x') {
+    } else if (k==='x') {
       var $box = $('#box');
       if ($box.is(':visible')) {
         $box.hide();
@@ -792,11 +792,11 @@ function responsivePlayerSetup() {
         }
       }
 
-    } else if (k=='r') {
+    } else if (k==='r') {
       if (Playlist.intervals) {
         Player.newPlayer(Playlist.random());
       }
-    } else if (k=='m') {
+    } else if (k==='m') {
         if (Player.engine === YouTubePlayer) {
           if (YouTubePlayer.instance.isMuted()) {
             YouTubePlayer.instance.unMute();
@@ -804,7 +804,7 @@ function responsivePlayerSetup() {
             YouTubePlayer.instance.mute();
           }
         }
-    } else if (k==' ') {
+    } else if (k===' ') {
       if (Player.engine === YouTubePlayer) {
         if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
           YouTubePlayer.instance.pauseVideo();
@@ -814,10 +814,10 @@ function responsivePlayerSetup() {
       }
 
     } else if (Playlist.go) {
-      var change = k=='k' ? Playlist.go('prevV')
-                 : k=='j' ? Playlist.go('nextV')
-                 : k=='h' ? Playlist.go('prevI')
-                 : k=='l' ? Playlist.go('nextI')
+      var change = k==='k' ? Playlist.go('prevV')
+                 : k==='j' ? Playlist.go('nextV')
+                 : k==='h' ? Playlist.go('prevI')
+                 : k==='l' ? Playlist.go('nextI')
                  : null;
       if (change) Player.newPlayer(change);
     }

@@ -90,21 +90,20 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
       // use original interval for failsafe
       Editor._createRow(newInterval || interval, index, $tr);
 
-      Editor._createEdit.editInProgress = (function () { return; })();// kek'd safe undefined
+      Editor.editInProgress = (function () { return; })();// kek'd safe undefined
       Editor.updateHash();
     };
 
     return $('<a/>').unbind().click(function () {
-      var inProgress = Editor._createEdit.editInProgress;
-      if (inProgress !== undefined) {
-        saveIntervalItem(inProgress);
+      if (Editor.editInProgress !== undefined) {
+        saveIntervalItem(Editor.editInProgress);
       }
 
       var $input = $('<input type="text"/>');
       $input.attr('value', _assembleInterval(interval));
 
       // only single edit is allowed at a time
-      Editor._createEdit.editInProgress = $input;
+      Editor.editInProgress = $input;
 
       $input.unbind().keypress(function (ev) {
         var key = ev.keyCode ? ev.keyCode : ev.which;
