@@ -761,6 +761,9 @@ function responsivePlayerSetup() {
     if (k=='?') {
       $('#help-toggle').click();
 
+    } else if (k=='e') {
+      $('#editor-toggle').click();
+
     } else if (k=='s') {
       var $shorten = $('#shorten');
       if ($shorten.is(':visible')) {
