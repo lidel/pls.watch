@@ -1,7 +1,19 @@
 language: node_js
+node_js:
+      - "0.10"
+before_install:
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
+    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 before_script:
-    - sudo $(which npm) install -g grunt
-    - sudo $(which npm) install -g grunt-cli
-    - sudo $(which npm) install grunt-contrib-qunit
-    - sudo $(which npm) install grunt-contrib-jshint
-script: grunt travis --verbose
+    - npm install -g grunt
+    - npm install -g grunt-cli
+    - npm install -g nightwatch
+    - npm install grunt-contrib-qunit
+    - npm install grunt-contrib-jshint
+    - bash test/nightwatch_dependency_check.sh
+    - "export CHROME_BIN=chromium-browser"
+script:
+    - grunt qunit --verbose
+    - grunt nightwatch:all
+    - grunt jshint

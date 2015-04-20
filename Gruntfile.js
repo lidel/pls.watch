@@ -1,13 +1,37 @@
 module.exports = function(grunt) {
+  var nightwatch = require('nightwatch');
+  nightwatch.initGrunt(grunt);
+
   grunt.initConfig({
+    nightwatch: {
+      options: {
+        cwd: './test/'
+      },
+      'default': {},
+      'firefox': {
+        argv: {
+          env: 'firefox',
+        },
+      },
+      'chrome': {
+        argv: {
+          env: 'chrome',
+        },
+      },
+      'all': {
+        argv: {
+          env: 'firefox,chrome',
+        },
+      }
+    },
     qunit: {
-      files: ['test/index.html'],
+      files: ['test/headless/index.html'],
       options: {
         timeout: 30000,
       }
     },
     jshint: {
-      all: ['*.js', 'test/**/*.js'],
+      all: ['*.js', 'test/headless/*.js', 'test/gui/*.js'],
       options: {
         'jquery': true,
         'quotmark': 'single',
@@ -34,8 +58,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.registerTask('default', 'travis');
-  grunt.registerTask('test', 'qunit');
-  // Travis CI task.
-  grunt.registerTask('travis', ['test','jshint']);
+  grunt.registerTask('test', ['qunit', 'nightwatch:all']);
+  grunt.registerTask('travis', ['jshint', 'test']);
 };
 // vim:ts=2:sw=2:et:

@@ -3,3 +3,6 @@ node_modules
 *.swp
 *.swo
 deploy.sh
+test/lib/
+test/logs/
+test/reports/
