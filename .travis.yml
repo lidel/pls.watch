@@ -2,9 +2,16 @@ language: node_js
 node_js:
     - "0.10"
 before_install:
+    # Add repo with stable Chrome
     - curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
     - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    # Add repo with stable Firefox
+    - sudo apt-key adv --recv-keys --keyserver pgp.mit.edu 3EE67F3D0FF405B2
+    - sudo sh -c 'echo "deb http://packages.linuxmint.com debian import" >> /etc/apt/sources.list.d/mint.list'
+    # Install
+    - sudo apt-get remove iceweasel
     - sudo apt-get update -qq
+    - sudo apt-get install firefox
     - sudo apt-get install google-chrome-stable
 install:
     - npm install -g grunt
@@ -14,6 +21,7 @@ install:
     - npm install grunt-contrib-jshint
 before_script:
     - "export CHROME_BIN=chrome"
+    - "export FIREFOX_BIN=firefox"
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
