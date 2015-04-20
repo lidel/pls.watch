@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-TESTS=$(dirname $(realpath $0))
+TESTS=$(dirname $(readlink -f -- $0))
 
 # create directory for selenium etc
 test -d $TESTS/lib/ || mkdir -p $TESTS/lib/
