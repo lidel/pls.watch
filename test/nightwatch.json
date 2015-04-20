@@ -7,7 +7,7 @@
 
   "selenium" : {
     "start_process" : true,
-    "server_path" : "lib/selenium-server-standalone-2.45.0.jar",
+    "server_path" : "lib/selenium-server-standalone.jar",
     "log_path" : "logs",
     "host" : "127.0.0.1",
     "port" : 4444,
