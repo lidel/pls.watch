@@ -1,10 +1,8 @@
 language: node_js
 node_js:
     - "0.10"
-addons:
-    hosts:
-        - yt.aergia.eu
 before_install:
+    - sudo echo "127.0.0.1 yt.aergia.eu" >> /etc/hosts
     # Add repo with stable Chrome
     - curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
     - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
