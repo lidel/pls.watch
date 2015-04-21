@@ -251,10 +251,6 @@ body>div {
   color: #888;
 }
 
-#editor-ui {
-    display: none;
-}
-
 .ticker:before {
     content: '\2714';
 }

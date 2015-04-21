@@ -681,6 +681,7 @@ function initYT() {
 function renderPage() {
   var video = getVideo(window.location.href);
   var $box = $('#box').show();
+  var $menu = $('#menu').show();
   if (video.urlKey == 'v') {
     // splash screen
     $box.css('background-image', 'url(//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg)');
@@ -688,8 +689,10 @@ function renderPage() {
   } else if (video.urlKey == 'i') {
     initYT();
   } else {
+    // no valid hash, display #help
     changeFavicon();
     $box.hide();
+    $menu.hide();
     showHelpUi(true);
   }
 }
@@ -756,7 +759,8 @@ function responsivePlayerSetup() {
 
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
-    var k = (Editor.editInProgress === undefined) ? String.fromCharCode(e.which).toLowerCase() : undefined;
+    var k = (Editor.editInProgress === undefined)
+          ? String.fromCharCode(e.which).toLowerCase() : undefined;
     //logLady('key/code:'+k+'/'+e.which);
     if (k==='?') {
       $('#help-toggle').click();
