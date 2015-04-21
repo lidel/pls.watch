@@ -1,6 +1,9 @@
 language: node_js
 node_js:
     - "0.10"
+addons:
+    hosts:
+        - yt.aergia.eu
 before_install:
     # Add repo with stable Chrome
     - curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
@@ -26,8 +29,10 @@ before_script:
     - "sh -e /etc/init.d/xvfb start"
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
     - bash test/nightwatch_dependency_check.sh
+    - sudo python2 -m SimpleHTTPServer 80 &
 script:
     - grunt nightwatch:firefox
     - grunt nightwatch:chrome
     - grunt qunit --verbose
     - grunt jshint
+    - curl http://yt.aergia.eu
