@@ -24,7 +24,7 @@ module.exports = {
       .assert.visible('#responsive-ui')
       .assert.visible('#shorten-ui')
       .assert.visible('#editor-ui')
-      .assert.hidden('#random-ui') // no random for single video
+      .assert.hidden('#random-ui')
       .assert.hidden('#help')
       .end();
   },
@@ -38,7 +38,7 @@ module.exports = {
       .assert.visible('#responsive-ui')
       .assert.visible('#shorten-ui')
       .assert.visible('#editor-ui')
-      .assert.visible('#random-ui') // random available
+      .assert.visible('#random-ui')
       .assert.hidden('#help')
       .end();
   },
