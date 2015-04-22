@@ -29,11 +29,10 @@ before_script:
     - "sh -e /etc/init.d/xvfb start"
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
     - bash test/nightwatch_dependency_check.sh
-    - sudo python2 -m SimpleHTTPServer 80 &
-    - sudo python2 -m SimpleHTTPServer 28080 &
+    - sudo python2 -m SimpleHTTPServer    80 2>&1 > /dev/null &
+    - sudo python2 -m SimpleHTTPServer 28080 2>&1 > /dev/null &
 script:
     - grunt nightwatch:firefox
     - grunt nightwatch:chrome
     - grunt qunit --verbose
     - grunt jshint
-    - curl http://yt.aergia.eu
