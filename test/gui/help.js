@@ -7,11 +7,11 @@ module.exports = {
       .assert.hidden('#help')
       .assert.cssClassNotPresent('#help-toggle', 'ticker')
       .click('#help-toggle')
-      .waitForElementVisible('#help', 1000)
+      .waitForElementVisible('#help', 3000)
       .assert.visible('#help')
       .assert.cssClassPresent('#help-toggle','ticker')
       .click('#help-toggle')
-      .waitForElementNotVisible('#help', 1000)
+      .waitForElementNotVisible('#help', 3000)
       .assert.hidden('#help')
       .assert.cssClassNotPresent('#help-toggle', 'ticker')
       .end();
