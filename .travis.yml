@@ -1,6 +1,11 @@
 language: node_js
 node_js:
     - "0.10"
+env:
+    global:
+        - DISPLAY=':99.0'
+        - FIREFOX_BIN='./firefox/firefox'
+        - CHROME_BIN=chrome
 addons:
     hosts:
         - yt.aergia.eu
@@ -8,29 +13,27 @@ before_install:
     # Add repo with stable Chrome
     - curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
     - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-    # Add repo with stable Firefox
-    - sudo apt-key adv --recv-keys --keyserver pgp.mit.edu 3EE67F3D0FF405B2
-    - sudo sh -c 'echo "deb http://packages.linuxmint.com debian import" >> /etc/apt/sources.list.d/mint.list'
-    # Install
-    - sudo apt-get remove iceweasel
+    # Mozdownload for latest official Firefox
     - sudo apt-get update -qq
-    - sudo apt-get install firefox
-    - sudo apt-get install google-chrome-stable
+    - sudo apt-get install -y python-pip
+    - sudo pip install mozdownload
 install:
+    # Browsers
+    - sudo apt-get install -y google-chrome-stable
+    - mozdownload -t release -v latest
+    - tar -xf *firefox*.tar.bz2
+    # Grunt
     - npm install -g grunt
     - npm install -g grunt-cli
     - npm install nightwatch
     - npm install grunt-contrib-qunit
     - npm install grunt-contrib-jshint
 before_script:
-    - "export CHROME_BIN=chrome"
-    - "export FIREFOX_BIN=firefox"
-    - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
-    - bash test/nightwatch_dependency_check.sh
-    - sudo python2 -m SimpleHTTPServer    80 2>&1 > /dev/null &
-    - sudo python2 -m SimpleHTTPServer 28080 2>&1 > /dev/null &
+    - "bash test/nightwatch_dependency_check.sh"
+    - "sudo python2 -m SimpleHTTPServer    80 2>&1 > /dev/null &"
+    - "sudo python2 -m SimpleHTTPServer 28080 2>&1 > /dev/null &"
 script:
     - grunt nightwatch:firefox
     - grunt nightwatch:chrome
