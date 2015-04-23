@@ -6,6 +6,9 @@ env:
         - DISPLAY=':99.0'
         - FIREFOX_BIN='./firefox/firefox'
         - CHROME_BIN=chrome
+    matrix:
+        - NIGHTWATCH_TARGET=firefox
+        - NIGHTWATCH_TARGET=chrome
 addons:
     hosts:
         - yt.aergia.eu
@@ -35,7 +38,6 @@ before_script:
     - sudo sh -c 'python2 -m SimpleHTTPServer    80 2>&1 > /dev/null' &
     - sudo sh -c 'python2 -m SimpleHTTPServer 28080 2>&1 > /dev/null' &
 script:
-    - grunt nightwatch:chrome
-    - grunt nightwatch:firefox
+    - grunt nightwatch:${NIGHTWATCH_TARGET}
     - grunt qunit --verbose
     - grunt jshint
