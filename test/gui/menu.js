@@ -14,9 +14,9 @@ module.exports = {
       .end();
   },
 
-  'Menu on a single video page' : function (browser) {
+  'Menu on a single interval page' : function (browser) {
     browser.maximizeWindow()
-      .url('http://127.0.0.1:28080/#v=lWqJTKdznaM')
+      .url('http://127.0.0.1:28080/#i=cJjBEQP.png')
       .waitForElementVisible('#player', 3000)
       .assert.elementNotPresent('#editor')
       .assert.visible('#menu')
@@ -29,9 +29,9 @@ module.exports = {
       .end();
   },
 
-  'Menu on a multiple video page' : function (browser) {
+  'Menu on a multiple interval page' : function (browser) {
     browser.maximizeWindow()
-      .url('http://127.0.0.1:28080/#v=lWqJTKdznaM&v=ZuHZSbPJhaY')
+      .url('http://127.0.0.1:28080/#i=cJjBEQP.png&v=lWqJTKdznaM&v=ZuHZSbPJhaY')
       .waitForElementVisible('#player', 3000)
       .assert.elementNotPresent('#editor')
       .assert.visible('#help-ui')

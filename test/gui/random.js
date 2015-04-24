@@ -17,6 +17,8 @@ module.exports = {
       .click('#random')
       .waitForElementVisible('#player', 100000)
       .assert.urlEquals('http://127.0.0.1:28080/#i=cJjBEQP.png&v=ZuHZSbPJhaY&random')
+      .pause(2000)
+      .saveScreenshot('random1.png')
       .assert.cssClassPresent('#random', 'ticker')
       .click('#random')
       .waitForElementVisible('#player', 100000)

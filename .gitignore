@@ -6,3 +6,4 @@ deploy.sh
 test/lib/
 test/logs/
 test/reports/
+test/*.png

@@ -7,7 +7,9 @@ env:
         - FIREFOX_BIN='./firefox/firefox'
         - CHROME_BIN=chrome
     matrix:
-        - NIGHTWATCH_TARGET=firefox
+        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='33.0'
+        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest-esr'
+        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
         - NIGHTWATCH_TARGET=chrome
 addons:
     hosts:
@@ -23,7 +25,7 @@ before_install:
 install:
     # Browsers
     - sudo apt-get install -y google-chrome-stable
-    - mozdownload -t release -v latest
+    - mozdownload -t release -v $FIREFOX_RELEASE
     - tar -xf *firefox*.tar.bz2
     # Grunt
     - npm install -g grunt
@@ -41,3 +43,5 @@ script:
     - grunt nightwatch:${NIGHTWATCH_TARGET}
     - grunt qunit --verbose
     - grunt jshint
+after_failure:
+    - bash test/upload_screenshots.sh
