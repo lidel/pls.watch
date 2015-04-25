@@ -29,11 +29,8 @@ install:
     - test "$NIGHTWATCH_TARGET" = "chrome"  && sudo apt-get install -y google-chrome-stable || true
     - test "$NIGHTWATCH_TARGET" = "firefox" && mozdownload -t release -v $FIREFOX_RELEASE || true
     - test "$NIGHTWATCH_TARGET" = "firefox" && tar -xf *firefox*.tar.bz2 || true
-    # Grunt in $PATH
-    - npm install -g grunt
-    - npm install -g grunt-cli
     # devDependencies from package.json
-    - npm install --force
+    - npm install
 before_script:
     - "sh -e /etc/init.d/xvfb start"
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16"

@@ -63,7 +63,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.registerTask('default', 'travis');
-  grunt.registerTask('test', ['qunit', 'nightwatch:all']);
+  grunt.registerTask('test', ['qunit', 'nightwatch:phantomjs']);
   grunt.registerTask('travis', ['jshint', 'test']);
 };
 // vim:ts=2:sw=2:et:
