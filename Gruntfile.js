@@ -127,7 +127,7 @@ module.exports = function(grunt) {
   grunt.registerTask('firefox', ['env', 'qunit', 'env:test', 'connect', 'selenium', 'nightwatch:firefox']);
   grunt.registerTask('chrome',  ['env', 'qunit', 'env:test', 'connect', 'selenium', 'nightwatch:chrome']);
 
-  grunt.registerTask('travis',  ['env', 'jshint', 'test']);
+  grunt.registerTask('travis',  ['jshint', 'test']);
 
   grunt.registerTask('httpd', 'connect:server:keepalive');
 

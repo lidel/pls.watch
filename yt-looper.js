@@ -702,7 +702,7 @@ function responsivePlayerSetup() {
   var cookieKey     = 'no_autosize';
   var cookie        = $.cookie(cookieKey);
   var cookieOptions = { expires: 365, path: '/', secure: false };
-  var $responsive   = $('#responsive');
+  var $responsive   = $('#responsive-toggle');
 
   if (cookie === undefined) {
     $.cookie(cookieKey, true, cookieOptions);
@@ -744,7 +744,7 @@ function responsivePlayerSetup() {
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
 
   // #autosize
-  var $responsive = $('#responsive');
+  var $responsive = $('#responsive-toggle');
   $responsive.click(responsivePlayerSetup);
   // display current autosize setting in menu
   if ($.cookie('no_autosize')) { $responsive.removeClass('ticker'); }
