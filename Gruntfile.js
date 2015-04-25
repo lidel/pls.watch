@@ -46,7 +46,7 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      all: ['*.js', 'test/headless/*.js', 'test/gui/*.js'],
+      all: ['*.js', 'test/**/*.js'],
       options: {
         'jquery': true,
         'quotmark': 'single',

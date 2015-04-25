@@ -1,8 +1,8 @@
 module.exports = {
 
   'Menu on the landing page' : function (browser) {
-    browser.maximizeWindow()
-      .url('http://yt.127.0.0.1.xip.io:28080')
+    browser.page.looper()
+      .uri('')
       .waitForElementVisible('#help')
       .assert.visible('#help')
       .waitForElementPresent('#menu')
@@ -14,8 +14,8 @@ module.exports = {
   },
 
   'Menu on a single interval page' : function (browser) {
-    browser.maximizeWindow()
-      .url('http://yt.127.0.0.1.xip.io:28080/#i=cJjBEQP.png')
+    browser.page.looper()
+      .uri('#i=cJjBEQP.png')
       .waitForElementVisible('#player')
       .assert.elementNotPresent('#editor')
       .assert.visible('#menu')
@@ -29,8 +29,8 @@ module.exports = {
   },
 
   'Menu on a multiple interval page' : function (browser) {
-    browser.maximizeWindow()
-      .url('http://yt.127.0.0.1.xip.io:28080/#i=cJjBEQP.png&v=lWqJTKdznaM&v=ZuHZSbPJhaY')
+    browser.page.looper()
+      .uri('#i=cJjBEQP.png&v=lWqJTKdznaM&v=ZuHZSbPJhaY')
       .waitForElementVisible('#player')
       .assert.elementNotPresent('#editor')
       .assert.visible('#help-ui')

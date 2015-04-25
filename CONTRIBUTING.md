@@ -15,7 +15,7 @@ if you see a bug, a room for improvement or simply have a question.
 
 Make sure your changes follow code style and pass basic suite of regression tests.
 
-To install all dependencies into local directory named `node_modules` and run test suite, simply execute (Node 0.10):
+To install all dependencies into local directory named `node_modules` and run test suite (`grunt test`), simply execute (Node 0.10):
 
 
 ```bash
