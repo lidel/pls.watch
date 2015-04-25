@@ -122,8 +122,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', 'travis');
-  grunt.registerTask('test', ['env', 'qunit', 'env:test', 'connect', 'selenium', 'nightwatch:phantomjs']);
-  grunt.registerTask('travis', ['env', 'jshint', 'test']);
+
+  grunt.registerTask('test',    ['env', 'qunit', 'env:test', 'connect', 'selenium', 'nightwatch:phantomjs']);
+  grunt.registerTask('firefox', ['env', 'qunit', 'env:test', 'connect', 'selenium', 'nightwatch:firefox']);
+  grunt.registerTask('chrome',  ['env', 'qunit', 'env:test', 'connect', 'selenium', 'nightwatch:chrome']);
+
+  grunt.registerTask('travis',  ['env', 'jshint', 'test']);
+
   grunt.registerTask('httpd', 'connect:server:keepalive');
 
 
