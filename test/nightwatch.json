@@ -7,12 +7,12 @@
 
   "selenium" : {
     "start_process" : true,
-    "server_path" : "lib/selenium-server-standalone.jar",
+    "server_path" : "../node_modules/selenium-standalone/.selenium/selenium-server/2.45.0-server.jar",
     "log_path" : "logs",
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {
-      "webdriver.chrome.driver" : "lib/chromedriver",
+      "webdriver.chrome.driver" : "../node_modules/selenium-standalone/.selenium/chromedriver/2.15-x64-chromedriver",
       "webdriver.ie.driver" : ""
     }
   },

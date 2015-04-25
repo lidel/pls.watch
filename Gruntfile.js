@@ -2,7 +2,17 @@ module.exports = function(grunt) {
   var nightwatch = require('nightwatch');
   nightwatch.initGrunt(grunt);
 
+
   grunt.initConfig({
+    connect: {
+      server: {
+        options: {
+          hostname: 'yt.127.0.0.1.xip.io',
+          port: 28080,
+          base: '.'
+        },
+      },
+    },
     nightwatch: {
       options: {
         cwd: './test/'
@@ -57,13 +67,65 @@ module.exports = function(grunt) {
           ],
       },
     },
+    env: {
+      options: {
+        concat: {
+          PATH: {
+            'value': 'node_modules/.bin',
+            'delimiter': ':'
+          },
+        },
+      },
+      test: {
+        options: {
+          concat: {
+            PATH: {
+              'value': '../node_modules/.bin',
+              'delimiter': ':'
+            },
+          },
+        },
+      },
+    },
   });
 
+  grunt.registerTask('selenium', 'Download Selenium Standalone Server', function() {
+    var done = this.async();
+    var selenium = require('selenium-standalone');
+
+    selenium.install({
+      version: '2.45.0',
+      baseURL: 'http://selenium-release.storage.googleapis.com',
+      drivers: {
+        chrome: {
+          version: '2.15',
+          arch: process.arch,
+          baseURL: 'http://chromedriver.storage.googleapis.com'
+        }
+      },
+
+      logger: function(message) {
+        grunt.verbose.writeln(message);
+      },
+
+      progressCb: function(total, progress, chunk) { /*jshint ignore:line*/
+        grunt.log.write('\rDownloading Selenium.. '+Math.round(progress/total*100)+'%');
+      }
+
+    }, done);
+
+  });
+
+  grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', 'travis');
-  grunt.registerTask('test', ['qunit', 'nightwatch:phantomjs']);
-  grunt.registerTask('travis', ['jshint', 'test']);
+  grunt.registerTask('test', ['env', 'qunit', 'env:test', 'connect', 'selenium', 'nightwatch:phantomjs']);
+  grunt.registerTask('travis', ['env', 'jshint', 'test']);
+  grunt.registerTask('httpd', 'connect:server:keepalive');
+
+
 };
 // vim:ts=2:sw=2:et:

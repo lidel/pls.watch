@@ -8,14 +8,14 @@ env:
         - CHROME_BIN=chrome
         - PATH=./node_modules/.bin:${PATH}
     matrix:
-        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='33.0'
-        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest-esr'
-        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
-        - NIGHTWATCH_TARGET=chrome
+        #- NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='33.0'
+        #- NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest-esr'
+        #- NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
+        #- NIGHTWATCH_TARGET=chrome
         - NIGHTWATCH_TARGET=phantomjs
 addons:
     hosts:
-        - yt.aergia.eu
+        - yt.127.0.0.1.xip.io
 before_install:
     # Add repo with stable Chrome
     - test "$NIGHTWATCH_TARGET" = "chrome" && (curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -) || true
@@ -31,12 +31,12 @@ install:
     - test "$NIGHTWATCH_TARGET" = "firefox" && tar -xf *firefox*.tar.bz2 || true
     # devDependencies from package.json
     - npm install
+    - grunt selenium
 before_script:
-    - "sh -e /etc/init.d/xvfb start"
-    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16"
-    - bash test/nightwatch_dependency_check.sh
-    - sudo sh -c 'python2 -m SimpleHTTPServer    80 2>&1 > /dev/null' &
-    - sudo sh -c 'python2 -m SimpleHTTPServer 28080 2>&1 > /dev/null' &
+    # start xvfb for non-phantomjs tests
+    - test "$NIGHTWATCH_TARGET" = "phantomjs" || sh -e /etc/init.d/xvfb start
+    - test "$NIGHTWATCH_TARGET" = "phantomjs" || /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16
+    - grunt httpd &
 script:
     - grunt nightwatch:${NIGHTWATCH_TARGET}
     - grunt qunit --verbose
