@@ -18,9 +18,14 @@ module.exports = function(grunt) {
           env: 'chrome',
         },
       },
+      'phantomjs': {
+        argv: {
+          env: 'phantomjs',
+        },
+      },
       'all': {
         argv: {
-          env: 'firefox,chrome',
+          env: 'firefox,chrome,phantomjs',
         },
       }
     },

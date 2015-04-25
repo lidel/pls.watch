@@ -6,33 +6,34 @@ env:
         - DISPLAY=':99.0'
         - FIREFOX_BIN='./firefox/firefox'
         - CHROME_BIN=chrome
+        - PATH=./node_modules/.bin:${PATH}
     matrix:
         - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='33.0'
         - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest-esr'
         - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
         - NIGHTWATCH_TARGET=chrome
+        - NIGHTWATCH_TARGET=phantomjs
 addons:
     hosts:
         - yt.aergia.eu
 before_install:
     # Add repo with stable Chrome
-    - curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-    - sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    - test "$NIGHTWATCH_TARGET" = "chrome" && (curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -) || true
+    - test "$NIGHTWATCH_TARGET" = "chrome" && (sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list') || true
     # Mozdownload for latest official Firefox
     - sudo apt-get update -qq
-    - sudo apt-get install -y python-pip
-    - sudo pip install mozdownload
+    - test "$NIGHTWATCH_TARGET" = "firefox" && sudo apt-get install -y python-pip || true
+    - test "$NIGHTWATCH_TARGET" = "firefox" && sudo pip install mozdownload || true
 install:
     # Browsers
-    - sudo apt-get install -y google-chrome-stable
-    - mozdownload -t release -v $FIREFOX_RELEASE
-    - tar -xf *firefox*.tar.bz2
-    # Grunt
+    - test "$NIGHTWATCH_TARGET" = "chrome"  && sudo apt-get install -y google-chrome-stable || true
+    - test "$NIGHTWATCH_TARGET" = "firefox" && mozdownload -t release -v $FIREFOX_RELEASE || true
+    - test "$NIGHTWATCH_TARGET" = "firefox" && tar -xf *firefox*.tar.bz2 || true
+    # Grunt in $PATH
     - npm install -g grunt
     - npm install -g grunt-cli
-    - npm install nightwatch
-    - npm install grunt-contrib-qunit
-    - npm install grunt-contrib-jshint
+    # devDependencies from package.json
+    - npm install --force
 before_script:
     - "sh -e /etc/init.d/xvfb start"
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16"
@@ -44,4 +45,6 @@ script:
     - grunt qunit --verbose
     - grunt jshint
 after_failure:
+    - ls -la test/
+    - ls -la test/screenshots
     - bash test/upload_screenshots.sh

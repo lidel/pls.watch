@@ -6,6 +6,7 @@ TESTS=$(dirname $(readlink -f -- $0))
 # create directory for selenium etc
 test -d $TESTS/lib/ || mkdir -p $TESTS/lib/
 test -d $TESTS/logs/ || mkdir -p $TESTS/logs/
+test -d $TESTS/screenshots/ || mkdir -p $TESTS/screenshots/
 
 echo -n "download selenium server if not present.."
 test -e $TESTS/lib/selenium-server-standalone.jar || (echo && \
