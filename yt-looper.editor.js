@@ -74,6 +74,9 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
       _Player.newPlayer(_Playlist.current());
     }).append(_assembleInterval(interval));
 
+    // Keep canonical URI of a single interval in data attribute
+    intervalLink.attr('data-interval-uri', intervalLink.text());
+
     if (interval.urlKey === 'v') {
       Editor._createAsyncVideoTitle(interval.videoId, intervalLink);
     }

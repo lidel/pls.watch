@@ -25,17 +25,4 @@ module.exports = {
       .end();
   },
 
-  'Jumping to random video via "r" keyboard shortcut' : function (browser) {
-    browser.page.looper()
-      .uri('#i=cJjBEQP.png&i=qlGS0UC.jpg') // use images for speed
-      .waitForElementVisible('#player')
-      .assert.title('cJjBEQP.png')
-      .keys('r') // playlist has only two items so it always jump to other video
-      .waitForElementVisible('#player')
-      .assert.title('qlGS0UC.jpg')
-      .keys('r') // playlist has only two items so it always jump to other video
-      .waitForElementVisible('#player')
-      .assert.title('cJjBEQP.png')
-      .end();
-  },
 };
