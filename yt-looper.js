@@ -650,13 +650,19 @@ function SoundCloudPlayer() {
 
     var playbackEnded = function () {
       changeFavicon(faviconWait);
+      /* TODO: broken for now. widget does not behave deterministically
+       * either middle interval fails to loop, or the one at the end
+       * the only way to get it working was to reload entire player
       if (Playlist.multivideo) {
         Player.newPlayer(Playlist.cycle());
       } else {
-        sc.pause();
-        sc.seekTo(1000*Playlist.current().start);
+        init = true;
+        //sc.pause();
+        //sc.seekTo(1000*Playlist.current().start);
         sc.play();
       }
+      */
+      Player.newPlayer(Playlist.cycle());
     };
 
     sc.bind(SC.Widget.Events.PLAY, function() {
