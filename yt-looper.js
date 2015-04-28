@@ -1,6 +1,6 @@
 'use strict';
 
-/* global YT, Editor */
+/* global YT, SC, Editor */
 
 // HALPERS
 function logLady(a, b) { // kek
@@ -16,7 +16,7 @@ var faviconPause = 'assets/pause.ico';
 var faviconWait  = 'assets/wait.ico';
 
 // PROTOTYPES (fufuf jshitn!)
-var Player, YouTubePlayer, ImgurPlayer;
+var Player, YouTubePlayer, ImgurPlayer, SoundCloudPlayer;
 
 
 // ENUMS
@@ -29,8 +29,9 @@ var YT_PLAYER_SIZES = Object.freeze({ // size reference: http://goo.gl/45VxXT
                       });
 
 var PLAYER_TYPES = Object.freeze({
-                     v: {urlKey: 'v', name: 'youtube', engine: YouTubePlayer},
-                     i: {urlKey: 'i', name: 'imgur'  , engine:   ImgurPlayer}
+                     v: {engine: YouTubePlayer   },
+                     i: {engine: ImgurPlayer     },
+                     s: {engine: SoundCloudPlayer}
                    });
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
@@ -472,6 +473,14 @@ function YouTubePlayer() {
       }
     });
 
+    Player.toggle = function() {
+      if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
+        YouTubePlayer.instance.pauseVideo();
+      } else {
+        YouTubePlayer.instance.playVideo();
+      }
+    };
+
     Player.autosize = function() {
       var size = getPlayerSize();
       $('#player').animate(_.pick(size, 'height', 'width'), 400)
@@ -520,7 +529,6 @@ function YouTubePlayer() {
     }
   };
 }
-
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
 function ImgurPlayer() {
@@ -586,6 +594,8 @@ function ImgurPlayer() {
         // remove splash
         $box.css('background-image', 'none');
 
+        Player.toggle = false; //no audio/video
+
         Player.autosize = function() {
           $player.animate(_.pick(getImagePlayerSize(image), 'height', 'width'), 400);
         };
@@ -610,6 +620,88 @@ function ImgurPlayer() {
     window.clearTimeout(timerId);
   };
 }
+
+function SoundCloudPlayer() {
+  logLady('SoundCloudPlayer()');
+
+  SoundCloudPlayer.newPlayer = function(playback) {
+    $(document).prop('title', playback.videoId);
+    changeFavicon(faviconWait);
+
+    var $box    = $('#box');
+    var $player = $('<iframe id="player"/>');
+
+    var widgetUrl = 'https://w.soundcloud.com/player/'
+                  + '?url=https%3A%2F%2Fsoundcloud.com/' + playback.videoId
+                  + '&auto_play=false&buying=false&liking=false&download=false&sharing=false'
+                  + '&show_comments=false&show_playcount=false'
+                  + '&show_artwork=true&show_user=true&hide_related=true&visual=true&callback=true';
+
+    $player.attr('src', widgetUrl);
+    var size = getPlayerSize();
+    $player.height(size.height);
+    $player.width(size.width);
+    $('div#player').replaceWith($player).remove();
+
+    SoundCloudPlayer.instance = SC.Widget($player.get(0));
+
+    var sc = SoundCloudPlayer.instance;
+    var init = true; // due to poor API we need to use first PLAY event for init
+
+    var playbackEnded = function () {
+      changeFavicon(faviconWait);
+      if (Playlist.multivideo) {
+        Player.newPlayer(Playlist.cycle());
+      } else {
+        sc.pause();
+        sc.seekTo(1000*Playlist.current().start);
+        sc.play();
+      }
+    };
+
+    sc.bind(SC.Widget.Events.PLAY, function() {
+      if (init) {
+        sc.getCurrentSound(function (sound) {
+          $(document).prop('title', sound.title);
+        });
+        sc.seekTo(1000*playback.start);
+        init = false;
+      }
+      changeFavicon(faviconPlay);
+    });
+
+    sc.bind(SC.Widget.Events.PAUSE, function() {
+      if ($box.is(':visible')) {
+        changeFavicon(faviconPause);
+      }
+    });
+
+    sc.bind(SC.Widget.Events.PLAY_PROGRESS, function(e) {
+      if (playback.end && e.currentPosition >= playback.end*1000) {
+        playbackEnded();
+      }
+    });
+
+    sc.bind(SC.Widget.Events.FINISH, function() {
+      playbackEnded();
+    });
+
+    sc.bind(SC.Widget.Events.READY, function() {
+      sc.play();
+    });
+
+    Player.toggle = function() {
+      SoundCloudPlayer.instance.toggle();
+    };
+
+    Player.autosize = function() {
+      $player.animate(_.pick(getPlayerSize(), 'height', 'width'), 400);
+    };
+
+  };
+
+}
+
 
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
@@ -654,6 +746,7 @@ function Player() {
 
   YouTubePlayer();
   ImgurPlayer();
+  SoundCloudPlayer();
   /*jshint +W064*/
 
   Player.newPlayer(Playlist.current());
@@ -661,8 +754,8 @@ function Player() {
 }
 
 
-function onYouTubeIframeAPIReady() {
-  logLady('onYouTubeIframeAPIReady()');
+function initLooper() {
+  logLady('initLooper()');
   /*jshint -W064*/
   Player();
   Editor(Playlist, Player);
@@ -676,10 +769,36 @@ function initYT() {
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
+function onYouTubeIframeAPIReady() { /*jshint ignore:line*/
+  logLady('onYouTubeIframeAPIReady()');
+  initLooper();
+}
+
+function initSC() {
+  var tag = document.createElement('script');
+  tag.src = 'https://w.soundcloud.com/player/api.js';
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // we dont have something like onYouTubeIframeAPIReady,
+  // thus the manual wait
+  var waitForSoundCloudAPI = function() {
+    if (typeof SC === 'undefined') {
+      window.setTimeout(waitForSoundCloudAPI, 50);
+    } else {
+      logLady('SpundCloud API Ready');
+      initLooper();
+    }
+  };
+  waitForSoundCloudAPI();
+
+}
+
 
 
 function renderPage() {
   var video = getVideo(window.location.href);
+  logLady(video);
   var $box = $('#box').show();
   var $menu = $('#menu').show();
   if (video.urlKey == 'v') {
@@ -687,7 +806,9 @@ function renderPage() {
     $box.css('background-image', 'url(//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg)');
     initYT();
   } else if (video.urlKey == 'i') {
-    initYT();
+    initLooper();
+  } else if (video.urlKey == 's') {
+    initSC();
   } else {
     // no valid hash, display #help
     changeFavicon();
@@ -731,7 +852,7 @@ function responsivePlayerSetup() {
 
     // reset player or entire page
     if ($('#player').length > 0) {
-      onYouTubeIframeAPIReady();
+      initLooper();
     } else {
       renderPage();
     }
@@ -785,6 +906,9 @@ function responsivePlayerSetup() {
           YouTubePlayer.instance.mute();
           YouTubePlayer.instance.pauseVideo();
         }
+        else if (Player.engine === SoundCloudPlayer) {
+          SoundCloudPlayer.instance.pause();
+        }
         $(document).prop('title', 'Google');
         changeFavicon('https://www.google.com/favicon.ico');
       } else {
@@ -794,6 +918,12 @@ function responsivePlayerSetup() {
           YouTubePlayer.instance.playVideo();
           $(document).prop('title', YouTubePlayer.instance.getVideoData().title);
         }
+        else if (Player.engine === SoundCloudPlayer) {
+          SoundCloudPlayer.instance.play();
+          SoundCloudPlayer.instance.getCurrentSound(function (sound) {
+            $(document).prop('title', sound.title);
+          });
+        }
       }
 
     } else if (k==='r') {
@@ -801,20 +931,22 @@ function responsivePlayerSetup() {
         Player.newPlayer(Playlist.random());
       }
     } else if (k==='m') {
-        if (Player.engine === YouTubePlayer) {
+      switch(Player.engine) {
+        case YouTubePlayer:
           if (YouTubePlayer.instance.isMuted()) {
             YouTubePlayer.instance.unMute();
           } else {
             YouTubePlayer.instance.mute();
           }
-        }
+          break;
+        case SoundCloudPlayer:
+          // There is no video, so we pause instead
+          SoundCloudPlayer.instance.toggle();
+          break;
+     }
     } else if (k===' ') {
-      if (Player.engine === YouTubePlayer) {
-        if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
-          YouTubePlayer.instance.pauseVideo();
-        } else {
-          YouTubePlayer.instance.playVideo();
-        }
+      if (Player.toggle) {
+        Player.toggle();
       }
 
     } else if (Playlist.go) {
