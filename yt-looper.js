@@ -481,6 +481,17 @@ function YouTubePlayer() {
       }
     };
 
+    Player.volume = function(diff) {
+      var current = YouTubePlayer.instance.getVolume();
+      if (diff) {
+        var diffd = current + diff;
+        var normalized = diffd < 0 ? 0 : diffd > 100 ? 100 : diffd;
+        YouTubePlayer.instance.setVolume(normalized);
+      } else {
+        return current;
+      }
+    };
+
     Player.autosize = function() {
       var size = getPlayerSize();
       $('#player').animate(_.pick(size, 'height', 'width'), 400)
@@ -698,6 +709,16 @@ function SoundCloudPlayer() {
 
     Player.toggle = function() {
       SoundCloudPlayer.instance.toggle();
+    };
+
+    Player.volume = function(diff) {
+      if (diff) {
+        SoundCloudPlayer.instance.getVolume(function (current) {
+          var diffd = current + diff;
+          var normalized = Math.floor(diffd < 0 ? 0 : diffd > 100 ? 100 : diffd);
+          SoundCloudPlayer.instance.setVolume(normalized);
+        });
+      }
     };
 
     Player.autosize = function() {
@@ -952,6 +973,17 @@ function responsivePlayerSetup() {
           SoundCloudPlayer.instance.toggle();
           break;
      }
+
+    } else if (k==='+' || k==='=') {
+      if (Player.volume) {
+        Player.volume(+10);
+      }
+
+    } else if (k==='-' || k==='_') {
+      if (Player.volume) {
+        Player.volume(-10);
+      }
+
     } else if (k===' ') {
       if (Player.toggle) {
         Player.toggle();
