@@ -908,6 +908,8 @@ function responsivePlayerSetup() {
       var $box = $('#box');
       if ($box.is(':visible')) {
         $box.hide();
+        $('#help').hide();
+        $('#editor').hide();
         if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
           YouTubePlayer.instance.mute();
           YouTubePlayer.instance.pauseVideo();
