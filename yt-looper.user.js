@@ -7,7 +7,7 @@
 // @include     http://youtube.com/watch*
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
-// @version     1.4.2
+// @version     1.4.3
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
@@ -92,6 +92,7 @@
           newVideo = false;
         }
       };
+      renderLooperActions();
       getYtPlayer().addEventListener ('onStateChange', 'ytPlayerStateChanged');
   };
 
