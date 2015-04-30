@@ -10,6 +10,25 @@ function logLady(a, b) { // kek
 }
 
 
+// YouTube IFrame API
+function initYT(callback) {
+  if (typeof YT === 'undefined') {
+    onYouTubeIframeAPIReady.callback = callback;
+    $.getScript('https://www.youtube.com/iframe_api');
+  } else {
+    callback();
+  }
+}
+
+// SoundCloud IFrame API
+function initSC(callback) {
+  if (typeof SC === 'undefined') {
+    $.getScript('https://w.soundcloud.com/player/api.js').done(callback);
+  } else {
+    callback();
+  }
+}
+
 // ICONS
 var faviconPlay  = 'assets/play.ico';
 var faviconPause = 'assets/pause.ico';
@@ -29,9 +48,9 @@ var YT_PLAYER_SIZES = Object.freeze({ // size reference: http://goo.gl/45VxXT
                       });
 
 var PLAYER_TYPES = Object.freeze({
-                     v: {engine: YouTubePlayer   },
-                     i: {engine: ImgurPlayer     },
-                     s: {engine: SoundCloudPlayer}
+                     v: {engine: YouTubePlayer,    api: initYT },
+                     i: {engine: ImgurPlayer,      api: null   },
+                     s: {engine: SoundCloudPlayer, api: initSC }
                    });
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
@@ -542,7 +561,7 @@ function YouTubePlayer() {
 }
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
-function ImgurPlayer() {
+function ImgurPlayer() { /*jshint ignore:line*/
   logLady('ImgurPlayer()');
 
   var imgurHome = '//i.imgur.com';
@@ -647,7 +666,7 @@ function SoundCloudPlayer() {
     changeFavicon(faviconWait);
 
     var $box    = $('#box');
-    var $player = $('<iframe id="player"/>');
+    var $player = $('<iframe id="player"/>').css('opacity','0.5');
 
     var widgetUrl = 'https://w.soundcloud.com/player/'
                   + '?url=https%3A%2F%2Fsoundcloud.com/' + playback.videoId
@@ -665,6 +684,11 @@ function SoundCloudPlayer() {
 
     var sc = SoundCloudPlayer.instance;
     var init = true; // due to poor API we need to use first PLAY event for init
+
+    // splash screen
+    sc.getCurrentSound(function (a) {
+      $box.css('background-image', 'url(' + a.artwork_url + ')');
+    });
 
     var playbackEnded = function () {
       changeFavicon(faviconWait);
@@ -689,6 +713,8 @@ function SoundCloudPlayer() {
           $(document).prop('title', sound.title);
         });
         sc.seekTo(1000*playback.start);
+        $player.css('opacity', '1');
+        $box.css('background-image', 'none');
         init = false;
       }
       changeFavicon(faviconPlay);
@@ -769,18 +795,23 @@ function Player() {
       editorNotification();
     }
 
-    // no need to check _e^   >o_
-    Player.engine = PLAYER_TYPES[playback.urlKey].engine;
-    Player.engine.newPlayer(playback);
+    var initPlayer = function() {
+      Player.engine();
+      Player.engine.newPlayer(playback);
+    };
+
+    Player.engine  = PLAYER_TYPES[playback.urlKey].engine;
+    var initApi    = PLAYER_TYPES[playback.urlKey].api;
+    if (_.isFunction(initApi)) {
+      initApi(initPlayer);
+    } else {
+      initPlayer();
+    }
   };
 
   /*jshint -W064*/
   Playlist(window.location.href);
   Playlist.log();
-
-  YouTubePlayer();
-  ImgurPlayer();
-  SoundCloudPlayer();
   /*jshint +W064*/
 
   Player.newPlayer(Playlist.current());
@@ -796,53 +827,24 @@ function initLooper() {
   /*jshint +W064*/
 }
 
-
-function initYT() {
-  var tag = document.createElement('script');
-  tag.src = '//www.youtube.com/iframe_api';
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
 function onYouTubeIframeAPIReady() { /*jshint ignore:line*/
   logLady('onYouTubeIframeAPIReady()');
-  initLooper();
+  if (_.isFunction(onYouTubeIframeAPIReady.callback)) onYouTubeIframeAPIReady.callback();
 }
-
-function initSC() {
-  var tag = document.createElement('script');
-  tag.src = 'https://w.soundcloud.com/player/api.js';
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-  // we dont have something like onYouTubeIframeAPIReady,
-  // thus the manual wait
-  var waitForSoundCloudAPI = function() {
-    if (typeof SC === 'undefined') {
-      window.setTimeout(waitForSoundCloudAPI, 50);
-    } else {
-      logLady('SpundCloud API Ready');
-      initLooper();
-    }
-  };
-  waitForSoundCloudAPI();
-
-}
-
-
 
 function renderPage() {
   var video = getVideo(window.location.href);
   logLady(video);
   var $box = $('#box').show();
   var $menu = $('#menu').show();
+
+  // early splash screens
   if (video.urlKey == 'v') {
-    // splash screen
     $box.css('background-image', 'url(//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg)');
-    initYT();
-  } else if (video.urlKey == 'i') {
+  }
+
+  if (PLAYER_TYPES.hasOwnProperty(video.urlKey)) {
     initLooper();
-  } else if (video.urlKey == 's') {
-    initSC();
   } else {
     // no valid hash, display #help
     changeFavicon();
