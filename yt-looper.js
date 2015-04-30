@@ -554,10 +554,17 @@ function ImgurPlayer() {
     var $player = $('div#player');
 
     var getImagePlayerSize = function(image) {
-      var pSize = _.extend({}, getPlayerSize());
-      var iSize = {width: image.naturalWidth, height: image.naturalHeight}; // fcuk IE8
-      pSize.width = iSize.width * (pSize.height / iSize.height);
-      return pSize;
+      var p = _.extend({}, getPlayerSize());
+      var i = {width: image.naturalWidth, height: image.naturalHeight};
+      var w = Math.floor(i.width  * (p.height / i.height));
+      var h = Math.floor(i.height * (p.width  / i.width));
+      if (w < p.width) {
+        p.width = w;
+      }
+      if (h < p.height) {
+        p.height = h;
+      }
+      return p;
     };
 
     $(document).prop('title', playback.videoId);
