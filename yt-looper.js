@@ -1,5 +1,14 @@
 'use strict';
 
+// be happy with HTTP 304 where possible
+$.loadCachedScript = function (url, options) {
+  return $.ajax($.extend(options || {}, {
+            dataType: 'script',
+            cache: true,
+            url: url
+         }));
+};
+
 /* global YT, SC, Editor */
 
 // HALPERS
@@ -14,7 +23,7 @@ function logLady(a, b) { // kek
 function initYT(callback) {
   if (typeof YT === 'undefined') {
     onYouTubeIframeAPIReady.callback = callback;
-    $.getScript('https://www.youtube.com/iframe_api');
+    $.loadCachedScript('https://www.youtube.com/iframe_api');
   } else {
     callback();
   }
@@ -23,7 +32,7 @@ function initYT(callback) {
 // SoundCloud IFrame API
 function initSC(callback) {
   if (typeof SC === 'undefined') {
-    $.getScript('https://w.soundcloud.com/player/api.js').done(callback);
+    $.loadCachedScript('https://w.soundcloud.com/player/api.js').done(callback);
   } else {
     callback();
   }

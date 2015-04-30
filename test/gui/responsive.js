@@ -5,7 +5,7 @@ module.exports = {
       .resizeWindow(640,360)
       .page.looper()
       .uri('#v=T0rs3R4E1Sk&t=23;30')
-      .waitForElementVisible('#player')
+      .waitForElementVisible('iframe#player')
       .assert.visible('#responsive-ui')
       .assert.cssClassPresent('#responsive-toggle','ticker')
       .getElementSize('#player', function(result) {
