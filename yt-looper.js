@@ -599,10 +599,14 @@ function ImgurPlayer() { /*jshint ignore:line*/
 
     // smart splash screen
     changeFavicon(faviconWait);
+    var size = getPlayerSize();
+    $player.height(size.height);
+    $player.width(size.width);
     $player.html('<div class="spinner"></div>');
+
     if (imgUrl.indexOf('imgur.com') > -1) {
       // imgur provides thumbs, which enables us to set splash screen
-      // and resize player to proper ratio
+      // and resize player to the proper ratio a little bit faster
       var thumbUrl = imgUrl.replace(/^(.*)\.(png|gif|jpe?g)$/i, '$1m.$2');
       $('<img/>')
         .attr('src', thumbUrl)
@@ -611,13 +615,10 @@ function ImgurPlayer() { /*jshint ignore:line*/
           $box.css('background-image', 'url(' + thumbUrl + ')');
           $player.height(size.height);
           $player.width(size.width);
+          this.remove();
         });
-    } else {
-      // fallback for future support of 'non-imgur' images
-      var size = getPlayerSize();
-      $player.height(size.height);
-      $player.width(size.width);
     }
+
 
     $('<img/>')
       .attr('src', imgUrl)
@@ -675,7 +676,7 @@ function SoundCloudPlayer() {
     changeFavicon(faviconWait);
 
     var $box    = $('#box');
-    var $player = $('<iframe id="player"/>').css('opacity','0.5');
+    var $player = $('<iframe id="player"/>').css('opacity','0.25');
 
     var widgetUrl = 'https://w.soundcloud.com/player/'
                   + '?url=https%3A%2F%2Fsoundcloud.com/' + playback.videoId
@@ -704,6 +705,7 @@ function SoundCloudPlayer() {
       /* TODO: broken for now. widget does not behave deterministically
        * either middle interval fails to loop, or the one at the end
        * the only way to get it working was to reload entire player
+       * Update: potentially can be fixed by single_active=false
       if (Playlist.multivideo) {
         Player.newPlayer(Playlist.cycle());
       } else {
@@ -868,14 +870,14 @@ function responsivePlayerSetup() {
   var cookieKey     = 'no_autosize';
   var cookie        = $.cookie(cookieKey);
   var cookieOptions = { expires: 365, path: '/', secure: false };
-  var $responsive   = $('#responsive-toggle');
+  var $autosize     = $('#autosize-toggle');
 
   if (cookie === undefined) {
     $.cookie(cookieKey, true, cookieOptions);
-    $responsive.removeClass('ticker');
+    $autosize.removeClass('ticker');
   } else {
     $.removeCookie(cookieKey, cookieOptions);
-    $responsive.addClass('ticker');
+    $autosize.addClass('ticker');
   }
 
   Player.autosize();
@@ -910,11 +912,11 @@ function responsivePlayerSetup() {
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
 
   // #autosize
-  var $responsive = $('#responsive-toggle');
-  $responsive.click(responsivePlayerSetup);
+  var $autosize = $('#autosize-toggle');
+  $autosize.click(responsivePlayerSetup);
   // display current autosize setting in menu
-  if ($.cookie('no_autosize')) { $responsive.removeClass('ticker'); }
-  else                         { $responsive.addClass('ticker');    }
+  if ($.cookie('no_autosize')) { $autosize.removeClass('ticker'); }
+  else                         { $autosize.addClass('ticker');    }
   // update player on window resize if autosize is enabled
   $(window).on('resize', _.debounce(function() {
     if ($.cookie('no_autosize') === undefined && Player.autosize) {
