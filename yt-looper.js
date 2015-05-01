@@ -489,7 +489,7 @@ function YouTubePlayer() {
     var size = getPlayerSize();
 
     // splash
-    setSplash('//i.ytimg.com/vi/' + playback.videoId + '/hqdefault.jpg');
+    setSplash('//i.ytimg.com/vi/' + playback.videoId + '/default.jpg');
 
     YouTubePlayer.instance = new YT.Player('player',{
       height: size.height,
@@ -584,12 +584,22 @@ function YouTubePlayer() {
 function ImgurPlayer() { /*jshint ignore:line*/
   logLady('ImgurPlayer()');
 
-  var imgurHome = '//i.imgur.com';
+  var imgurCDN = '//i.imgur.com/';
   var timerId;
 
   ImgurPlayer.newPlayer = function(playback) {
-    var imgUrl  = imgurHome +'/'+ playback.videoId;
     var $player = $('div#player');
+
+    // Imgur will return a redirect instead of image
+    // if file extension is missing, so we need to make sure
+    // it is always present (any extension will do)
+    var imgurUrl = function(resource) {
+      var ext = /\.[a-z]+$/i;
+      var url = imgurCDN + resource;
+      return ext.test(url) ? url : url + '.jpg';
+    };
+
+    var imgUrl  = imgurUrl(playback.videoId);
 
     var getImagePlayerSize = function(image) {
       var p = _.extend({}, getPlayerSize());
@@ -614,10 +624,10 @@ function ImgurPlayer() { /*jshint ignore:line*/
     $player.width(size.width);
     $player.html('<div class="spinner"></div>');
 
-    if (imgUrl.indexOf('imgur.com') > -1) {
+    if (imgUrl.startsWith(imgurCDN)) {
       // imgur provides thumbs, which enables us to set splash screen
       // and resize player to the proper ratio a little bit faster
-      var thumbUrl = imgUrl.replace(/^(.*)\.(png|gif|jpe?g)$/i, '$1m.$2');
+      var thumbUrl = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
       $('<img/>')
         .attr('src', thumbUrl)
         .load(function() {
@@ -706,7 +716,7 @@ function SoundCloudPlayer() {
 
     // splash screen
     sc.getCurrentSound(function (a) {
-      setSplash(a.artwork_url);
+      setSplash(a.artwork_url.replace('large','mini'));
     });
 
     var playbackEnded = function () {
@@ -860,7 +870,7 @@ function renderPage() {
 
   // early splash screen if YouTube image is the first interval
   if (video.urlKey == 'v') {
-    setSplash('//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg');
+    setSplash('//i.ytimg.com/vi/' + video.videoId + '/default.jpg');
   }
 
   if (PLAYER_TYPES.hasOwnProperty(video.urlKey)) {
