@@ -472,6 +472,14 @@ function Playlist(href) {
   };
 }
 
+function setSplash(imgUrl) {
+  if (imgUrl) {
+    $('#box').css('background-image', 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url(' + imgUrl + ')');
+  } else {
+    $('#box').css('background-image', 'none');
+  }
+}
+
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
 function YouTubePlayer() {
@@ -481,7 +489,7 @@ function YouTubePlayer() {
     var size = getPlayerSize();
 
     // splash
-    $('#box').css('background-image', 'url(//i.ytimg.com/vi/' + playback.videoId + '/hqdefault.jpg)');
+    setSplash('//i.ytimg.com/vi/' + playback.videoId + '/hqdefault.jpg');
 
     YouTubePlayer.instance = new YT.Player('player',{
       height: size.height,
@@ -537,7 +545,7 @@ function YouTubePlayer() {
     logLady('onYouTubePlayerReady()');
 
     $(document).prop('title', event.target.getVideoData().title);
-    $('#box').css('background-image', 'none');
+    setSplash(null);
 
     var quality = urlParam('quality');
     if (quality) {
@@ -581,7 +589,6 @@ function ImgurPlayer() { /*jshint ignore:line*/
 
   ImgurPlayer.newPlayer = function(playback) {
     var imgUrl  = imgurHome +'/'+ playback.videoId;
-    var $box    = $('#box');
     var $player = $('div#player');
 
     var getImagePlayerSize = function(image) {
@@ -615,7 +622,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
         .attr('src', thumbUrl)
         .load(function() {
           var size = getImagePlayerSize(this);
-          $box.css('background-image', 'url(' + thumbUrl + ')');
+          setSplash(thumbUrl);
           $player.height(size.height);
           $player.width(size.width);
           this.remove();
@@ -641,8 +648,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
         $image.attr('src',imgUrl);
         /*jshint +W030*/
 
-        // remove splash
-        $box.css('background-image', 'none');
+        setSplash(null);
 
         Player.toggle = false; //no audio/video
 
@@ -700,7 +706,7 @@ function SoundCloudPlayer() {
 
     // splash screen
     sc.getCurrentSound(function (a) {
-      $box.css('background-image', 'url(' + a.artwork_url + ')');
+      setSplash(a.artwork_url);
     });
 
     var playbackEnded = function () {
@@ -728,7 +734,7 @@ function SoundCloudPlayer() {
         });
         sc.seekTo(1000*playback.start);
         $player.css('opacity', '1');
-        $box.css('background-image', 'none');
+        setSplash(null);
         init = false;
       }
       changeFavicon(faviconPlay);
@@ -854,7 +860,7 @@ function renderPage() {
 
   // early splash screen if YouTube image is the first interval
   if (video.urlKey == 'v') {
-    $box.css('background-image', 'url(//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg)');
+    setSplash('//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg');
   }
 
   if (PLAYER_TYPES.hasOwnProperty(video.urlKey)) {
