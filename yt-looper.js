@@ -480,6 +480,9 @@ function YouTubePlayer() {
   YouTubePlayer.newPlayer = function(playback) {
     var size = getPlayerSize();
 
+    // splash
+    $('#box').css('background-image', 'url(//i.ytimg.com/vi/' + playback.videoId + '/hqdefault.jpg)');
+
     YouTubePlayer.instance = new YT.Player('player',{
       height: size.height,
       width:  size.width,
@@ -849,7 +852,7 @@ function renderPage() {
   var $box = $('#box').show();
   var $menu = $('#menu').show();
 
-  // early splash screens
+  // early splash screen if YouTube image is the first interval
   if (video.urlKey == 'v') {
     $box.css('background-image', 'url(//i.ytimg.com/vi/' + video.videoId + '/hqdefault.jpg)');
   }
