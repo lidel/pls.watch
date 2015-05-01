@@ -346,7 +346,7 @@ function showHelpUi(show) {
 }
 
 function showRandomUi(multivideo) {
-  var $randomUi = $('#random-ui').hide();
+  var $randomUi = $('#random-ui');
   if (multivideo) {
     var randomFlag = urlFlag('random');
     var toggleUrl   = document.location.href.replace(/random[^&]*&|&random[^&]*$/g, '');
@@ -364,6 +364,8 @@ function showRandomUi(multivideo) {
     });
 
     $randomUi.show();
+  } else {
+    $randomUi.hide();
   }
 }
 
@@ -470,6 +472,8 @@ function Playlist(href) {
     }
     return Playlist.jumpTo(random);
   };
+
+  showRandomUi(Playlist.multivideo);
 }
 
 function setSplash(imgUrl) {
@@ -818,14 +822,10 @@ function Player() {
       $player.remove();
     }
 
-    $('#box').html('<div id="player"></div>');
-
-    if (editorNotification) {
-      // inform editor about player change
-      editorNotification();
-    }
+    if (_.isFunction(editorNotification)) editorNotification();
 
     var initPlayer = function() {
+      $('#box').html('<div id="player"></div>');
       Player.engine();
       Player.engine.newPlayer(playback);
     };
@@ -845,7 +845,6 @@ function Player() {
   /*jshint +W064*/
 
   Player.newPlayer(Playlist.current());
-  showRandomUi(Playlist.multivideo);
 }
 
 

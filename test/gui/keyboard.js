@@ -23,8 +23,9 @@ module.exports = {
       .page.looper()
       .uri('#v=ZNno63ZO2Lw&t=54s;1m20s+1m33s;1m47s+3m30s;3m46s&i=cJjBEQP.png&i=qlGS0UC.jpg')
       .waitForElementVisible('iframe#player')
-      .keys(['e','l','l']) // open editor, jump two intervals forward
+      .keys(['l','l']) // open editor, jump two intervals forward
       .waitForElementVisible('iframe#player')
+      .keys('e')
       .waitForElementVisible('#editor .highlighted')
       .assert.editorHighlightUri('v=ZNno63ZO2Lw&t=3m30s;3m46s')
       .keys('h') // jump one interval back
@@ -35,21 +36,21 @@ module.exports = {
   },
 
 
-  'Jumping to random video via "r" keyboard shortcut' : function (browser) {
+  'Jumping to random interval via "r" keyboard shortcut' : function (browser) {
     browser.page.looper()
-      .uri('#i=cJjBEQP.png&i=qlGS0UC.jpg') // use images for speed
-      .waitForElementVisible('#player')
-      .assert.title('cJjBEQP.png')
-      .keys(['e','r']) // playlist has only two items so it always jump to other video
-      .waitForElementVisible('#player')
+      .uri('#v=ZNno63ZO2Lw&t=54s;1m20s+1m33s;1m47s')
+      .waitForElementVisible('iframe#player')
+      .keys('e')
       .waitForElementVisible('#editor .highlighted')
-      .assert.editorHighlightUri('i=qlGS0UC.jpg')
-      .assert.title('qlGS0UC.jpg')
+      .assert.editorHighlightUri('v=ZNno63ZO2Lw&t=54s;1m20s')
       .keys('r') // playlist has only two items so it always jump to other video
-      .waitForElementVisible('#player')
+      .waitForElementVisible('iframe#player')
       .waitForElementVisible('#editor .highlighted')
-      .assert.editorHighlightUri('i=cJjBEQP.png')
-      .assert.title('cJjBEQP.png')
+      .assert.editorHighlightUri('v=ZNno63ZO2Lw&t=1m33s;1m47s')
+      .keys('r') // playlist has only two items so it always jump to other video
+      .waitForElementVisible('iframe#player')
+      .waitForElementVisible('#editor .highlighted')
+      .assert.editorHighlightUri('v=ZNno63ZO2Lw&t=54s;1m20s')
       .end();
   },
 };
