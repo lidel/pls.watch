@@ -7,9 +7,9 @@
 // @include     http://youtube.com/watch*
 // @include     https://www.youtube.com/watch*
 // @include     https://youtube.com/watch*
-// @include     https://imgur.com/gallery/*
-// @include     http://imgur.com/gallery/*
-// @version     1.5.0
+// @include     https://imgur.com/*
+// @include     http://imgur.com/*
+// @version     1.5.1
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
@@ -105,7 +105,7 @@
 
   var imgurHandler = function() {
     // display button only on single-image pages
-    if ($('#image .album-image').length < 2) {
+    if ($('div.image').length === 1) {
       console.log('yt-looper @ imgurHandler()');
       var url = 'https://yt.aergia.eu/#i=' + window.location.pathname.replace('/gallery/','');
       var html = '<a style="min-width:28px;min-height:26px;padding:12px 6px;pointer:cursor"><span style="font-size:2em;vertical-align:middle;line-height:26px">&#x21BB;</span>&nbsp;yt.aergia.eu</a>';
