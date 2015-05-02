@@ -72,15 +72,25 @@ By default image is displayed forever (useful for GIFs). A slideshow can be crea
 
 Example: https://yt.aergia.eu/#i=cJjBEQP.jpg&t=3s&i=vo9DPpp.gif&t=3s
 
+Note: [GIF intervals](https://yt.aergia.eu/#i=zvATqgs) are automatically rendered as [GIFV](https://imgur.com/blog/2014/10/09/introducing-gifv/).
+
 ### SoundCloud
 
-For now, only single track intervals are supported:
+Single track interval:
 
 ```
 #s=<user>/<sound>[&t=<start>[;<end>]]
 ```
 
 Example: https://yt.aergia.eu/#s=sacredbones/pharmakon-body-betrays-itself&t=0s;17s
+
+Playlists (sets) are lazy-inlined on first play:
+
+```
+#s=<user>/sets/<set>
+```
+
+Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
 
 
 ## Keyboard Commands
