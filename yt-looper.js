@@ -258,7 +258,7 @@ function inlineYTPlaylist(urlMatch, playlistId) {
                   + '&fields=items(kind%2Csnippet(position%2CresourceId))%2CnextPageToken'
                   + '&key=' + GOOGLE_API_KEY;
 
-  // hack to provide static API response then run in Travis CI
+  // hack to provide static API response for unit test
   var playlist = urlMatch.hasOwnProperty('testData') ? urlMatch.testData : {};
   var pageToken = null;
   var retries = 3;
@@ -303,6 +303,24 @@ function inlineYTPlaylist(urlMatch, playlistId) {
   return inlinedPlaylist;
 }
 
+function inlineShortenedPlaylist(urlMatch, shortUrl) {
+  var normalizedUrl = urlMatch;
+  var apiRequest = 'https://www.googleapis.com/urlshortener/v1/url'
+                  + '?key=' + GOOGLE_API_KEY
+                  + '&shortUrl=' + shortUrl;
+
+  $.ajax({ url: apiRequest, async: false}).done(function(data) {
+    if (data.kind === 'urlshortener#url' && data.longUrl.indexOf('#') > -1) {
+      normalizedUrl = data.longUrl.split('#')[1];
+    }
+  }).fail(function(jqxhr, textStatus) {
+    logLady('Unable to inline Short URL "'+ shortUrl +'" ('+ textStatus +'): ', jqxhr);
+  });
+
+  return normalizedUrl;
+}
+
+
 
 function normalizeUrl(href) {
   var url    = href || window.location.href;
@@ -321,12 +339,13 @@ function normalizeUrl(href) {
   apiUrl = apiUrl.replace(/:([vit])=/g,'&$1=');
   apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
-  // inline items from YouTuble playlist
+  // inline playlists
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, deduplicateYTPlaylist);
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&index=([^&]+)&list=([^&]+)/g, function($0,$1,$2,$3){return deduplicateYTPlaylist($0,$1,$3,$2);});
   apiUrl = apiUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/g, recalculateYTPlaylistIndex);
   apiUrl = apiUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/g, recalculateYTPlaylistIndex);
   apiUrl = apiUrl.replace(/list=([^&:#]+)/g, inlineYTPlaylist);
+  apiUrl = apiUrl.replace(/(https?:\/\/goo\.gl\/[^&#]+)/g, inlineShortenedPlaylist);
 
   if (!href && url != apiUrl) document.location.replace(apiUrl);
 

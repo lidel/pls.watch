@@ -24,4 +24,13 @@ module.exports = {
       .end();
   },
 
+  'Inline shortened playlists' : function (browser) {
+    browser
+      .page.looper().uri('#http://goo.gl/ycH3Px&http://goo.gl/LKbVEc')
+      .waitForElementVisible('iframe#player')
+      .assert.uriEquals('#v=ZuHZSbPJhaY&t=1h1s;1h4s&v=lWqJTKdznaM&t=58;68')
+      .end();
+  },
+
+
 };
