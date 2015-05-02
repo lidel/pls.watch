@@ -1,5 +1,10 @@
 'use strict';
 
+// document.head (http://jsperf.com/document-head) failsafe init for old browsers
+document.head = typeof document.head != 'object'
+              ? document.getElementsByTagName('head')[0]
+              : document.head;
+
 // be happy with HTTP 304 where possible
 $.loadCachedScript = function (url, options) {
   return $.ajax($.extend(options || {}, {
@@ -68,10 +73,9 @@ var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halpe
 // Key for different referer can be generated at https://console.developers.google.com
 var GOOGLE_API_KEY = 'AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU';
 
-// document.head (http://jsperf.com/document-head) failsafe init for old browsers
-document.head = typeof document.head != 'object'
-              ? document.getElementsByTagName('head')[0]
-              : document.head;
+// This Client ID is fairly disposable (used only for fetching image metadata)
+var IMGUR_API_CLIENT_ID = '494753a104c250a';
+
 
 
 function showShortUrl() {
@@ -218,7 +222,6 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
                   + '&fields=items(kind%2Csnippet(position%2CresourceId))%2CnextPageToken'
                   + '&key=' + GOOGLE_API_KEY;
   var normalizedUrl = urlMatch;
-  var retries = 3;
   $.ajax({ url: apiRequest, async: false}).done(function(data) {
     var item = data.items[0];
     // if position does match, remove duplicate from URL
@@ -231,7 +234,6 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
       // no need to change URL
     } else {
       logLady('Unable to get YouTube playlistId='+playlistId+' ('+ textStatus +'): ', jqxhr);
-      retries = retries - 1;
     }
   });
 
@@ -589,12 +591,11 @@ function ImgurPlayer() { /*jshint ignore:line*/
   logLady('ImgurPlayer()');
 
   var imgurCDN = '//i.imgur.com/';
-  var timerId;
 
   ImgurPlayer.newPlayer = function(playback) {
     var $player = $('div#player');
 
-    // Imgur will return a redirect instead of image
+    // Imgur will return a redirect instead of an image
     // if file extension is missing, so we need to make sure
     // it is always present (any extension will do)
     var imgurUrl = function(resource) {
@@ -602,14 +603,12 @@ function ImgurPlayer() { /*jshint ignore:line*/
       var url = imgurCDN + resource;
       return ext.test(url) ? url : url + '.jpg';
     };
-
     var imgUrl  = imgurUrl(playback.videoId);
 
-    var getImagePlayerSize = function(image) {
+    var getImagePlayerSize = function(imgW, imgH) {
       var p = _.extend({}, getPlayerSize());
-      var i = {width: image.naturalWidth, height: image.naturalHeight};
-      var w = Math.floor(i.width  * (p.height / i.height));
-      var h = Math.floor(i.height * (p.width  / i.width));
+      var w = Math.floor(imgW * (p.height / imgH));
+      var h = Math.floor(imgH * (p.width  / imgW));
       if (w < p.width) {
         p.width = w;
       }
@@ -618,68 +617,95 @@ function ImgurPlayer() { /*jshint ignore:line*/
       }
       return p;
     };
+    var setImagePlayerSize = function($player, size) {
+        $player.width(size.width);
+        $player.height(size.height);
+    };
 
-    $(document).prop('title', playback.videoId);
+    var startSlideshowTimerIfPresent = function () {
+      if (Playlist.multivideo && playback.start > 0) {
+        $player.on('destroyed', onImgurPlayerRemove);
+        ImgurPlayer.timerId = _.delay(onImgurPlayerStateChange, 1000*playback.start); // milis
+      }
+    };
+
 
     // smart splash screen
     changeFavicon(faviconWait);
-    var size = getPlayerSize();
-    $player.height(size.height);
-    $player.width(size.width);
+    $(document).prop('title', playback.videoId);
     $player.html('<div class="spinner"></div>');
+    // the smallest thumb with preserved aspect ratio has suffix 't'
+    var thumbUrl = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
+    setSplash(thumbUrl);
 
-    if (imgUrl.startsWith(imgurCDN)) {
-      // imgur provides thumbs, which enables us to set splash screen
-      // and resize player to the proper ratio a little bit faster
-      var thumbUrl = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
+    // oportunistically resize player to the proper ratio before full image or metadata is loaded
+    $('<img/>')
+      .attr('src', thumbUrl)
+      .load(function() {
+        var that = this;
+
+        setImagePlayerSize($player, getImagePlayerSize(that.naturalWidth, that.naturalHeight));
+
+        Player.autosize = function() {
+          // autosize requires a fresh result from getImagePlayerSize
+          $player.animate(_.pick(getImagePlayerSize(that.naturalWidth, that.naturalHeight), 'height', 'width'), 400);
+        };
+      });
+
+    // fetching image metadata (mainly to detect GIFs)
+    var apiData = null;
+    $.ajax({ url: 'https://api.imgur.com/3/image/' + playback.videoId.replace(/\.\w+$/,''),
+             headers: { 'Authorization': 'Client-ID ' + IMGUR_API_CLIENT_ID },
+             async: false
+    }).done(function(data) {
+      if (data.data) apiData = data.data;
+      //logLady('Received Imgur MetaData: ', apiData);
+    }).fail(function(jqxhr, textStatus) {
+      logLady('Unable to get metadata about Imgur resource "'+playback.videoId+'" ('+ textStatus +'): ', jqxhr);
+    });
+
+    if (apiData) {
+      setImagePlayerSize($player, getImagePlayerSize(apiData.width, apiData.height));
+      Player.autosize = function() {
+        $player.animate(_.pick(getImagePlayerSize(apiData.width, apiData.height), 'height', 'width'), 400);
+      };
+    }
+
+    if (apiData && apiData.animated) {
+      logLady('GIFV detected, switching to HTML5 <video> player');
+
+      var $gifv = $('<video id="gifv" width="100%" height="100%" '
+                + '         poster="'+ imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h')) + '" '
+                + '         autoplay="autoplay" muted="muted" preload="auto" loop="loop">'
+                + '<source src="'+ apiData.webm +'" type="video/webm">'
+                + '<source src="'+ apiData.mp4 +'" type="video/mp4">'
+                + '</video>').bind('play', startSlideshowTimerIfPresent);
+
+      $player.empty().append($gifv);
+      setSplash(null);
+      changeFavicon(faviconPlay);
+
+    } else {
       $('<img/>')
-        .attr('src', thumbUrl)
+        .attr('src', imgUrl)
         .load(function() {
-          var size = getImagePlayerSize(this);
-          setSplash(thumbUrl);
-          $player.height(size.height);
-          $player.width(size.width);
-          this.remove();
+          var image = this;
+          var $image = $(image).height('100%').width('100%');
+          $player.empty().append($image);
+
+          /*jshint -W030*/
+          $image.attr('src','');
+          image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
+          $image.attr('src',imgUrl);
+          /*jshint +W030*/
+
+          changeFavicon(faviconPlay);
+          setSplash(null);
+          startSlideshowTimerIfPresent();
         });
     }
 
-
-    $('<img/>')
-      .attr('src', imgUrl)
-      .load(function() {
-        changeFavicon(faviconPlay);
-        $player.empty();
-        var image = this;
-        var $image = $(image).height('100%').width('100%');
-        var size = getImagePlayerSize(image);
-        $player.height(size.height);
-        $player.width(size.width);
-        $player.append($image);
-
-        /*jshint -W030*/
-        $image.attr('src','');
-        image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
-        $image.attr('src',imgUrl);
-        /*jshint +W030*/
-
-        setSplash(null);
-
-        Player.toggle = false; //no audio/video
-
-        Player.autosize = function() {
-          $player.animate(_.pick(getImagePlayerSize(image), 'height', 'width'), 400);
-        };
-
-        if (Playlist.multivideo && playback.start > 0) {
-          // no need to worry about potentially badly defined value of timerId, because:
-          // 1. we are single threaded
-          // 2. callbacks do not interrupt anything
-          $player.on('destroyed', onImgurPlayerRemove);
-          timerId = _.delay(onImgurPlayerStateChange, 1000*playback.start); // milis
-        }
-
-      });
-
+    Player.toggle = null;
   };
 
   var onImgurPlayerStateChange = function() {
@@ -687,7 +713,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
   };
 
   var onImgurPlayerRemove = function() {
-    window.clearTimeout(timerId);
+    window.clearTimeout(ImgurPlayer.timerId);
   };
 }
 
@@ -937,7 +963,7 @@ function responsivePlayerSetup() {
   else                         { $autosize.addClass('ticker');    }
   // update player on window resize if autosize is enabled
   $(window).on('resize', _.debounce(function() {
-    if ($.cookie('no_autosize') === undefined && Player.autosize) {
+    if (_.isUndefined($.cookie('no_autosize')) && _.isFunction(Player.autosize)) {
       Player.autosize();
     }
   }, 300));

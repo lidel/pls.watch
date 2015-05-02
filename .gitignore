@@ -2,6 +2,7 @@ node_modules
 *~
 *.swp
 *.swo
+npm-debug.log
 deploy.sh
 test/logs/
 test/reports/
