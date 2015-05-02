@@ -236,7 +236,7 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     } else {
       $LAB
       // load jQuery UI if editor has been requested for the first time
-      .script('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js')
+      .script('https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js')
       .wait(function () {
         Editor.create();
         $('#editor').toggle('slide');
@@ -250,8 +250,8 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
           $('<link>')
             .appendTo('head')
             .attr({type : 'text/css', rel : 'stylesheet'})
-            .attr('href', '//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.min.css');
-          return '//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js';
+            .attr('href', 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.min.css');
+          return 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js';
         } else {
           return null;
         }

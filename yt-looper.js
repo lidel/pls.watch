@@ -495,7 +495,7 @@ function YouTubePlayer() {
     var size = getPlayerSize();
 
     // splash
-    setSplash('//i.ytimg.com/vi/' + playback.videoId + '/default.jpg');
+    setSplash('https://i.ytimg.com/vi/' + playback.videoId + '/default.jpg');
 
     YouTubePlayer.instance = new YT.Player('player',{
       height: size.height,
@@ -899,7 +899,7 @@ function renderPage() {
 
   // early splash screen if YouTube image is the first interval
   if (video.urlKey == 'v') {
-    setSplash('//i.ytimg.com/vi/' + video.videoId + '/default.jpg');
+    setSplash('https://i.ytimg.com/vi/' + video.videoId + '/default.jpg');
   }
 
   if (PLAYER_TYPES.hasOwnProperty(video.urlKey)) {
