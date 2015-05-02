@@ -590,7 +590,7 @@ function YouTubePlayer() {
 function ImgurPlayer() { /*jshint ignore:line*/
   logLady('ImgurPlayer()');
 
-  var imgurCDN = '//i.imgur.com/';
+  var imgurCDN = 'https://i.imgur.com/';
 
   ImgurPlayer.newPlayer = function(playback) {
     var $player = $('div#player');
@@ -599,9 +599,8 @@ function ImgurPlayer() { /*jshint ignore:line*/
     // if file extension is missing, so we need to make sure
     // it is always present (any extension will do)
     var imgurUrl = function(resource) {
-      var ext = /\.[a-z]+$/i;
       var url = imgurCDN + resource;
-      return ext.test(url) ? url : url + '.jpg';
+      return /\.[a-z]+$/i.test(resource) ? url : url + '.jpg';
     };
     var imgUrl  = imgurUrl(playback.videoId);
 
@@ -674,16 +673,21 @@ function ImgurPlayer() { /*jshint ignore:line*/
     if (apiData && apiData.animated) {
       logLady('GIFV detected, switching to HTML5 <video> player');
 
+      var https = function(url) {
+        return url.replace('http:','https:');
+      };
+
       var $gifv = $('<video id="gifv" width="100%" height="100%" '
                 + '         poster="'+ imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h')) + '" '
                 + '         autoplay="autoplay" muted="muted" preload="auto" loop="loop">'
-                + '<source src="'+ apiData.webm +'" type="video/webm">'
-                + '<source src="'+ apiData.mp4 +'" type="video/mp4">'
+                + '<source src="'+ https(apiData.webm) +'" type="video/webm">'
+                + '<source src="'+ https(apiData.mp4) +'" type="video/mp4">'
                 + '</video>').bind('play', startSlideshowTimerIfPresent);
 
       $player.empty().append($gifv);
       setSplash(null);
       changeFavicon(faviconPlay);
+
 
     } else {
       $('<img/>')
