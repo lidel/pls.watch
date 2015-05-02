@@ -801,6 +801,16 @@ function SoundCloudPlayer() {
     });
 
     sc.bind(SC.Widget.Events.READY, function() {
+      // inline playlists
+      if (playback.videoId.indexOf('/sets/') > -1) {
+        logLady('SoundCloud set detected, inlining intervals..');
+        sc.getSounds(function (sounds) {
+          var uris = _.map(sounds,  function(s){return s.permalink_url.replace('https://soundcloud.com/', 's=');});
+              uris = _.reduce(uris, function(uris,uri){return uris+'&'+uri;});
+          document.location.replace(document.location.href.replace('s='+playback.videoId,uris));
+          return;
+        });
+      }
       sc.play();
     });
 
