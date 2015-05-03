@@ -9,7 +9,7 @@
 // @include     https://youtube.com/watch*
 // @include     https://imgur.com/*
 // @include     http://imgur.com/*
-// @version     1.5.2
+// @version     1.5.3
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
@@ -104,7 +104,7 @@
   };
 
   var imgurHandler = function() {
-    var imgurId = window.location.pathname.replace(/(?:\/gallery)?\//,'');
+    var imgurId = window.location.pathname.replace(/\/(?:[^\/]+\/)*/,'');
     // display button only on single-image pages
     if (/[a-zA-Z0-9]+/.test(imgurId) && $('div.image').length === 1) {
       console.log('yt-looper @ imgurHandler()');
