@@ -359,10 +359,10 @@ function showHelpUi(show) {
   var $helpToggle = $('#help-toggle', $helpUi);
   if (show && !$help.is(':visible')) {
     $helpToggle.addClass('ticker');
-    $help.slideDown();
+    $help.fadeIn('fast');
   } else if (!show && $help.is(':visible')) {
     $helpToggle.removeClass('ticker');
-    $help.slideUp();
+    $help.fadeOut('fast');
   }
 }
 
