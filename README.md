@@ -26,7 +26,7 @@ A YouTube video can have more than one interval. Intervals are chained with the 
 #v=<videoId>&t=<start1>;<end1>+<start2>;<end2>+...
 ```
 
-To chain intervals from multiple videos just append another `#v=(...)` at the end of URL:
+To chain intervals from multiple videos just append another `&v=(...)` at the end of URL:
 ```
 #v=<videoId1>&t=<start1>;<end1>+<start2>;<end2>&v=<videoId2>&t=<start3>;<end3>+<start4>;<end4>`
 ```
@@ -48,19 +48,12 @@ If URL already had some videos `<n>` will be recalculated.
 
 **Video Quality**
 
-To cap video quality at preferred level (global setting):
+To cap video quality at a preferred level (global setting):
 ```
 &quality=<level>
 ```
 Current list of available levels can be found in [YouTube Player API Reference](https://developers.google.com/youtube/iframe_api_reference#Playback_quality).
 
-
-**Random Mode**
-
-```
-&random
-```
-This will play multiple intervals in semi-random order (current interval will not be played twice in a row).
 
 ### Imgur
 
@@ -92,10 +85,20 @@ Playlists (sets) are lazy-inlined on first play:
 
 Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
 
+### Global
+
+**Random Mode**
+
+```
+&random
+```
+
+This parameter will force playback of all intervals in semi-random order (normalized random: current interval will not be played twice in a row).
+
 
 ## Keyboard Commands
 
-Press <kbd>?</kbd> to toggle help screen with available shortcuts.
+Press <kbd>?</kbd> to toggle help screen listing available shortcuts.
 
 ## Companion userscript
 
