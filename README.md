@@ -99,9 +99,9 @@ Press <kbd>?</kbd> to toggle help screen with available shortcuts.
 
 ## Companion userscript
 
-There is a simple userscript that adds a button on YouTube pages to open current video in yt-looper:
+There is a simple userscript that adds a button on supported pages to open current video in yt-looper.
 
-> ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
+### Installation
 
 Click to install: https://yt.aergia.eu/yt-looper.user.js
 
@@ -109,3 +109,20 @@ It may require preinstalled browser extension:
 
 - Firefox: [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
 - Chrome/Opera: [Tampermonkey](http://tampermonkey.net)
+
+
+### Examples
+
+#### YouTube
+
+> ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
+
+#### Imgur
+
+> ![](https://cloud.githubusercontent.com/assets/157609/7513677/5cc261a2-f4b6-11e4-8f1e-e06950d0a057.png)
+
+#### SoundCloud
+
+> ![](https://cloud.githubusercontent.com/assets/157609/7513707/80d419c8-f4b6-11e4-9413-3d6ede9bd5d0.png)
+
+
