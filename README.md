@@ -26,7 +26,7 @@ A YouTube video can have more than one interval. Intervals are chained with the 
 #v=<videoId>&t=<start1>;<end1>+<start2>;<end2>+...
 ```
 
-To chain intervals from multiple videos just append another `#v=(...)` at the end of URL:
+To chain intervals from multiple videos just append another `&v=(...)` at the end of URL:
 ```
 #v=<videoId1>&t=<start1>;<end1>+<start2>;<end2>&v=<videoId2>&t=<start3>;<end3>+<start4>;<end4>`
 ```
@@ -48,19 +48,12 @@ If URL already had some videos `<n>` will be recalculated.
 
 **Video Quality**
 
-To cap video quality at preferred level (global setting):
+To cap video quality at a preferred level (global setting):
 ```
 &quality=<level>
 ```
 Current list of available levels can be found in [YouTube Player API Reference](https://developers.google.com/youtube/iframe_api_reference#Playback_quality).
 
-
-**Random Mode**
-
-```
-&random
-```
-This will play multiple intervals in semi-random order (current interval will not be played twice in a row).
 
 ### Imgur
 
@@ -92,16 +85,26 @@ Playlists (sets) are lazy-inlined on first play:
 
 Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
 
+### Global
+
+**Random Mode**
+
+```
+&random
+```
+
+This parameter will force playback of all intervals in semi-random order (normalized random: current interval will not be played twice in a row).
+
 
 ## Keyboard Commands
 
-Press <kbd>?</kbd> to toggle help screen with available shortcuts.
+Press <kbd>?</kbd> to toggle help screen listing available shortcuts.
 
 ## Companion userscript
 
-There is a simple userscript that adds a button on YouTube pages to open current video in yt-looper:
+There is a simple userscript that adds a button on supported pages to open current video in yt-looper.
 
-> ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
+### Installation
 
 Click to install: https://yt.aergia.eu/yt-looper.user.js
 
@@ -109,3 +112,20 @@ It may require preinstalled browser extension:
 
 - Firefox: [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
 - Chrome/Opera: [Tampermonkey](http://tampermonkey.net)
+
+
+### Examples
+
+#### YouTube
+
+> ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
+
+#### Imgur
+
+> ![](https://cloud.githubusercontent.com/assets/157609/7513677/5cc261a2-f4b6-11e4-8f1e-e06950d0a057.png)
+
+#### SoundCloud
+
+> ![](https://cloud.githubusercontent.com/assets/157609/7513707/80d419c8-f4b6-11e4-9413-3d6ede9bd5d0.png)
+
+
