@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/labjs/2.0.3/LAB.min.js"></script>
+</head>
+
+<body>
+<script>
+  'use strict';
+  $LAB
+  .script('https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js')
+  .wait(function(){
+    var loadIFrame = function() {
+      var $iframe = $('iframe');
+      $iframe.attr('src', '../'+window.location.hash);
+    }
+    $(window).bind('hashchange', function() {
+      loadIFrame();
+    });
+    loadIFrame();
+  });
+</script>
+
+
+<h1>IFrame test</h1>
+<iframe width="420" height="315" src="" frameborder="0" allowfullscreen></iframe>
+
+<!--
+<h1>yt-looper</h1>
+<p>Video and Audio require click-to-play. Images/GIFs are safe to autoplay.</p>
+<iframe width="420" height="315" src="/#v=T0rs3R4E1Sk&t=23;30&v=Qq-I4orlEhE" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="/#s=sacredbones/pharmakon-body-betrays-itself" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="/#i=cJjBEQP.jpg&t=3s&i=vo9DPpp.gif&t=3s" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="/#i=50yPd6G" frameborder="0" allowfullscreen></iframe>
+-->
+
+</body>
+</html>
+<!-- vim:set ts=2 sw=2 et: -->

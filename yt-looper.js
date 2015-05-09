@@ -23,6 +23,13 @@ function logLady(a, b) { // kek
                                  : a);
 }
 
+function isEmbedded() {
+  return window.location != window.parent.location;
+}
+
+function isAutoplay() {
+  return !isEmbedded() || !_.isUndefined(isEmbedded.clickedPlay);
+}
 
 // YouTube IFrame API
 function initYT(callback) {
@@ -125,6 +132,12 @@ function changeFavicon(src) {
 
 
 function getPlayerSize() {
+  if (isEmbedded()) {
+    var iframeW= $(document).width();
+    var iframeH= $(document).height();
+    return { width: iframeW, height: iframeH };
+  }
+
   var $box      = $('#box');
   var cookie    = $.cookie('no_autosize');
   var docWidth  = $(document).width()  * 0.8; // UX hack
@@ -577,7 +590,7 @@ function YouTubePlayer() {
       event.target.setPlaybackQuality(quality);
     }
 
-    event.target.playVideo();
+    if (isAutoplay()) event.target.playVideo();
   };
 
   var onYouTubePlayerStateChange = function(event) {
@@ -595,6 +608,9 @@ function YouTubePlayer() {
 
     } else if (event.data == YT.PlayerState.PLAYING) {
       changeFavicon(faviconPlay);
+      if (isEmbedded()) {
+        isEmbedded.clickedPlay = true;
+      }
     } else if ($('#box').is(':visible') || !event.target.isMuted()) {
       if (event.data == YT.PlayerState.PAUSED) {
         changeFavicon(faviconPause);
@@ -801,6 +817,9 @@ function SoundCloudPlayer() {
         init = false;
       }
       changeFavicon(faviconPlay);
+      if (isEmbedded()) {
+        isEmbedded.clickedPlay = true;
+      }
     });
 
     sc.bind(SC.Widget.Events.PAUSE, function() {
@@ -830,7 +849,11 @@ function SoundCloudPlayer() {
           return;
         });
       }
-      sc.play();
+      if (isAutoplay()) {
+        sc.play();
+      } else {
+        $player.css('opacity', '1');
+      }
     });
 
     Player.toggle = function() {
@@ -909,6 +932,12 @@ function Player() {
 
 function initLooper() {
   logLady('initLooper()');
+  if (isEmbedded()) {
+    $('#help').remove();
+    $('#editor').remove();
+    $('#menu').remove();
+    $('body').append($('<a id="embed" href="'+ window.location.href +'" target="_blank">&#x21BB;</a>'));
+  }
   /*jshint -W064*/
   Player();
   Editor(Playlist, Player);
@@ -1004,7 +1033,7 @@ function responsivePlayerSetup() {
 
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
-    var k = (Editor.editInProgress === undefined)
+    var k = (Editor.editInProgress === undefined && !isEmbedded())
           ? String.fromCharCode(e.which).toLowerCase() : undefined;
     //logLady('key/code:'+k+'/'+e.which);
     if (k==='?') {
