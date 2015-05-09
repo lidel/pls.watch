@@ -115,6 +115,18 @@ function showShortUrl() {
   });
 }
 
+function showEmbedCode() {
+    var input = '<input type="text" readonly>';
+    var span = '<span id="embed-code">ctrl+c to copy '+ input +'</span>';
+    $('#embed-toggle').hide();
+    $('#embed-ui').prepend(span);
+    var $input = $('#embed-ui input');
+    $input.val('<iframe width="420" height="315" src="'+ window.location.href +'" frameborder="0" allowfullscreen></iframe>');
+    $input.width('20em');
+    $input.select();
+    $input.click(function(){ $input.select(); });
+}
+
 
 function changeFavicon(src) {
   var oldIcon = document.getElementById('dynamic-favicon');
@@ -1000,6 +1012,10 @@ function responsivePlayerSetup() {
     // reset things that depend on URL
     $('#shortened').remove();
     $('#shorten').show();
+
+    $('#embed-code').remove();
+    $('#embed-toggle').show();
+
     $('#box').show();
     showHelpUi(false);
 
@@ -1015,6 +1031,7 @@ function responsivePlayerSetup() {
   // menu items will now commence!
 
   $('#shorten').click(_.debounce(showShortUrl, 1000, true));
+  $('#embed-toggle').click(showEmbedCode);
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
 
   // #autosize

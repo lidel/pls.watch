@@ -239,7 +239,7 @@ body>div {
 }
 
 
-#shortened>input {
+#menu input {
   color: #fff !important;
   background-color: #111;
   text-align: center;
@@ -248,19 +248,19 @@ body>div {
   border-radius: 1em;
   padding: .25em 0 !important;
 }
-#shortened>input::selection {
+#menu input::selection {
   background-color: #111;
 }
-#shortened>input::-moz-selection {
+#menu input::-moz-selection {
   background-color: #111;
 }
-#shortened>input::-o-selection {
+#menu input::-o-selection {
   background-color: #111;
 }
-#shortened>input::-ms-selection {
+#menu input::-ms-selection {
   background-color: #111;
 }
-#shortened>input::-webkit-selection {
+#menu input::-webkit-selection {
   background-color: #111;
 }
 #shortened>a,
