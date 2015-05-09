@@ -225,7 +225,7 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
   $.ajax({ url: apiRequest, async: false}).done(function(data) {
     var item = data.items[0];
     // if position does match, remove duplicate from URL
-    if (item.kind === 'youtube#playlistItem' && item.snippet.position == parseInt(index,10)-1) {
+    if (data.length > 0 && item.kind === 'youtube#playlistItem' && item.snippet.position == parseInt(index,10)-1) {
       normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+|index=[^&]+&list=[^&]+)/, '$1$3');
     }
   }).fail(function(jqxhr, textStatus) {
