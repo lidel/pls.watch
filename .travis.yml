@@ -8,11 +8,14 @@ env:
         - CHROME_BIN=chrome
         - PATH=./node_modules/.bin:${PATH}
     matrix:
-        #- NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='33.0'
-        #- NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest-esr'
-        #- NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
-        #- NIGHTWATCH_TARGET=chrome
         - NIGHTWATCH_TARGET=phantomjs
+        - NIGHTWATCH_TARGET=chrome
+        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
+matrix:
+    fast_finish: true
+    allow_failures:
+        - env: NIGHTWATCH_TARGET=chrome
+        - env: NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
 addons:
     hosts:
         - yt.127.0.0.1.xip.io
