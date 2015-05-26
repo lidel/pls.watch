@@ -1,9 +1,9 @@
 'use strict';
 
 // document.head (http://jsperf.com/document-head) failsafe init for old browsers
-document.head = typeof document.head != 'object'
-              ? document.getElementsByTagName('head')[0]
-              : document.head;
+if (!document.head) {
+  document.head = document.getElementsByTagName('head')[0];
+}
 
 // be happy with HTTP 304 where possible
 $.loadCachedScript = function (url, options) {
