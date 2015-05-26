@@ -24,7 +24,7 @@
     "grunt-contrib-qunit": "^0.7.0",
     "grunt-env": "^0.4.4",
     "nightwatch": "^0.6.6",
-    "phantomjs": "^1.9.16",
+    "phantomjs": "^1.9.17",
     "selenium-standalone": "^4.4.0"
   }
 }
