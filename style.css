@@ -122,6 +122,9 @@ body>div {
   color: #ccc;
   text-align: left;
   max-width: 640px;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid #0A0A0A;
   background: #111;
   opacity: 0.9;
@@ -130,7 +133,7 @@ body>div {
   right: 0;
   top: 0;
   box-shadow: 0 5px 10px rgba(0,0,0,0.4);
-  padding:1em;
+  padding: 0 1em;
 }
 #help h1, #help h2 {
   font-weight: normal;
@@ -145,6 +148,9 @@ body>div {
   line-height: 1.225em;
   padding-bottom: 0.25em;
   border-bottom: 1px solid #0A0A0A;
+}
+#help h3 {
+  font-size: 0.9em;
 }
 #help > div#version {
   float: right;
