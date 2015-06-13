@@ -152,7 +152,7 @@ body>div {
 #help h3 {
   font-size: 0.9em;
 }
-#help > div#version {
+#help div#version {
   float: right;
   margin: 0.3em 5em 0 0;
   font-size: x-small;

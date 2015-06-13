@@ -385,6 +385,32 @@ function showHelpUi(show) {
   if (show && !$help.is(':visible')) {
     $helpToggle.addClass('ticker');
     $help.fadeIn('fast');
+
+    // lazy init for a pretty scrollbar
+    if (!$help.hasClass('mCustomScrollbar') && $help.get(0).scrollHeight > $('body').get(0).clientHeight) {
+      $LAB
+      .script(function () {
+          // lazy load scrollbar assets
+          if (!$.mCustomScrollbar) {
+            $('<link>')
+              .appendTo('head')
+              .attr({type : 'text/css', rel : 'stylesheet'})
+              .attr('href', 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.min.css');
+            return 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js';
+          } else {
+            return null;
+          }
+        })
+      .wait(function(){
+        $help.mCustomScrollbar({
+          axis: 'y',
+          mouseWheel: { axis: 'y' },
+          scrollInertia: 0,
+          theme: 'minimal'
+        }).css('padding-right','16px');
+      });
+    }
+
   } else if (!show && $help.is(':visible')) {
     $helpToggle.removeClass('ticker');
     $help.fadeOut('fast');

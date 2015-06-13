@@ -243,8 +243,8 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
         $('#editor-ui').toggleClass('ticker');
       })
       .script(function () {
-        // load scrollbar assets only when potentially makes sense
-        if (Playlist.intervals.length > 10) {
+        // load scrollbar assets only when it potentially makes sense
+        if (Playlist.intervals.length > 10 && !$.mCustomScrollbar) {
           // Load CDN version of mCustomScrollbar by malihu (MIT)
           // http://manos.malihu.gr/jquery-custom-content-scroller/
           $('<link>')
@@ -257,7 +257,7 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
         }
       })
       .wait(function() {
-        if ($.mCustomScrollbar) {
+        if ($.mCustomScrollbar && !$editor.hasClass('mCustomScrollbar')) {
           $('#editor').mCustomScrollbar({
             axis: 'y',
             mouseWheel: { axis: 'y' },
