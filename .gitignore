@@ -8,3 +8,4 @@ test/logs/
 test/reports/
 test/*.png
 test/screenshots/
+pure_style.css

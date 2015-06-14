@@ -23,8 +23,10 @@
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-qunit": "^0.7.0",
     "grunt-env": "^0.4.4",
+    "grunt-purifycss": "^0.1.0",
     "nightwatch": "^0.6.6",
     "phantomjs": "^1.9.17",
+    "purify-css": "^1.0.10",
     "selenium-standalone": "^4.4.0"
   }
 }

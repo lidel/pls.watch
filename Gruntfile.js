@@ -45,6 +45,14 @@ module.exports = function(grunt) {
         timeout: 30000,
       }
     },
+    purifycss: {
+      options: {},
+      target: {
+        src: ['*.html', 'yt-looper*.js'],
+        css: ['*.css'],
+        dest: 'pure_style.css'
+      },
+    },
     jshint: {
       all: ['*.js', 'test/**/*.js'],
       options: {
@@ -117,6 +125,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-env');
+  grunt.loadNpmTasks('grunt-purifycss');
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-connect');
