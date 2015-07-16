@@ -20,8 +20,6 @@ module.exports = {
       .page.looper()
       .uri('#s=sacredbones/pharmakon-body-betrays-itself')
       .waitForElementVisible('iframe#player')
-      .assert.visible('#autosize-ui')
-      .assert.cssClassPresent('#autosize-toggle','ticker')
       .getElementSize('#player', function(result) {
         console.log('For 640x360 window SC player size should be 324x244');
         this.assert.equal(result.value.width, 324);
@@ -34,15 +32,6 @@ module.exports = {
         this.assert.equal(result.value.width, 1284);
         this.assert.equal(result.value.height, 724);
       })
-      .click('#autosize-toggle')
-      .pause(800) //wait for animation to finish
-      .getElementSize('#player', function(result) {
-        console.log('When autosize is disabled, default SC size should be 644x364');
-        this.assert.cssClassNotPresent('#autosize-toggle','ticker');
-        this.assert.equal(result.value.width, 644);
-        this.assert.equal(result.value.height, 364);
-      })
-      .click('#autosize-toggle')
       .end();
   },
 

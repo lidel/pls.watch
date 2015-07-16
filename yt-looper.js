@@ -151,26 +151,21 @@ function getPlayerSize() {
   }
 
   var $box      = $('#box');
-  var cookie    = $.cookie('no_autosize');
   var docWidth  = $(document).width()  * 0.8; // UX hack
   var docHeight = $(document).height() * 0.8;
-  var playerSize  = YT_PLAYER_SIZES.medium; // default when responsive scaling is disabled
+  var playerSize = YT_PLAYER_SIZES.small;
 
-  if (cookie === undefined) {
-    playerSize  = YT_PLAYER_SIZES.small;
+  $.when($.each(YT_PLAYER_SIZES, function(k, v) {
+    if (v.width > playerSize.width && v.width < docWidth && v.height < docHeight) {
+      playerSize = YT_PLAYER_SIZES[k];
+    }
+  })).done(function() {
+    logLady('Calculated player size', playerSize);
 
-    $.when($.each(YT_PLAYER_SIZES, function(k, v) {
-      if (v.width > playerSize.width && v.width < docWidth && v.height < docHeight) {
-        playerSize = YT_PLAYER_SIZES[k];
-      }
-    })).done(function() {
-      logLady('Calculated player size', playerSize);
-
-      // fix undesired padding in some browsers
-      $box.css('max-width',  playerSize.width);
-      $box.css('max-height', playerSize.height);
-    });
-  }
+    // fix undesired padding in some browsers
+    $box.css('max-width',  playerSize.width);
+    $box.css('max-height', playerSize.height);
+  });
 
   return playerSize;
 }
@@ -1010,24 +1005,6 @@ function renderPage() {
 }
 
 
-function responsivePlayerSetup() {
-  var cookieKey     = 'no_autosize';
-  var cookie        = $.cookie(cookieKey);
-  var cookieOptions = { expires: 365, path: '/', secure: false };
-  var $autosize     = $('#autosize-toggle');
-
-  if (cookie === undefined) {
-    $.cookie(cookieKey, true, cookieOptions);
-    $autosize.removeClass('ticker');
-  } else {
-    $.removeCookie(cookieKey, cookieOptions);
-    $autosize.addClass('ticker');
-  }
-
-  Player.autosize();
-}
-
-
 // various init tasks on page load
 (function($) {
   $(window).bind('hashchange', function() {
@@ -1060,15 +1037,9 @@ function responsivePlayerSetup() {
   $('#embed-toggle').click(showEmbedCode);
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
 
-  // #autosize
-  var $autosize = $('#autosize-toggle');
-  $autosize.click(responsivePlayerSetup);
-  // display current autosize setting in menu
-  if ($.cookie('no_autosize')) { $autosize.removeClass('ticker'); }
-  else                         { $autosize.addClass('ticker');    }
   // update player on window resize if autosize is enabled
   $(window).on('resize', _.debounce(function() {
-    if (_.isUndefined($.cookie('no_autosize')) && _.isFunction(Player.autosize)) {
+    if (_.isFunction(Player.autosize)) {
       Player.autosize();
     }
   }, 300));
