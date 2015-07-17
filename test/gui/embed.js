@@ -2,10 +2,15 @@ var yeahKindaSame = function(value, expected) {
   // these iframe apis are maddness: each load can differ a few pixels..
   // generally we hide overflow, so I guess there is no point in being
   // facist about it and we should simply accept anything around the expected
-  // value (+/- 10px)
-  var max = expected+10;
-  var min = expected-10;
-  return value >= min && value <= max;
+  // value (+/- 5%)
+  var err = expected*0.05;
+  var max = expected+err;
+  var min = expected-err;
+  var result = (value >= min && value <= max);
+  if (!result) {
+    console.log('hm.. values is: '+value);
+  }
+  return result;
 };
 
 
@@ -40,6 +45,7 @@ module.exports = {
     browser
       .page.embed().uri('#i=vo9DPpp.gif')
       .waitForElementVisible('div#player')
+      .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
         this.assert.ok(yeahKindaSame(result.value.width,  420),'around 420px');
         this.assert.ok(yeahKindaSame(result.value.height, 315),'around 315px');
@@ -51,7 +57,8 @@ module.exports = {
     browser
       .page.embed().uri('#s=sacredbones/pharmakon-body-betrays-itself')
       .waitForElementVisible('iframe#player')
-      .getElementSize('#player', function(result) {
+      .pause(800) //wait for animation to finish
+      .getElementSize('iframe#player', function(result) {
         this.assert.ok(yeahKindaSame(result.value.width,  420),'around 420px');
         this.assert.ok(yeahKindaSame(result.value.height, 315),'around 315px');
       })

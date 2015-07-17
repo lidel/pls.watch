@@ -20,17 +20,18 @@ module.exports = {
       .page.looper()
       .uri('#s=sacredbones/pharmakon-body-betrays-itself')
       .waitForElementVisible('iframe#player')
+      .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
-        console.log('For 640x360 window SC player size should be 324x244');
-        this.assert.equal(result.value.width, 324);
-        this.assert.equal(result.value.height, 244);
+        console.log('For 640x360 window SC player size should be 516x292');
+        this.assert.equal(result.value.width, 516);
+        this.assert.equal(result.value.height, 292);
       })
       .resizeWindow(1920,1080)
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
-        console.log('For 1920x1080 window SC player size should be 1284x724');
-        this.assert.equal(result.value.width, 1284);
-        this.assert.equal(result.value.height, 724);
+        console.log('For 1920x1080 window SC player size should be 1536x864');
+        this.assert.equal(result.value.width, 1540);
+        this.assert.equal(result.value.height, 868);
       })
       .end();
   },
