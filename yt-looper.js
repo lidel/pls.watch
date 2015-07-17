@@ -143,31 +143,29 @@ function changeFavicon(src) {
 }
 
 
-function getPlayerSize() {
+function getPlayerSize(engine) {
   if (isEmbedded()) {
     var iframeW= $(document).width();
     var iframeH= $(document).height();
     return { width: iframeW, height: iframeH };
   }
 
-  var $box      = $('#box');
   var docWidth  = $(document).width()  * 0.8; // UX hack
   var docHeight = $(document).height() * 0.8;
-  var playerSize = YT_PLAYER_SIZES.small;
+  var size      = {width: docWidth, height: docHeight};
 
-  $.when($.each(YT_PLAYER_SIZES, function(k, v) {
-    if (v.width > playerSize.width && v.width < docWidth && v.height < docHeight) {
-      playerSize = YT_PLAYER_SIZES[k];
-    }
-  })).done(function() {
-    logLady('Calculated player size', playerSize);
+  if (engine === YouTubePlayer) {
+    size = YT_PLAYER_SIZES.small;
+    $.when($.each(YT_PLAYER_SIZES, function(k, v) {
+      if (v.width > size.width && v.width < docWidth && v.height < docHeight) {
+        size = YT_PLAYER_SIZES[k];
+      }
+    })).done(function() {
+      logLady('Calculated YouTube player size', size);
+    });
+  }
 
-    // fix undesired padding in some browsers
-    $box.css('max-width',  playerSize.width);
-    $box.css('max-height', playerSize.height);
-  });
-
-  return playerSize;
+  return size;
 }
 
 
@@ -557,7 +555,7 @@ function YouTubePlayer() {
   logLady('YouTubePlayer()');
 
   YouTubePlayer.newPlayer = function(playback) {
-    var size = getPlayerSize();
+    var size = getPlayerSize(YouTubePlayer);
 
     // splash
     setSplash('https://i.ytimg.com/vi/' + playback.videoId + '/default.jpg');
@@ -603,13 +601,21 @@ function YouTubePlayer() {
     };
 
     Player.autosize = function() {
-      var size = getPlayerSize();
-      $('#player').animate(_.pick(size, 'height', 'width'), 400)
+      var size = getPlayerSize(YouTubePlayer);
+
+      var $box = $('#box');
+      // adjust #box size before animation to fix padding issues
+      $box.css('max-width',  size.width);
+      $box.css('max-height', size.height);
+
+      $('#player').animate(_.pick(size, 'width', 'height'), 400)
         .promise().done(function() {
           // just to be sure player noticed resize..
           YouTubePlayer.instance.setSize(size.width, size.height);
         });
     };
+
+    Player.autosize();
   };
 
   var onYouTubePlayerReady = function(event) {
@@ -673,20 +679,25 @@ function ImgurPlayer() { /*jshint ignore:line*/
     var imgUrl  = imgurUrl(playback.videoId);
 
     var getImagePlayerSize = function(imgW, imgH) {
-      var p = _.extend({}, getPlayerSize());
+      var p = _.extend({}, getPlayerSize(ImgurPlayer));
       var w = Math.floor(imgW * (p.height / imgH));
       var h = Math.floor(imgH * (p.width  / imgW));
-      if (w < p.width) {
-        p.width = w;
-      }
-      if (h < p.height) {
-        p.height = h;
-      }
+      p.width  = Math.min(w, p.width);
+      p.height = Math.min(h, p.height);
       return p;
     };
-    var setImagePlayerSize = function($player, size) {
-        $player.width(size.width);
-        $player.height(size.height);
+    var setImagePlayerSize = function($player, w, h) {
+        Player.autosize = function() {
+          var size = getImagePlayerSize(w, h);
+
+          var $box = $('#box');
+          // adjust #box size before animation to fix padding issues
+          $box.css('max-width',  size.width);
+          $box.css('max-height', size.height);
+
+          $player.animate(_.pick(size, 'width', 'height'), 400);
+        };
+        Player.autosize();
     };
 
     var startSlideshowTimerIfPresent = function () {
@@ -709,14 +720,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
     $('<img/>')
       .attr('src', thumbUrl)
       .load(function() {
-        var that = this;
-
-        setImagePlayerSize($player, getImagePlayerSize(that.naturalWidth, that.naturalHeight));
-
-        Player.autosize = function() {
-          // autosize requires a fresh result from getImagePlayerSize
-          $player.animate(_.pick(getImagePlayerSize(that.naturalWidth, that.naturalHeight), 'height', 'width'), 400);
-        };
+        setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
       });
 
     // fetching image metadata (mainly to detect GIFs)
@@ -732,10 +736,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
     });
 
     if (apiData) {
-      setImagePlayerSize($player, getImagePlayerSize(apiData.width, apiData.height));
-      Player.autosize = function() {
-        $player.animate(_.pick(getImagePlayerSize(apiData.width, apiData.height), 'height', 'width'), 400);
-      };
+      setImagePlayerSize($player, apiData.width, apiData.height);
     }
 
     if (apiData && apiData.animated) {
@@ -806,9 +807,6 @@ function SoundCloudPlayer() {
                   + '&show_artwork=true&show_user=true&hide_related=true&visual=true&callback=true';
 
     $player.attr('src', widgetUrl);
-    var size = getPlayerSize();
-    $player.height(size.height);
-    $player.width(size.width);
     $('div#player').replaceWith($player).remove();
 
     SoundCloudPlayer.instance = SC.Widget($player.get(0));
@@ -904,8 +902,16 @@ function SoundCloudPlayer() {
     };
 
     Player.autosize = function() {
-      $player.animate(_.pick(getPlayerSize(), 'height', 'width'), 400);
+      var size = getPlayerSize(SoundCloudPlayer);
+
+      var $box = $('#box');
+      // adjust #box size before animation to fix padding issues
+      $box.css('max-width',  size.width);
+      $box.css('max-height', size.height);
+
+      $player.animate(_.pick(size, 'width', 'height'), 400);
     };
+    Player.autosize();
 
   };
 

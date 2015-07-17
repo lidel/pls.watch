@@ -11,7 +11,7 @@ var yeahKindaSame = function(value, expected) {
 
 module.exports = {
 
-  'There should be no GUIi beside small icon' : function (browser) {
+  'There should be no GUI beside small icon' : function (browser) {
     browser
       .page.embed().uri('#i=50yPd6G')
       .waitForElementVisible('div#player')
