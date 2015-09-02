@@ -31,6 +31,11 @@ function isAutoplay() {
   return !isEmbedded() || !_.isUndefined(isEmbedded.clickedPlay);
 }
 
+function isFullscreen() {
+  var fullScreenElement = document.fullScreenElement || document.mozFullScreenElement || document.webkitFullScreenElement || document.webkitFullscreenElement;
+  return fullScreenElement !== undefined && fullScreenElement !== null;
+}
+
 // YouTube IFrame API
 function initYT(callback) {
   if (typeof YT === 'undefined') {
@@ -144,9 +149,10 @@ function changeFavicon(src) {
 
 
 function getPlayerSize(engine) {
-  if (isEmbedded()) {
-    var iframeW= $(document).width();
-    var iframeH= $(document).height();
+  if (isEmbedded() || isFullscreen()) {
+    var $view = $('body');
+    var iframeW= $view.innerWidth();
+    var iframeH= $view.innerHeight();
     return { width: iframeW, height: iframeH };
   }
 
@@ -574,6 +580,7 @@ function YouTubePlayer() {
         showinfo: '0',
         rel: '0',
         theme: 'dark',
+        fs: '0',
       },
       events: {
         onReady: onYouTubePlayerReady,
@@ -960,6 +967,22 @@ function Player() {
     }
   };
 
+  Player.fullscreenToggle = function() {
+      if (!isFullscreen()) {
+        var fs = $('body')[0];
+        var requestFullScreen = fs.requestFullScreen || fs.mozRequestFullScreen || fs.webkitRequestFullScreen;
+        if (requestFullScreen) {
+          requestFullScreen.bind(fs)();
+        }
+      } else {
+        var cancelFullScreen = document.cancelFullScreen || document.mozCancelFullScreen || document.webkitCancelFullScreen;
+        if (cancelFullScreen) {
+          cancelFullScreen.bind(document)();
+        }
+      }
+      logLady('isFulscreen()=' +  isFullscreen());
+  };
+
   /*jshint -W064*/
   Playlist(window.location.href);
   Playlist.log();
@@ -1050,6 +1073,14 @@ function renderPage() {
     }
   }, 300));
 
+  // hide menu when in fullscreen
+  $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {
+    if (isFullscreen()) {
+      $('#menu').hide();
+    } else {
+      $('#menu').show();
+    }
+  });
 
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
@@ -1067,6 +1098,9 @@ function renderPage() {
       if ($shorten.is(':visible')) {
         $shorten.click();
       }
+
+    } else if (k==='f') {
+      Player.fullscreenToggle();
 
     } else if (k==='b') {
       $('#box').slideToggle();

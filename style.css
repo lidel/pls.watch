@@ -309,4 +309,9 @@ body>div {
   }
 }
 
+/* FULLSCREEN fix for Chrome */
+body:-webkit-full-screen {
+		position:relative !important;
+}
+
 /* vim: set ai ts=2 sw=2 et!: */
