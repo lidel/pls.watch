@@ -762,8 +762,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
         return url.replace('http:','https:');
       };
 
-      var $gifv = $('<video id="gifv" width="100%" height="100%" '
-                + '         poster="'+ imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t')) + '" '
+      var $gifv = $('<video id="gifv" width="100%" height="100%" poster="'+ thumbUrl + '" '
                 + '         autoplay="autoplay" muted="muted" preload="auto" loop="loop">'
                 + '<source src="'+ https(apiData.webm) +'" type="video/webm">'
                 + '<source src="'+ https(apiData.mp4) +'" type="video/mp4">'
