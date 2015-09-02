@@ -1,37 +1,27 @@
 language: node_js
 node_js:
     - "0.10"
+sudo: false
 env:
     global:
         - DISPLAY=':99.0'
-        - FIREFOX_BIN='./firefox/firefox'
-        - CHROME_BIN=chrome
+        - FIREFOX_BIN=firefox
+        - CHROME_BIN=chromium-browser
         - PATH=./node_modules/.bin:${PATH}
     matrix:
         - NIGHTWATCH_TARGET=phantomjs
         - NIGHTWATCH_TARGET=chrome
-        - NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
+        - NIGHTWATCH_TARGET=firefox
 matrix:
     fast_finish: true
     allow_failures:
         - env: NIGHTWATCH_TARGET=chrome
-        - env: NIGHTWATCH_TARGET=firefox FIREFOX_RELEASE='latest'
+        - env: NIGHTWATCH_TARGET=firefox
 addons:
+    firefox: "latest"
     hosts:
         - yt.127.0.0.1.xip.io
-before_install:
-    # Add repo with stable Chrome
-    - test "$NIGHTWATCH_TARGET" = "chrome" && (curl -qq https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -) || true
-    - test "$NIGHTWATCH_TARGET" = "chrome" && (sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list') || true
-    # Mozdownload for latest official Firefox
-    - sudo apt-get update -qq
-    - test "$NIGHTWATCH_TARGET" = "firefox" && sudo apt-get install -y python-pip || true
-    - test "$NIGHTWATCH_TARGET" = "firefox" && sudo pip install mozdownload || true
 install:
-    # Browsers
-    - test "$NIGHTWATCH_TARGET" = "chrome"  && sudo apt-get install -y google-chrome-stable || true
-    - test "$NIGHTWATCH_TARGET" = "firefox" && mozdownload -t release -v $FIREFOX_RELEASE || true
-    - test "$NIGHTWATCH_TARGET" = "firefox" && tar -xf *firefox*.tar.bz2 || true
     # devDependencies from package.json
     - npm install
     - grunt selenium
