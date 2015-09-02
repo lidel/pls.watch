@@ -555,6 +555,15 @@ function setSplash(imgUrl) {
   }
 }
 
+// Fix for IFrame-based players that steal focus and break keyboard shortcuts
+function returnFocus() {
+  //logLady('before returnFocus(): '+ document.activeElement.tagName + ' is focused');
+  if(document.activeElement.tagName == 'IFRAME') {
+    document.body.tabIndex = 1; // default is -1 (disabled focus)
+    document.body.focus();
+    //logLady('after returnFocus(): '+document.activeElement.tagName + ' is focused');
+  }
+}
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
 function YouTubePlayer() {
@@ -664,8 +673,10 @@ function YouTubePlayer() {
         changeFavicon(faviconWait);
       }
     }
+    returnFocus();
   };
 }
+
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
 function ImgurPlayer() { /*jshint ignore:line*/
@@ -858,18 +869,21 @@ function SoundCloudPlayer() {
       if (isEmbedded()) {
         isEmbedded.clickedPlay = true;
       }
+      returnFocus();
     });
 
     sc.bind(SC.Widget.Events.PAUSE, function() {
       if ($box.is(':visible')) {
         changeFavicon(faviconPause);
       }
+      returnFocus();
     });
 
     sc.bind(SC.Widget.Events.PLAY_PROGRESS, function(e) {
       if (playback.end && e.currentPosition >= playback.end*1000) {
         playbackEnded();
       }
+      returnFocus();
     });
 
     sc.bind(SC.Widget.Events.FINISH, function() {
