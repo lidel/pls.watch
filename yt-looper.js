@@ -383,7 +383,8 @@ function showHelpUi(show) {
   var $helpToggle = $('#help-toggle', $helpUi);
   if (show && !$help.is(':visible')) {
     $helpToggle.addClass('ticker');
-    $help.fadeIn('fast');
+    $help.css('display', 'block').fadeIn('fast');
+
 
     // lazy init for a pretty scrollbar
     if (!$help.hasClass('mCustomScrollbar') && $help.get(0).scrollHeight > $('body').get(0).clientHeight) {
