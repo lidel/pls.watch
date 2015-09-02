@@ -738,7 +738,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
     // oportunistically resize player to the proper ratio before full image or metadata is loaded
     $('<img/>')
       .attr('src', thumbUrl)
-      .load(function() {
+      .on('load', function() {
         setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
       });
 
@@ -780,7 +780,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
     } else {
       $('<img/>')
         .attr('src', imgUrl)
-        .load(function() {
+        .on('load', function() {
           var image = this;
           var $image = $(image).height('100%').width('100%');
           $player.empty().append($image);
