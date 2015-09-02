@@ -706,17 +706,18 @@ function ImgurPlayer() { /*jshint ignore:line*/
       return p;
     };
     var setImagePlayerSize = function($player, w, h) {
-        Player.autosize = function() {
-          var size = getImagePlayerSize(w, h);
+      logLady('setImagePlayerSize(_,'+w+','+h+')');
+      Player.autosize = function() {
+        var size = getImagePlayerSize(w, h);
 
-          var $box = $('#box');
-          // adjust #box size before animation to fix padding issues
-          $box.css('max-width',  size.width);
-          $box.css('max-height', size.height);
+        var $box = $('#box');
+        // adjust #box size before animation to fix padding issues
+        $box.css('max-width',  size.width);
+        $box.css('max-height', size.height);
 
-          $player.animate(_.pick(size, 'width', 'height'), 400);
-        };
-        Player.autosize();
+        $player.animate(_.pick(size, 'width', 'height'), 400);
+      };
+      Player.autosize();
     };
 
     var startSlideshowTimerIfPresent = function () {
@@ -735,13 +736,6 @@ function ImgurPlayer() { /*jshint ignore:line*/
     var thumbUrl = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
     setSplash(thumbUrl);
 
-    // oportunistically resize player to the proper ratio before full image or metadata is loaded
-    $('<img/>')
-      .attr('src', thumbUrl)
-      .on('load', function() {
-        setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
-      });
-
     // fetching image metadata (mainly to detect GIFs)
     var apiData = null;
     $.ajax({ url: 'https://api.imgur.com/3/image/' + playback.videoId.replace(/\.\w+$/,''),
@@ -749,14 +743,17 @@ function ImgurPlayer() { /*jshint ignore:line*/
              async: false
     }).done(function(data) {
       if (data.data) apiData = data.data;
+      setImagePlayerSize($player, apiData.width, apiData.height);
       //logLady('Received Imgur MetaData: ', apiData);
     }).fail(function(jqxhr, textStatus) {
       logLady('Unable to get metadata about Imgur resource "'+playback.videoId+'" ('+ textStatus +'): ', jqxhr);
+      // read ratio from thumbnail as a falback
+      $('<img/>')
+        .attr('src', thumbUrl)
+        .on('load', function() {
+          setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
+        });
     });
-
-    if (apiData) {
-      setImagePlayerSize($player, apiData.width, apiData.height);
-    }
 
     if (apiData && apiData.animated) {
       logLady('GIFV detected, switching to HTML5 <video> player');
@@ -766,7 +763,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
       };
 
       var $gifv = $('<video id="gifv" width="100%" height="100%" '
-                + '         poster="'+ imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h')) + '" '
+                + '         poster="'+ imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t')) + '" '
                 + '         autoplay="autoplay" muted="muted" preload="auto" loop="loop">'
                 + '<source src="'+ https(apiData.webm) +'" type="video/webm">'
                 + '<source src="'+ https(apiData.mp4) +'" type="video/mp4">'
@@ -775,7 +772,6 @@ function ImgurPlayer() { /*jshint ignore:line*/
       $player.empty().append($gifv);
       setSplash(null);
       changeFavicon(faviconPlay);
-
 
     } else {
       $('<img/>')
@@ -791,8 +787,8 @@ function ImgurPlayer() { /*jshint ignore:line*/
           $image.attr('src',imgUrl);
           /*jshint +W030*/
 
-          changeFavicon(faviconPlay);
           setSplash(null);
+          changeFavicon(faviconPlay);
           startSlideshowTimerIfPresent();
         });
     }

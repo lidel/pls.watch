@@ -284,7 +284,7 @@ body>div {
 .spinner { /* credit: https://github.com/tobiasahlin/SpinKit */
   width: 100px;
   height: 100px;
-  margin: 100px auto;
+  margin: 100px;
   background-color: #fff;
 
   border-radius: 100%;

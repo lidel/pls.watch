@@ -38,7 +38,7 @@ module.exports = {
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
         console.log('[png] For 1920x1080 window Imgur player');
-        this.assert.equal(result.value.width, 745);
+        this.assert.equal(result.value.width, 746);
         this.assert.equal(result.value.height, 864);
       })
       .resizeWindow(640,360)
@@ -55,7 +55,7 @@ module.exports = {
       .getElementSize('#player', function(result) {
         console.log('[gifv] For 1920x1080 window Imgur player fits inside of 1280x720');
         this.assert.equal(result.value.width, 1536);
-        this.assert.equal(result.value.height, 825);
+        this.assert.equal(result.value.height, 826);
       })
       .end();
   },
