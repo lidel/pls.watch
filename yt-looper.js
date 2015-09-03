@@ -1014,6 +1014,11 @@ function initLooper() {
   Player();
   Editor(Playlist, Player);
   /*jshint +W064*/
+
+  // show editor if requested via URL
+  if (urlFlag('editor') && !$('#editor').is(':visible')) {
+    $('#editor-toggle').click();
+  }
 }
 
 function onYouTubeIframeAPIReady() { /*jshint ignore:line*/
