@@ -95,6 +95,13 @@ Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
 
 This parameter will force playback of all intervals in semi-random order (normalized random: current interval will not be played twice in a row).
 
+**Playlist Editor**
+
+```
+&editor
+```
+
+This parameter will force playlist editor to be visible from the start.
 
 ## Keyboard Commands
 
