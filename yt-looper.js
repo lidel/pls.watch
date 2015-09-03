@@ -395,8 +395,8 @@ function showHelpUi(show) {
             $('<link>')
               .appendTo('head')
               .attr({type : 'text/css', rel : 'stylesheet'})
-              .attr('href', 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.min.css');
-            return 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js';
+              .attr('href', 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.9/jquery.mCustomScrollbar.min.css');
+            return 'https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.9/jquery.mCustomScrollbar.concat.min.js';
           } else {
             return null;
           }
