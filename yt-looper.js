@@ -363,6 +363,9 @@ function normalizeUrl(href) {
   apiUrl = apiUrl.replace(/:([vit])=/g,'&$1=');
   apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
+  // fix obvious typos
+  apiUrl = apiUrl.replace(/t=([^&:-]+)[:-]([^&]+)/g,'t=$1;$2');
+
   // inline playlists
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, deduplicateYTPlaylist);
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&index=([^&]+)&list=([^&]+)/g, function($0,$1,$2,$3){return deduplicateYTPlaylist($0,$1,$3,$2);});

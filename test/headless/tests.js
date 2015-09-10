@@ -251,6 +251,18 @@ QUnit.test('URLs butchered by IM clients', function (assert) {
                                 'regression');
 });
 
+QUnit.test('Alternative time separator: \':\'', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23:30s'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30s',
+                                'regression');
+});
+
+QUnit.test('Alternative time separator: \'-\'', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23s-30'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23s;30',
+                                'regression');
+});
+
 QUnit.module('YouTube Playlist Import');
 
 QUnit.test('Inline playlist with 21 items', function (assert) {
