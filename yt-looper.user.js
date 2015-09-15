@@ -11,7 +11,7 @@
 // @include     http://imgur.com/*
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
-// @version     1.6.0
+// @version     1.6.1
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
@@ -89,7 +89,7 @@
   var imgurHandler = function () {
     var imgurId = window.location.pathname.replace(/\/(?:[^\/]+\/)*/, '');
     // display button only on single-image pages
-    if (/[a-zA-Z0-9]+/.test(imgurId) && $('div.image').length === 1) {
+    if (/[a-zA-Z0-9]+/.test(imgurId) && $('div.post-image img').length === 1) {
       console.log('yt-looper @ imgurHandler()');
       var url = 'https://yt.aergia.eu/#i=' + imgurId;
       var html = '<a style="min-width:28px;min-height:26px;padding:12px 6px;pointer:cursor"><span style="font-size:2em;vertical-align:middle;line-height:26px">&#x21BB;</span>&nbsp;yt.aergia.eu</a>';
