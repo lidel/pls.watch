@@ -1111,8 +1111,8 @@ function renderPage() {
 // various init tasks on page load
 (function($) {
   $(window).bind('hashchange', function() {
+    osd('URL Changed');
     logLady('hash change: ' + window.location.hash);
-    notification('success', 'URL Changed', null, {timeOut: 1000});
 
     normalizeUrl();
 
