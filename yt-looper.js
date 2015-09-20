@@ -88,8 +88,13 @@ var GOOGLE_API_KEY = 'AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU';
 // This Client ID is fairly disposable (used only for fetching image metadata)
 var IMGUR_API_CLIENT_ID = '494753a104c250a';
 
+
 // Displays notification in top right corner
 function notification(type, title, message, options) {
+  if (!_.isObject(options)) {
+    options = {};
+  }
+
   // lazy load of assets
   $LAB
   .script(function () {
@@ -105,12 +110,22 @@ function notification(type, title, message, options) {
   })
   .wait(function(){
     if (type === 'error') {
-      toastr.error(message, title, {closeButton: true, timeOut: 0, extendedTimeOut: 0}); /*jshint ignore:line*/
-    } else {
-      toastr[type](message, title, options); /*jshint ignore:line*/
+      options = _.extend(options, {closeButton: true, timeOut: 0, extendedTimeOut: 0});
     }
+    toastr[type](message, title, options); /*jshint ignore:line*/
   });
 }
+
+function osd(message) {
+  notification('info', message, null, {showDuration: 0, hideDuration: 0, timeOut: 750});
+}
+
+/* Styling help
+notification('success', 'test1','test',{timeOut: 0, extendedTimeOut: 0});
+notification('info', 'test2','test',{timeOut: 0, extendedTimeOut: 0});
+notification('warning', 'test3','test',{timeOut: 0, extendedTimeOut: 0});
+notification('error', 'test4','test',{timeOut: 0, extendedTimeOut: 0});
+*/
 
 function showShortUrl() {
   var request = $.ajax({
@@ -1151,6 +1166,7 @@ function renderPage() {
       $('#help-toggle').click();
 
     } else if (k==='e') {
+      osd('Toggled Editor');
       $('#editor-toggle').click();
 
     } else if (k==='s') {
@@ -1160,9 +1176,11 @@ function renderPage() {
       }
 
     } else if (k==='f') {
+      osd('Toggled fullscreen mode');
       Player.fullscreenToggle();
 
     } else if (k==='b') {
+      osd('Toggled player visibility');
       $('#box').slideToggle();
 
     } else if (k==='x') {
@@ -1171,6 +1189,7 @@ function renderPage() {
         $box.hide();
         $('#help').hide();
         $('#editor').hide();
+        osd('Eek!');
         if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
           YouTubePlayer.instance.mute();
           YouTubePlayer.instance.pauseVideo();
@@ -1181,6 +1200,7 @@ function renderPage() {
         $(document).prop('title', 'Google');
         changeFavicon('https://www.google.com/favicon.ico');
       } else {
+        osd('Restoring playback');
         $box.show();
         if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING !== YouTubePlayer.instance.getPlayerState()) {
           YouTubePlayer.instance.unMute();
@@ -1197,35 +1217,42 @@ function renderPage() {
 
     } else if (k==='r') {
       if (Playlist.intervals) {
+        osd('Playing random interval');
         Player.newPlayer(Playlist.random());
       }
     } else if (k==='m') {
       switch(Player.engine) {
         case YouTubePlayer:
           if (YouTubePlayer.instance.isMuted()) {
+            osd('Unmuted YouTube');
             YouTubePlayer.instance.unMute();
           } else {
+            osd('Muted YouTube');
             YouTubePlayer.instance.mute();
           }
           break;
         case SoundCloudPlayer:
           // There is no video, so we pause instead
+          osd('Toggled SoundCloud');
           SoundCloudPlayer.instance.toggle();
           break;
      }
 
     } else if (k==='+' || k==='=') {
       if (Player.volume) {
+        osd('Volume +10%');
         Player.volume(+10);
       }
 
     } else if (k==='-' || k==='_') {
       if (Player.volume) {
+        osd('Volume -10%');
         Player.volume(-10);
       }
 
     } else if (k===' ') {
       if (Player.toggle) {
+        osd('Toggled playback');
         Player.toggle();
       }
 
@@ -1235,7 +1262,10 @@ function renderPage() {
                  : k==='h' ? Playlist.go('prevI')
                  : k==='l' ? Playlist.go('nextI')
                  : null;
-      if (change) Player.newPlayer(change);
+      if (change) {
+        osd('Jump!'); // TODO: display type of jump
+        Player.newPlayer(change);
+      }
     }
   });
 
