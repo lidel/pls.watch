@@ -500,6 +500,63 @@ function showRandomUi(multivideo) {
   }
 }
 
+// Fix for IFrame-based players that steal focus and break keyboard shortcuts
+function returnFocus() {
+  //logLady('before returnFocus(): '+ document.activeElement.tagName + ' is focused');
+  if(document.activeElement.tagName == 'IFRAME') {
+    document.body.tabIndex = 1; // default is -1 (disabled focus)
+    document.body.focus();
+    //logLady('after returnFocus(): '+document.activeElement.tagName + ' is focused');
+  }
+}
+
+
+function togglePanicOverlay() {
+  var $overlay = $('#panicOverlay');
+
+  if (!$overlay.is(':visible')) {
+    // create overlay
+    $overlay = $('<iframe src="https://duckduckgo.com/?q=parsing+error:+unmatched+0x42+in+unobtainium+loader+site%3Astackoverflow.com" id="panicOverlay"/>').appendTo('body');
+
+    osd('Eek!');
+
+    // keep focus in looper so that 'x' can go back
+    $overlay.data('focusId', window.setInterval(returnFocus, 500));
+
+    // set title to something else
+    $overlay.data('oldTitle', $(document).find('title').text());
+    $(document).prop('title', 'Search: parsing error…');
+    changeFavicon('https://duckduckgo.com/favicon.ico');
+
+    // other chores
+    $('#box').hide();
+    $('#help').hide();
+    $('#editor').hide();
+
+    if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
+      YouTubePlayer.instance.mute();
+      YouTubePlayer.instance.pauseVideo();
+    }
+    else if (Player.engine === SoundCloudPlayer) {
+      SoundCloudPlayer.instance.pause();
+    }
+  } else {
+    osd('kekeke');
+    $('#box').show();
+    changeFavicon(faviconPlay);
+    $(document).prop('title', $overlay.data('oldTitle'));
+    window.clearInterval($overlay.data('focusId'));
+    $overlay.remove();
+
+    if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING !== YouTubePlayer.instance.getPlayerState()) {
+      YouTubePlayer.instance.unMute();
+      YouTubePlayer.instance.playVideo();
+    }
+    else if (Player.engine === SoundCloudPlayer) {
+      SoundCloudPlayer.instance.play();
+    }
+  }
+}
 
 function jackiechanMyIntervals(href) { // kek
   var extendIntervals = function(videos) {
@@ -612,16 +669,6 @@ function setSplash(imgUrl) {
     $('#box').css('background-image', 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url(' + imgUrl + ')');
   } else {
     $('#box').css('background-image', 'none');
-  }
-}
-
-// Fix for IFrame-based players that steal focus and break keyboard shortcuts
-function returnFocus() {
-  //logLady('before returnFocus(): '+ document.activeElement.tagName + ' is focused');
-  if(document.activeElement.tagName == 'IFRAME') {
-    document.body.tabIndex = 1; // default is -1 (disabled focus)
-    document.body.focus();
-    //logLady('after returnFocus(): '+document.activeElement.tagName + ' is focused');
   }
 }
 
@@ -1184,36 +1231,7 @@ function renderPage() {
       $('#box').slideToggle();
 
     } else if (k==='x') {
-      var $box = $('#box');
-      if ($box.is(':visible')) {
-        $box.hide();
-        $('#help').hide();
-        $('#editor').hide();
-        osd('Eek!');
-        if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
-          YouTubePlayer.instance.mute();
-          YouTubePlayer.instance.pauseVideo();
-        }
-        else if (Player.engine === SoundCloudPlayer) {
-          SoundCloudPlayer.instance.pause();
-        }
-        $(document).prop('title', 'Google');
-        changeFavicon('https://www.google.com/favicon.ico');
-      } else {
-        osd('Restoring playback');
-        $box.show();
-        if (Player.engine === YouTubePlayer && YT.PlayerState.PLAYING !== YouTubePlayer.instance.getPlayerState()) {
-          YouTubePlayer.instance.unMute();
-          YouTubePlayer.instance.playVideo();
-          $(document).prop('title', YouTubePlayer.instance.getVideoData().title);
-        }
-        else if (Player.engine === SoundCloudPlayer) {
-          SoundCloudPlayer.instance.play();
-          SoundCloudPlayer.instance.getCurrentSound(function (sound) {
-            $(document).prop('title', sound.title);
-          });
-        }
-      }
+      togglePanicOverlay();
 
     } else if (k==='r') {
       if (Playlist.intervals) {

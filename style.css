@@ -281,6 +281,15 @@ body>div {
     content: '\2714';
 }
 
+#panicOverlay {
+		background-color: #808080;
+		position: absolute;
+		top: 0; left: 0;
+		width:100%;
+		height:100%;
+		z-index: 1000;
+}
+
 .spinner { /* credit: https://github.com/tobiasahlin/SpinKit */
   width: 100px;
   height: 100px;
@@ -327,5 +336,6 @@ body:-webkit-full-screen {
 .toast-warning {
 		background-color: rgba(192, 113, 0, 0.5) !important;
 }
+
 
 /* vim: set ai ts=2 sw=2 et!: */
