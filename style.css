@@ -314,4 +314,12 @@ body:-webkit-full-screen {
 		position:relative !important;
 }
 
+/* Custom notifications */
+#toast-container > div {
+		box-shadow: 0px 0px 12px #000 !important;
+}
+.toast-success {
+		background-color: rgba(15, 45, 15, 0.50) !important;
+}
+
 /* vim: set ai ts=2 sw=2 et!: */
