@@ -136,3 +136,11 @@ It may require preinstalled browser extension:
 > ![](https://cloud.githubusercontent.com/assets/157609/7513707/80d419c8-f4b6-11e4-9413-3d6ede9bd5d0.png)
 
 
+## Licenses
+
+- [Underscore.js](http://underscorejs.org/), [jQuery](https://jquery.com/), [mCustomScrollbar](https://github.com/malihu/malihu-custom-scrollbar-plugin) and [toastr](https://github.com/CodeSeven/toastr) are under [MIT license](http://opensource.org/licenses/MIT)
+- [Black Felt](http://subtlepatterns.com/black-felt/) is under [CC-BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/)
+
+The yt-looper itself is released under [CC0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+
+
