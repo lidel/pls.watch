@@ -88,6 +88,8 @@ var GOOGLE_API_KEY = 'AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU';
 // This Client ID is fairly disposable (used only for fetching image metadata)
 var IMGUR_API_CLIENT_ID = '494753a104c250a';
 
+var AUTOSIZE_TIME = 200;
+
 
 // Displays notification in top right corner
 function notification(type, title, message, options) {
@@ -189,27 +191,26 @@ function changeFavicon(src) {
 
 
 function getPlayerSize(engine) {
+  var w = window.innerWidth;
+  var h = window.innerHeight;
   if (isEmbedded() || isFullscreen()) {
-    var $view = $('body');
-    var iframeW= $view.innerWidth();
-    var iframeH= $view.innerHeight();
-    return { width: iframeW, height: iframeH };
+    return {width: w, height: h};
   }
 
-  var docWidth  = $(document).width()  * 0.8; // UX hack
-  var docHeight = $(document).height() * 0.8;
-  var size      = {width: docWidth, height: docHeight};
+  w = Math.floor(w * 0.8); // UX hack
+  h = Math.floor(h * 0.8);
+
+  var size = {width: w, height: h};
 
   if (engine === YouTubePlayer) {
     size = YT_PLAYER_SIZES.small;
-    $.when($.each(YT_PLAYER_SIZES, function(k, v) {
-      if (v.width > size.width && v.width < docWidth && v.height < docHeight) {
+    $.each(YT_PLAYER_SIZES, function(k, v) {
+      if (v.width > size.width && v.width < w && v.height < h) {
         size = YT_PLAYER_SIZES[k];
       }
-    })).done(function() {
-      logLady('Calculated YouTube player size', size);
     });
   }
+  logLady('getPlayerSize()', size);
 
   return size;
 }
@@ -672,6 +673,15 @@ function setSplash(imgUrl) {
   }
 }
 
+function getAutosize(size) {
+  var $box = $('#box');
+  // adjust #box size before animation to fix padding issues
+  $box.css('max-width',  size.width);
+  $box.css('max-height', size.height);
+
+  $('#player').animate(_.pick(size, 'width', 'height'), AUTOSIZE_TIME);
+}
+
 // reloadable singleton! d8> ...kek wat? fuf! o_0
 function YouTubePlayer() {
   logLady('YouTubePlayer()');
@@ -723,20 +733,7 @@ function YouTubePlayer() {
       }
     };
 
-    Player.autosize = function() {
-      var size = getPlayerSize(YouTubePlayer);
-
-      var $box = $('#box');
-      // adjust #box size before animation to fix padding issues
-      $box.css('max-width',  size.width);
-      $box.css('max-height', size.height);
-
-      $('#player').animate(_.pick(size, 'width', 'height'), 400)
-        .promise().done(function() {
-          // just to be sure player noticed resize..
-          YouTubePlayer.instance.setSize(size.width, size.height);
-        });
-    };
+    Player.autosize = _.compose(getAutosize, function(){return getPlayerSize(YouTubePlayer);});
 
     Player.autosize();
   };
@@ -813,16 +810,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
     };
     var setImagePlayerSize = function($player, w, h) {
       logLady('setImagePlayerSize(_,'+w+','+h+')');
-      Player.autosize = function() {
-        var size = getImagePlayerSize(w, h);
-
-        var $box = $('#box');
-        // adjust #box size before animation to fix padding issues
-        $box.css('max-width',  size.width);
-        $box.css('max-height', size.height);
-
-        $player.animate(_.pick(size, 'width', 'height'), 400);
-      };
+      Player.autosize = _.compose(getAutosize, function(){return getImagePlayerSize(w, h);});
       Player.autosize();
     };
 
@@ -1024,16 +1012,7 @@ function SoundCloudPlayer() {
       }
     };
 
-    Player.autosize = function() {
-      var size = getPlayerSize(SoundCloudPlayer);
-
-      var $box = $('#box');
-      // adjust #box size before animation to fix padding issues
-      $box.css('max-width',  size.width);
-      $box.css('max-height', size.height);
-
-      $player.animate(_.pick(size, 'width', 'height'), 400);
-    };
+    Player.autosize = _.compose(getAutosize, function(){return getPlayerSize(SoundCloudPlayer);});
     Player.autosize();
 
   };
@@ -1197,7 +1176,7 @@ function renderPage() {
     if (_.isFunction(Player.autosize)) {
       Player.autosize();
     }
-  }, 500));
+  }, 2*AUTOSIZE_TIME));
 
   // hide menu when in fullscreen
   $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {

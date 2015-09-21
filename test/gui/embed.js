@@ -34,7 +34,7 @@ module.exports = {
     browser
       .page.embed().uri('#v=T0rs3R4E1Sk&t=23;30')
       .waitForElementVisible('iframe#player')
-      .getElementSize('#player', function(result) {
+      .getElementSize('iframe#player', function(result) {
         this.assert.ok(yeahKindaSame(result.value.width,  420),'around 420px');
         this.assert.ok(yeahKindaSame(result.value.height, 315),'around 315px');
       })
@@ -45,7 +45,6 @@ module.exports = {
     browser
       .page.embed().uri('#i=vo9DPpp.gif')
       .waitForElementVisible('div#player')
-      .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
         this.assert.ok(yeahKindaSame(result.value.width,  420),'around 420px');
         this.assert.ok(yeahKindaSame(result.value.height, 315),'around 315px');
@@ -57,7 +56,6 @@ module.exports = {
     browser
       .page.embed().uri('#s=sacredbones/pharmakon-body-betrays-itself')
       .waitForElementVisible('iframe#player')
-      .pause(800) //wait for animation to finish
       .getElementSize('iframe#player', function(result) {
         this.assert.ok(yeahKindaSame(result.value.width,  420),'around 420px');
         this.assert.ok(yeahKindaSame(result.value.height, 315),'around 315px');
