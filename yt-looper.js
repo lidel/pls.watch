@@ -1157,10 +1157,14 @@ function renderPage() {
 
 // various init tasks on page load
 (function($) {
-  $(window).bind('hashchange', function() {
-    osd('URL Changed');
-    logLady('hash change: ' + window.location.hash);
 
+  var urlChangedOSD = _.debounce(function() {
+    osd('URL Changed');
+  }, 1000, true);
+
+  $(window).bind('hashchange', function() {
+    logLady('hash change: ' + window.location.hash);
+    urlChangedOSD();
     normalizeUrl();
 
     // reset things that depend on URL
@@ -1189,11 +1193,11 @@ function renderPage() {
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
 
   // update player on window resize if autosize is enabled
-  $(window).on('resize', _.debounce(function() {
+  $(window).on('resize', _.throttle(function() {
     if (_.isFunction(Player.autosize)) {
       Player.autosize();
     }
-  }, 300));
+  }, 500));
 
   // hide menu when in fullscreen
   $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {
