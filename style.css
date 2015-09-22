@@ -116,6 +116,11 @@ body>div {
   overflow: hidden;
 }
 
+#box.embedded {
+  border: none;
+  box-shadow: none;
+}
+
 #help {
   display: none;
   color: #ccc;

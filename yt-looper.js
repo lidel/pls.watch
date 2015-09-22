@@ -1090,6 +1090,7 @@ function Player() {
 function initLooper() {
   logLady('initLooper()');
   if (isEmbedded()) {
+    $('#box').addClass('embedded');
     $('#help').remove();
     $('#editor').remove();
     $('#menu').remove();
@@ -1182,7 +1183,9 @@ function renderPage() {
   $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {
     if (isFullscreen()) {
       $('#menu').hide();
+      $('#box').addClass('embedded');
     } else {
+      $('#box').removeClass('embedded');
       $('#menu').show();
     }
   });
