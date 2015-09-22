@@ -113,6 +113,7 @@ body>div {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+  overflow: hidden;
 }
 
 #help {
@@ -336,6 +337,14 @@ body:-webkit-full-screen {
 .toast-warning {
 		background-color: rgba(192, 113, 0, 0.5) !important;
 }
+
+
+/* UX fix for SoundCloud player */
+iframe#player[src*="soundcloud.com"] {
+  margin-left: -2px;
+  margin-top: -2px;
+}
+
 
 
 /* vim: set ai ts=2 sw=2 et!: */
