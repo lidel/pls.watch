@@ -1176,7 +1176,7 @@ function renderPage() {
     if (_.isFunction(Player.autosize)) {
       Player.autosize();
     }
-  }, 2*AUTOSIZE_TIME));
+  }, AUTOSIZE_TIME));
 
   // hide menu when in fullscreen
   $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {
