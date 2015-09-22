@@ -160,7 +160,11 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     // unhighlight multiple table rows (just to be safe)
     $('table tr.highlighted', $editor).removeClass('highlighted');
     // highlight specific table row
-    $('table tr:nth-child('+ (Playlist.index + 1) +')', $editor).addClass('highlighted');
+    var $highlight = $('table tr:nth-child('+ (Playlist.index + 1) +')', $editor).addClass('highlighted');
+    if ($.mCustomScrollbar) {
+      $editor.mCustomScrollbar('scrollTo',$highlight);
+    }
+
   };
 
   Editor.updateHash = function () {
@@ -264,6 +268,7 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
             scrollInertia: 0,
             theme: 'minimal'
           }).css('padding-right','16px');
+          Editor.updateHighlight(); // scroll to highlight
         }
       });
     }
