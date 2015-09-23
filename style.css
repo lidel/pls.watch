@@ -2,9 +2,6 @@
 .hidden {
   display: none;
 }
-.highlighted {
-  color: white;
-}
 #editor {
   height: 100%;
   border: 1px solid #0A0A0A;
@@ -23,14 +20,19 @@
   text-decoration: none;
   color: inherit;
 }
-#editor a:hover {
-  color: #888;
+#editor tr:hover {
+  color: #BBB;
+}
+#editor .highlighted .editor-col2 {
+  color: white;
 }
 #editor table {
-  font-family: monospace;
   table-layout: fixed;
-  text-align: left;
   position: relative;
+  text-align: left;
+  font-size: 0.8em;
+  line-height: 1em;
+  font-family: "Lucida Sans Typewriter","Lucida Console",Monaco,"Bitstream Vera Sans Mono",monospace;
 }
 #editor table,
 #editor .editor-col2 {
@@ -49,7 +51,6 @@
 #editor input {
   width: 100%;
   display: inline-block;
-  font-family: monospace;
   color: #DFBA92 !important;
   background-color: transparent;
   text-decoration: none;
