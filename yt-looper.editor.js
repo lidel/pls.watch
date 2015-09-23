@@ -231,7 +231,8 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     }
   };
 
-  Editor.toggle = function () {
+  Editor.toggle = _.debounce(function () {
+    osd('Toggled editor');
     var $editor = $('#editor');
     if ($editor.length > 0) {
       $editor.toggle('slide');
@@ -272,13 +273,11 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
         }
       });
     }
-  };
+  }, 500, true);
 
   Editor.register = function () {
     logLady('Editor.register()');
-    $('#editor-ui').unbind()
-                   .click(Editor.toggle)
-                   .show();
+    $('#editor-toggle').unbind().click(Editor.toggle);
 
     _Player.registerEditorNotification(Editor.updateHighlight); // update on interval switch
 
