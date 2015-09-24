@@ -8,12 +8,13 @@
 
   "selenium" : {
     "start_process" : true,
-    "server_path" : "../node_modules/selenium-standalone/.selenium/selenium-server/2.45.0-server.jar",
+    "server_path" : "../node_modules/selenium-standalone/.selenium/selenium-server/2.47.1-server.jar",
     "log_path" : "logs",
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {
-      "webdriver.chrome.driver" : "../node_modules/selenium-standalone/.selenium/chromedriver/2.15-x64-chromedriver",
+      "-Djava.security.egd" : "file:///dev/urandom",
+      "webdriver.chrome.driver" : "../node_modules/selenium-standalone/.selenium/chromedriver/2.18-x64-chromedriver",
       "webdriver.ie.driver" : ""
     }
   },
@@ -21,11 +22,11 @@
   "test_settings" : {
     "default" : {
       "globals" : {
-        "waitForConditionTimeout" : 60000
+        "waitForConditionTimeout" : 30000
       },
-      "launch_url" : "http://localhost:3000",
+      "launch_url" : "http://127.0.0.1:3000",
       "selenium_port"  : 4444,
-      "selenium_host"  : "localhost",
+      "selenium_host"  : "127.0.0.1",
       "pathname": "/wd/hub",
       "silent" : true,
       "disable_colors": false,
