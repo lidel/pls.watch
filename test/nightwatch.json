@@ -22,7 +22,7 @@
   "test_settings" : {
     "default" : {
       "globals" : {
-        "waitForConditionTimeout" : 30000
+        "waitForConditionTimeout" : 60000
       },
       "launch_url" : "http://127.0.0.1:3000",
       "selenium_port"  : 4444,

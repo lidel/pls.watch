@@ -235,11 +235,27 @@ function urlParam(key) {
 
 
 function urlFlag(key) {
-  var ptrn = '(?:[#]' + key + '[&])|(?:[&]' + key + '$)';
+  var ptrn = '(?:[#&]' + key + '[&$]*)';
   var rslt = new RegExp(ptrn).exec(window.location.href);
   return !rslt ? urlParam(key) == 'true' : true;
 }
 
+function urlParams() {/*jshint ignore:line*/
+  return {
+    index: urlParam('index'),
+    quality: urlParam('quality'),
+    random: urlFlag('random'),
+    editor: urlFlag('editor')
+  };
+}
+
+function urlArgs(params) {/*jshint ignore:line*/
+  var suffix = function(a,v){return v === true ? '' : '=' + v;};
+  var keys = _.sortBy(_.keys(params), function(s){return s;});
+  return _.reduce(keys, function(a, b) {
+    return params[b] ? a + '&' + b + suffix(a,params[b]) : a;
+  }, '');
+}
 
 function parseVideos(url) {
   var ptrn = PLAYER_TYPES_REGX + '=[^&]*(?:[&]t=[^&]*)?';
@@ -1101,10 +1117,6 @@ function initLooper() {
   Editor(Playlist, Player);
   /*jshint +W064*/
 
-  // show editor if requested via URL
-  if (urlFlag('editor') && !$('#editor').is(':visible')) {
-    $('#editor-toggle').click();
-  }
 }
 
 function onYouTubeIframeAPIReady() { /*jshint ignore:line*/
@@ -1192,14 +1204,15 @@ function renderPage() {
 
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
-    var k = (Editor.editInProgress === undefined && !isEmbedded())
-          ? String.fromCharCode(e.which).toLowerCase() : undefined;
+    var k = ((typeof Editor === undefined
+            || Editor.editInProgress === undefined)
+            && !isEmbedded())
+             ? String.fromCharCode(e.which).toLowerCase() : undefined;
     //logLady('key/code:'+k+'/'+e.which);
     if (k==='?') {
       $('#help-toggle').click();
 
     } else if (k==='e') {
-      osd('Toggled Editor');
       $('#editor-toggle').click();
 
     } else if (k==='s') {

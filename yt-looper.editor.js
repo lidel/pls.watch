@@ -1,6 +1,6 @@
 'use strict';
 
-/* global GOOGLE_API_KEY, jackiechanMyIntervals, logLady */
+/* global GOOGLE_API_KEY, jackiechanMyIntervals, logLady, osd, urlFlag, urlParams, urlArgs */
 
 
 function _humanReadableTime(interval) {
@@ -36,6 +36,7 @@ function _assembleInterval(interval) {
 function Editor(Playlist, Player) { /*jshint ignore:line*/
   var _Playlist = Playlist; // these are singletons!
   var _Player = Player;     // but still we pass them in params to indicate dependency q:'V
+                            // Mother, forgive us for what we have done
 
   Editor._createAsyncVideoTitle = function (videoId, intervalLink) {
     var setTitle = function(title, intervalLink) {
@@ -173,6 +174,7 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     if ($editor.length) {
       var href = '';
       var last = href;
+      var params = urlParams();
 
       $('.editor-col2>a', $editor).each(function (index) {
         var $this = $(this); // such optimization! c/\o
@@ -198,7 +200,8 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
         }
       });
 
-      document.location.replace('#' + href.substr(1));
+
+      document.location.replace('#' + href.substr(1) + urlArgs(params));
     }
   };
 
@@ -209,7 +212,7 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     Editor.updateHighlight();
   };
 
-  Editor.create = function () {
+  Editor.create = _.once(function() {
     var $editor = $('<div/>', { id: 'editor' });
     var $table = $('<table/>');
     var $tbody = $('<tbody/>').sortable({ update: Editor.updateHash })
@@ -217,7 +220,7 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     $table.appendTo($editor.hide());
     $editor.appendTo('body');
     Editor._renderRows($tbody);
-  };
+  });
 
   Editor.reload = function () {
     logLady('Editor.reload()');
@@ -231,21 +234,35 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
     }
   };
 
-  Editor.toggle = _.debounce(function () {
-    osd('Toggled editor');
+  Editor.show = function() {
+    Editor.toggle(true);
+  };
+
+
+  Editor.toggle = function (show) {
+    logLady('Editor.toggle()' + (show ? show : ''));
+
+    var showGui = function() {
+      $('#editor').show();
+      $('#editor-ui').addClass('ticker');
+    };
+
+    var toggleGui = function() {
+      osd('Toggled editor');
+      $('#editor').toggle('slide');
+      $('#editor-ui').toggleClass('ticker');
+    };
+
     var $editor = $('#editor');
     if ($editor.length > 0) {
-      $editor.toggle('slide');
-      $('#editor-ui').toggleClass('ticker');
-      Editor.updateHighlight(); // update on slide
+      if (show === true) {showGui();} else {toggleGui();}
     } else {
       $LAB
       // load jQuery UI if editor has been requested for the first time
       .script('https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js')
       .wait(function () {
         Editor.create();
-        $('#editor').toggle('slide');
-        $('#editor-ui').toggleClass('ticker');
+        $editor = $('#editor');
       })
       .script(function () {
         // load scrollbar assets only when it potentially makes sense
@@ -263,45 +280,32 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
       })
       .wait(function() {
         if ($.mCustomScrollbar && !$editor.hasClass('mCustomScrollbar')) {
-          $('#editor').mCustomScrollbar({
+          $editor.mCustomScrollbar({
             axis: 'y',
             mouseWheel: { axis: 'y' },
             scrollInertia: 0,
             theme: 'minimal'
           }).css('padding-right','16px');
-          Editor.updateHighlight(); // scroll to highlight
         }
+        Editor.updateHighlight();
+        if (show === true) {showGui();} else {toggleGui();}
       });
     }
-  }, 500, true);
+  };
 
   Editor.register = function () {
     logLady('Editor.register()');
     $('#editor-toggle').unbind().click(Editor.toggle);
-
     _Player.registerEditorNotification(Editor.updateHighlight); // update on interval switch
 
     Editor.reload(); // update on hash change
-  };
 
-/*
-  Editor.unregister = function () {
-    _Player.unregisterEditorNotification();
-
-    var $editor = $('#editor');
-    if ($editor.length) {
-      $editor.unbind()
-             .remove();
+    // show editor if requested via URL
+    if (urlFlag('editor')) {
+      Editor.show();
     }
 
-    var $editor_ui = $('#editor-ui');
-    if ($editor_ui.length) {
-      $editor_ui.unbind()
-                .removeClass('ticker')
-                .hide();
-    }
   };
-*/
 
   Editor.register();
 }
