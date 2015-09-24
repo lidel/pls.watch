@@ -102,11 +102,11 @@ module.exports = function(grunt) {
     var selenium = require('selenium-standalone');
 
     selenium.install({
-      version: '2.45.0',
+      version: '2.47.1',
       baseURL: 'http://selenium-release.storage.googleapis.com',
       drivers: {
         chrome: {
-          version: '2.15',
+          version: '2.18',
           arch: process.arch,
           baseURL: 'http://chromedriver.storage.googleapis.com'
         }

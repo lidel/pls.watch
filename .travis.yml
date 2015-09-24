@@ -21,6 +21,9 @@ addons:
     firefox: "latest"
     hosts:
         - yt.127.0.0.1.xip.io
+cache:
+    directories:
+        - $HOME/node_modules/selenium-standalone/.selenium/selenium-server
 install:
     # devDependencies from package.json
     - npm install
