@@ -30,6 +30,7 @@
     "nightwatch": "^0.6.15",
     "phantomjs": "^1.9.18",
     "purify-css": "^1.0.10",
+    "travis-multirunner": "latest",
     "selenium-standalone": "^4.6.1"
   }
 }
