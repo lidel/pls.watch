@@ -4,7 +4,10 @@
   "description": "A simple YT looper",
   "main": "yt-looper.js",
   "scripts": {
-    "test": "grunt test"
+      "httpd": "grunt httpd",
+      "selenium-download": "grunt selenium",
+      "grunt": "grunt",
+      "test": "grunt test"
   },
   "repository": {
     "type": "git",

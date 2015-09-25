@@ -5,7 +5,7 @@ sudo: false
 env:
     global:
         - DISPLAY=':99.0'
-        - FIREFOX_BIN=firefox
+        - FIREFOX_BIN='./firefox/firefox'
         - CHROME_BIN=chromium-browser
         - PATH=./node_modules/.bin:${PATH}
     matrix:
@@ -18,24 +18,28 @@ matrix:
         - env: NIGHTWATCH_TARGET=chrome
         - env: NIGHTWATCH_TARGET=firefox
 addons:
-    firefox: "latest"
     hosts:
         - yt.127.0.0.1.xip.io
+    apt:
+        packages:
+            - python-pip
 cache:
     directories:
         - $HOME/node_modules/selenium-standalone/.selenium/selenium-server
 install:
     # devDependencies from package.json
     - npm install
-    - grunt selenium
+    - npm run selenium-download
+    - test "$NIGHTWATCH_TARGET" != "firefox" || pip install --user mozdownload
+    - test "$NIGHTWATCH_TARGET" != "firefox" || $HOME/.local/bin/mozdownload -t release -v latest
+    - test "$NIGHTWATCH_TARGET" != "firefox" || tar xf *firefox*.tar.*
 before_script:
+    - npm run httpd &
     # start xvfb for non-phantomjs tests
     - test "$NIGHTWATCH_TARGET" = "phantomjs" || sh -e /etc/init.d/xvfb start
-    - test "$NIGHTWATCH_TARGET" = "phantomjs" || /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16
-    - grunt httpd &
 script:
-    - grunt nightwatch:${NIGHTWATCH_TARGET}
     - grunt qunit --verbose
+    - grunt nightwatch:${NIGHTWATCH_TARGET}
     - grunt jshint
 after_failure:
     - ls -la test/
