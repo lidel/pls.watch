@@ -20,6 +20,8 @@
   text-decoration: none;
   color: inherit;
 }
+
+#help a:hover,
 #editor tr:hover {
   color: #BBB;
 }
@@ -164,16 +166,23 @@ body>div {
   color: #666;
 }
 #help a {
-  color: #999;
+  color: #888;
   text-decoration: none;
 }
+
+#help a,
+#help kbd,
 #help tt {
-  border-radius: 1em;
+  font-family: "Lucida Sans Typewriter","Lucida Console",Monaco,"Bitstream Vera Sans Mono",monospace;
+  font-size: 0.95em;
+}
+#help tt {
+	border-radius: 1em;
   text-decoration: none;
   border: 1px #333 solid;
   padding: .25em .5em!important;
-  background: #111;
-  color: #888;
+  background: #090909;
+  color: #c0c0c0;
   line-height: 2em;
 }
 #help p, ul {
@@ -185,7 +194,7 @@ body>div {
   line-height:1.5em;
 }
 #help .example {
-  font-size:small;
+  font-size:0.8em;
   color: #888;
 }
 #help ul>li {
@@ -245,6 +254,7 @@ body>div {
   cursor: pointer;
   text-decoration: none;
 }
+
 #menu a:hover {
   color: #888;
 }
