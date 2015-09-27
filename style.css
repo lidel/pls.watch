@@ -307,16 +307,19 @@ body>div {
 		z-index: 1000;
 }
 
-.spinner { /* credit: https://github.com/tobiasahlin/SpinKit */
-  width: 100px;
-  height: 100px;
-  margin: 100px;
+#spinner { /* credit: https://github.com/tobiasahlin/SpinKit */
+  position: absolute;
+  top: calc(50% - 100px);
+  left: calc(50% - 100px);
+  width: 200px;
+  height: 200px;
   background-color: #fff;
-
-  border-radius: 100%;
   -webkit-animation: scaleout 1.0s infinite ease-in-out;
   animation: scaleout 1.0s infinite ease-in-out;
+  z-index: 1;
 }
+
+
 @-webkit-keyframes scaleout {
   0% { -webkit-transform: scale(0.0) }
   100% {

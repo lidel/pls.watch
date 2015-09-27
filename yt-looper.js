@@ -681,11 +681,13 @@ function Playlist(href) {
   showRandomUi(Playlist.multivideo);
 }
 
-function setSplash(imgUrl) {
+function setSplash(imgUrl, spinner) {
   if (imgUrl) {
     $('#box').css('background-image', 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url(' + imgUrl + ')');
+    if (spinner) $('body').append($('<div id="spinner"></div>'));
   } else {
     $('#box').css('background-image', 'none');
+    $('#spinner').remove();
   }
 }
 
@@ -841,10 +843,10 @@ function ImgurPlayer() { /*jshint ignore:line*/
     // smart splash screen
     changeFavicon(faviconWait);
     $(document).prop('title', playback.videoId);
-    $player.html('<div class="spinner"></div>');
+    $player.empty();
     // the smallest thumb with preserved aspect ratio has suffix 't'
     var thumbUrl = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
-    setSplash(thumbUrl);
+    setSplash(thumbUrl, true);
 
     // fetching image metadata (mainly to detect GIFs)
     var apiData = null;
@@ -852,8 +854,10 @@ function ImgurPlayer() { /*jshint ignore:line*/
              headers: { 'Authorization': 'Client-ID ' + IMGUR_API_CLIENT_ID },
              async: false
     }).done(function(data) {
-      if (data.data) apiData = data.data;
-      setImagePlayerSize($player, apiData.width, apiData.height);
+      if (data.data) {
+        apiData = data.data;
+        setImagePlayerSize($player, apiData.width, apiData.height);
+      }
       //logLady('Received Imgur MetaData: ', apiData);
     }).fail(function(jqxhr, textStatus) {
       logLady('Unable to get metadata about Imgur resource "'+playback.videoId+'" ('+ textStatus +'): ', jqxhr);
@@ -876,11 +880,12 @@ function ImgurPlayer() { /*jshint ignore:line*/
                 + '         autoplay="autoplay" muted="muted" preload="auto" loop="loop">'
                 + '<source src="'+ https(apiData.webm) +'" type="video/webm">'
                 + '<source src="'+ https(apiData.mp4) +'" type="video/mp4">'
-                + '</video>').bind('play', startSlideshowTimerIfPresent);
-
-      $player.empty().append($gifv);
-      setSplash(null);
-      changeFavicon(faviconPlay);
+                + '</video>');
+      $gifv.appendTo($player).bind('play', function() {
+                    setSplash(null);
+                    changeFavicon(faviconPlay);
+                    startSlideshowTimerIfPresent();
+      });
 
     } else {
       $('<img/>')
@@ -940,7 +945,7 @@ function SoundCloudPlayer() {
 
     // splash screen
     sc.getCurrentSound(function (a) {
-      setSplash(a.artwork_url.replace('large','mini'));
+      setSplash(a.artwork_url.replace('large','mini'), false);
     });
 
     var playbackEnded = function () {
