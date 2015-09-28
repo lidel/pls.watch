@@ -110,7 +110,7 @@ body>div {
   display: inline-block;
   text-align: left;
   color: #EEE;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+  box-shadow: 0 1em 3em rgba(0,0,0,0.80);
   border: 1px solid #111;
   background-color: #1B1B1B;
   background-size: cover;
