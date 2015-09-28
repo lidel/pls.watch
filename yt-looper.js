@@ -681,10 +681,13 @@ function Playlist(href) {
   showRandomUi(Playlist.multivideo);
 }
 
-function setSplash(imgUrl, spinner) {
+function setSplash(imgUrl) {
   if (imgUrl) {
+    changeFavicon(faviconWait);
     $('#box').css('background-image', 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url(' + imgUrl + ')');
-    if (spinner) $('body').append($('<div id="spinner"></div>'));
+    if ($('#spinner').length === 0) {
+      $('body').append($('<div id="spinner"></div>'));
+    }
   } else {
     $('#box').css('background-image', 'none');
     $('#spinner').remove();
@@ -707,7 +710,6 @@ function YouTubePlayer() {
   YouTubePlayer.newPlayer = function(playback) {
     var size = getPlayerSize(YouTubePlayer);
 
-    // splash
     setSplash('https://i.ytimg.com/vi/' + playback.videoId + '/default.jpg');
 
     YouTubePlayer.instance = new YT.Player('player',{
@@ -841,12 +843,11 @@ function ImgurPlayer() { /*jshint ignore:line*/
 
 
     // smart splash screen
-    changeFavicon(faviconWait);
     $(document).prop('title', playback.videoId);
     $player.empty();
     // the smallest thumb with preserved aspect ratio has suffix 't'
     var thumbUrl = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
-    setSplash(thumbUrl, true);
+    setSplash(thumbUrl);
 
     // fetching image metadata (mainly to detect GIFs)
     var apiData = null;
@@ -924,7 +925,7 @@ function SoundCloudPlayer() {
 
   SoundCloudPlayer.newPlayer = function(playback) {
     $(document).prop('title', playback.videoId);
-    changeFavicon(faviconWait);
+    setSplash('https://i.imgur.com/0Wyb16p.png');// no API, use static logo instead
 
     var $box    = $('#box');
     var $player = $('<iframe id="player"/>').css('opacity','0.25');
@@ -941,11 +942,16 @@ function SoundCloudPlayer() {
     SoundCloudPlayer.instance = SC.Widget($player.get(0));
 
     var sc = SoundCloudPlayer.instance;
-    var init = true; // due to poor API we need to use first PLAY event for init
 
-    // splash screen
-    sc.getCurrentSound(function (a) {
-      setSplash(a.artwork_url.replace('large','mini'), false);
+    var scInit = _.once(function() {
+      // run once, during first PLAY event
+      // (workaround for SC API limitations)
+      setSplash(null);
+      $player.css('opacity', '1');
+      sc.seekTo(1000*playback.start);
+      sc.getCurrentSound(function (sound) {
+        $(document).prop('title', sound.title);
+      });
     });
 
     var playbackEnded = function () {
@@ -967,15 +973,7 @@ function SoundCloudPlayer() {
     };
 
     sc.bind(SC.Widget.Events.PLAY, function() {
-      if (init) {
-        sc.getCurrentSound(function (sound) {
-          $(document).prop('title', sound.title);
-        });
-        sc.seekTo(1000*playback.start);
-        $player.css('opacity', '1');
-        setSplash(null);
-        init = false;
-      }
+      scInit();
       changeFavicon(faviconPlay);
       if (isEmbedded()) {
         isEmbedded.clickedPlay = true;
