@@ -119,7 +119,8 @@ body>div {
   overflow: hidden;
 }
 
-#box.embedded {
+#box.embedded,
+#box.embedded #player {
   border: none;
   box-shadow: none;
 }
