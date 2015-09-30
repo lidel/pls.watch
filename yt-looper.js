@@ -419,7 +419,7 @@ function inlineShortenedPlaylist(urlMatch, shortUrl) {
 
 
 
-function normalizeUrl(href) {
+function normalizeUrl(href, done) {
   var url    = href || window.location.href;
   var apiUrl = url;
 
@@ -447,7 +447,13 @@ function normalizeUrl(href) {
   apiUrl = apiUrl.replace(/list=([^&:#]+)/g, inlineYTPlaylist);
   apiUrl = apiUrl.replace(/(https?:\/\/goo\.gl\/[^&#]+)/g, inlineShortenedPlaylist);
 
-  if (!href && url != apiUrl) document.location.replace(apiUrl);
+  if (_.isFunction(done)) {
+    if (url != apiUrl) {
+      document.location.replace(apiUrl);
+    } else {
+      done();
+    }
+  }
 
   return apiUrl;
 }
@@ -1153,15 +1159,8 @@ function renderPage() {
 // various init tasks on page load
 (function($) {
 
-  var urlChangedOSD = _.debounce(function() {
+  var onHashChange = function() {
     osd('URL Changed');
-  }, 1000, true);
-
-  $(window).bind('hashchange', function() {
-    logLady('hash change: ' + window.location.hash);
-    urlChangedOSD();
-    normalizeUrl();
-
     // reset things that depend on URL
     $('#shortened').remove();
     $('#shorten').show();
@@ -1178,6 +1177,12 @@ function renderPage() {
     } else {
       renderPage();
     }
+  };
+
+
+  $(window).bind('hashchange', function() {
+    logLady('hash change: ' + window.location.hash);
+    normalizeUrl(window.location.href, onHashChange);
   });
 
 

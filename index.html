@@ -30,8 +30,7 @@
   .script('yt-looper.js')
   .script('yt-looper.editor.js')
   .wait(function(){
-    normalizeUrl();
-    renderPage();
+    normalizeUrl(window.location.href, renderPage);
   });
 </script>
 
