@@ -128,33 +128,52 @@ notification('info', 'test2','test',{timeOut: 0, extendedTimeOut: 0});
 notification('warning', 'test3','test',{timeOut: 0, extendedTimeOut: 0});
 notification('error', 'test4','test',{timeOut: 0, extendedTimeOut: 0});
 */
+function copyToClipboard(text) {
+  if (document.queryCommandSupported('copy')) {
+    var copyElem = document.createElement('textarea');
+    copyElem.style.position = 'absolute';
+    copyElem.style.left = '-9999px';
+    copyElem.setAttribute('readonly', '');
+    copyElem.value = text;
+    document.body.appendChild(copyElem);
+    copyElem.select();
+    var copied = document.execCommand('copy');
+    document.body.removeChild(copyElem);
+    return copied;
+  } else {
+    return false;
+  }
+}
 
 function showShortUrl() {
-  var request = $.ajax({
-    url: 'https://www.googleapis.com/urlshortener/v1/url?key=' + GOOGLE_API_KEY,
-    type: 'POST',
-    contentType: 'application/json; charset=utf-8',
-    data: '{ longUrl: "'+ window.location.href +'" }',
-    dataType: 'json',
-  });
-  request.done(function(data) {
-    logLady('data', data);
-
+  var fallbackGui = function(text) {
     $('#shorten').hide();
-
-    var input = '<input type="text" value="'+ data.id +'" readonly>';
-    var     a = '<a href="'+ data.id +'" target="_blank" title="click to test short url in a new tab">&#10548;</a>';
+    var input = '<input type="text" value="'+ text +'" readonly>';
+    var     a = '<a href="'+ text +'" target="_blank" title="click to test short url in a new tab">&#10548;</a>';
     var  span = '<span id="shortened">ctrl+c to copy '+ input + a +'</span>';
-
     $('#menu').append(span);
-
     var $input = $('#shortened>input');
     $input.width(Math.ceil($input.val().length/1.9) + 'em');
     $input.select();
     $input.click(function(){ $input.select(); });
     notification('success', 'Short URL is ready', 'Press CTRL+C to copy');
-  });
-  request.fail(function(jqxhr, textStatus) {
+  };
+
+  $.ajax({
+    url: 'https://www.googleapis.com/urlshortener/v1/url?key=' + GOOGLE_API_KEY,
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    data: '{ longUrl: "'+ window.location.href +'" }',
+    dataType: 'json',
+    async: false
+  }).done(function(data) {
+    logLady('data', data);
+    if (copyToClipboard(data.id)) {
+      notification('success', 'Copied to clipboard: ' + data.id, 'Paste it somewhere via CTRL+V');
+    } else {
+      fallbackGui(data.id);
+    }
+  }).fail(function(jqxhr, textStatus) {
     var msg = 'Unable to get short URL: ';
     logLady(msg + textStatus, jqxhr);
     notification('error', 'goo.gl API Error', msg + 'check error in JS console');
@@ -162,16 +181,26 @@ function showShortUrl() {
 }
 
 function showEmbedCode() {
-    var input = '<input type="text" readonly>';
-    var span = '<span id="embed-code">ctrl+c to copy '+ input +'</span>';
-    $('#embed-toggle').hide();
-    $('#embed-ui').prepend(span);
-    var $input = $('#embed-ui input');
-    $input.val('<iframe width="420" height="315" src="'+ window.location.href +'" frameborder="0" allowfullscreen></iframe>');
-    $input.width('20em');
-    $input.select();
-    $input.click(function(){ $input.select(); });
-    notification('success', 'Embed Code is ready', 'Press CTRL+C to copy');
+    var embedCode = '<iframe width="420" height="315" src="'+ window.location.href +'" frameborder="0" allowfullscreen></iframe>';
+
+    var fallbackGui = function(embedCode) {
+      var input = '<input type="text" readonly>';
+      var span = '<span id="embed-code">ctrl+c to copy '+ input +'</span>';
+      $('#embed-toggle').hide();
+      $('#embed-ui').prepend(span);
+      var $input = $('#embed-ui input');
+      $input.val(embedCode);
+      $input.width('20em');
+      $input.select();
+      $input.click(function(){ $input.select(); });
+      notification('success', 'Embed Code is ready', 'Press CTRL+C to copy');
+    };
+
+    if (copyToClipboard(embedCode)) {
+      notification('success', 'Embed code copied to clipboard', 'Paste it somewhere via CTRL+V');
+    } else {
+      fallbackGui(embedCode);
+    }
 }
 
 
@@ -1188,7 +1217,7 @@ function renderPage() {
 
   // menu items will now commence!
 
-  $('#shorten').click(_.debounce(showShortUrl, 1000, true));
+  $('#shorten').click(showShortUrl);
   $('#embed-toggle').click(showEmbedCode);
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
 
@@ -1224,9 +1253,8 @@ function renderPage() {
       $('#editor-toggle').click();
 
     } else if (k==='s') {
-      var $shorten = $('#shorten');
-      if ($shorten.is(':visible')) {
-        $shorten.click();
+      if (!$('#shortened').is(':visible')) {
+        showShortUrl();
       }
 
     } else if (k==='f') {
