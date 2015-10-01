@@ -26,16 +26,17 @@ npm install && npm test
 By default tests (including GUI ones) run in headless mode under [PhantomJS](http://phantomjs.org/).
 Local HTTP server is spawned automatically for the lifetime of test suite task.
 
-To run test suite under a specific browser:
-
-- `grunt firefox`
-- `grunt chrome`
-
-To start simple HTTP server manually:
+To start simple HTTP server manually (eg. to run tests under Chrome or Firefox instead of PhantomJS):
 (`yt.127.0.0.1.xip.io` should point to `127.0.0.1`)
 
-- `grunt httpd`
+- `npm run httpd`
+
+To run test suite under a specific browser:
+
+- `npm run grunt firefox`
+- `npm run grunt chrome`
+
 
 To check code style:
 
-- `grunt jshint`
+- `npm run grunt jshint`
