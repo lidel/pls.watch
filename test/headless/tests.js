@@ -1,6 +1,7 @@
 'use strict';
 /* global QUnit, recalculateYTPlaylistIndex, normalizeUrl, jackiechanMyIntervals */
 /* global Playlist, parseIntervals, getParam, parseVideos, inlineYTPlaylist */
+/* global encodeToken, decodeToken */
 
 QUnit.test('qunit self-test', function (assert) {
   assert.ok(1 == '1', 'Passed!');
@@ -314,6 +315,25 @@ QUnit.test('Recalculate index: Sample B2', function (assert) {
   var originalUrl = 'https://yt.aergia.eu/#index=13&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS';
   var recalculatedUrl = originalUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/, recalculateYTPlaylistIndex);
   assert.deepEqual(recalculatedUrl, originalUrl, 'regression');
+});
+
+QUnit.module('Tokenized Playlist Inlining');
+
+QUnit.test('Encode', function (assert) {
+  var playlist = 'v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2&v=T0rs3R4E1Sk&t=23s;30';
+  var expectedToken = '763D6E4A42784B543745474B4926763D6552735F553665596C2D6326763D63576E394A4E346753736B26696E6465783D3226763D543072733352344531536B26743D3233733B3330.2604CC9A';
+  assert.deepEqual(encodeToken(playlist), expectedToken, 'token encoding error');
+});
+
+QUnit.test('Decode', function (assert) {
+  var token = '763D6E4A42784B543745474B4926763D6552735F553665596C2D6326763D63576E394A4E346753736B26696E6465783D3226763D543072733352344531536B26743D3233733B3330.2604CC9A';
+  var expectedPlaylist = 'v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2&v=T0rs3R4E1Sk&t=23s;30';
+  assert.deepEqual(decodeToken(token), expectedPlaylist, 'token decoding error');
+});
+
+QUnit.test('Encode+Decode', function (assert) {
+  var playlist = 'v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2&v=T0rs3R4E1Sk&t=23s;30';
+  assert.deepEqual(decodeToken(encodeToken(playlist)), playlist, 'token encoding+decoding error');
 });
 
 

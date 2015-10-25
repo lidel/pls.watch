@@ -128,6 +128,68 @@ notification('info', 'test2','test',{timeOut: 0, extendedTimeOut: 0});
 notification('warning', 'test3','test',{timeOut: 0, extendedTimeOut: 0});
 notification('error', 'test4','test',{timeOut: 0, extendedTimeOut: 0});
 */
+
+function initCRC32() { // http://jsperf.com/js-crc32
+  var c;
+  var crcTable = [];
+  for(var n=0; n<256; n++) {
+    c = n;
+    for(var k=0; k<8; k++) {
+      c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+    }
+    crcTable[n] = c;
+  }
+  return crcTable;
+}
+
+function crc32(str) {
+  var crcTable = window.crcTable || (window.crcTable = initCRC32());
+  var crc = 0 ^ (-1);
+  for (var i=0; i<str.length; i++) {
+    crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
+  }
+  return (crc ^ (-1)) >>> 0;
+}
+
+function encodeToken(data) {
+  // concatenate ascii-only char codes (in hex)
+  var result = '', index = 0, charCode, esc;
+  while (!isNaN(charCode = data.charCodeAt(index++))) {
+    esc = charCode.toString(16);
+    if (charCode < 256) {
+        result += (charCode > 15 ? '' : '0') + esc;
+    } else {
+      return '';
+    }
+  }
+  // append checksum
+  result += '.' + crc32(data).toString(16);
+  return result.toUpperCase();
+}
+
+function decodeToken(token) {
+  var tokens = token.split('.');
+  var tokenData = tokens[0].match(/.{2}/g) || [];
+  var tokenChecksum = parseInt(tokens[1],16) || 0;
+
+  tokenData = _.map(tokenData, function(hex) {
+    return parseInt(hex, 16);
+  });
+
+  var playlist = String.fromCharCode.apply(String, tokenData);
+
+  // check checksum
+  if (crc32(playlist) !== tokenChecksum) {
+    logLady('decodeToken: invalid CRC32, ignoring token', token);
+    notification('error', 'Invalid URL Token', 'Impacted playlist items were removed.');
+    //logLady('expected CRC', tokenChecksum);
+    //logLady('parsed CRC', crc32(playlist));
+    return '';
+  }
+
+  return playlist;
+}
+
 function copyToClipboard(text) {
   if (document.queryCommandSupported('copy')) {
     var copyElem = document.createElement('textarea');
@@ -156,20 +218,24 @@ function showShortUrl() {
     $input.width(Math.ceil($input.val().length/1.9) + 'em');
     $input.select();
     $input.click(function(){ $input.select(); });
-    notification('success', 'Short URL is ready', 'Press CTRL+C to copy');
+    notification('success', 'Short URL is ready: ' + text, 'Press CTRL+C to copy');
   };
+
+  var hash = window.location.hash.replace('#', '');
+  var longUrl = window.location.href.replace(hash, 'h=' + encodeToken(hash));
 
   $.ajax({
     url: 'https://www.googleapis.com/urlshortener/v1/url?key=' + GOOGLE_API_KEY,
     type: 'POST',
     contentType: 'application/json; charset=utf-8',
-    data: '{ longUrl: "'+ window.location.href +'" }',
+    data: '{ longUrl: "'+ longUrl +'" }',
     dataType: 'json',
     async: false
   }).done(function(data) {
     logLady('data', data);
     if (copyToClipboard(data.id)) {
-      notification('success', 'Copied to clipboard: ' + data.id, 'Paste it somewhere via CTRL+V');
+      notification('success', 'Copied to clipboard: ' + data.id,
+          'Paste via CTRL+V <br/>See stats <a href="'+data.id+'.info">here</a>');
     } else {
       fallbackGui(data.id);
     }
@@ -181,7 +247,9 @@ function showShortUrl() {
 }
 
 function showEmbedCode() {
-    var embedCode = '<iframe width="420" height="315" src="'+ window.location.href +'" frameborder="0" allowfullscreen></iframe>';
+    var hash = window.location.hash.replace('#', '');
+    var longUrl = window.location.href.replace(hash, 'h=' + encodeToken(hash));
+    var embedCode = '<iframe width="420" height="315" src="'+ longUrl +'" frameborder="0" allowfullscreen></iframe>';
 
     var fallbackGui = function(embedCode) {
       var input = '<input type="text" readonly>';
@@ -446,7 +514,9 @@ function inlineShortenedPlaylist(urlMatch, shortUrl) {
   return normalizedUrl;
 }
 
-
+function inlinePlaylistToken(urlMatch, token) {
+  return urlMatch.replace('h='+token, decodeToken(token));
+}
 
 function normalizeUrl(href, done) {
   var url    = href || window.location.href;
@@ -475,6 +545,9 @@ function normalizeUrl(href, done) {
   apiUrl = apiUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/g, recalculateYTPlaylistIndex);
   apiUrl = apiUrl.replace(/list=([^&:#]+)/g, inlineYTPlaylist);
   apiUrl = apiUrl.replace(/(https?:\/\/goo\.gl\/[^&#]+)/g, inlineShortenedPlaylist);
+
+  // hashed playlists
+  apiUrl = apiUrl.replace(/[#&]h=([^&]+)/g, inlinePlaylistToken);
 
   if (_.isFunction(done)) {
     if (url != apiUrl) {
@@ -553,6 +626,7 @@ function showRandomUi(multivideo) {
 }
 
 // Fix for IFrame-based players that steal focus and break keyboard shortcuts
+// TODO: run this via interval, not event
 function returnFocus() {
   //logLady('before returnFocus(): '+ document.activeElement.tagName + ' is focused');
   if(document.activeElement.tagName == 'IFRAME') {
@@ -1241,10 +1315,11 @@ function renderPage() {
 
   // keyboard shortcuts will now commence!
   $(document).unbind('keypress').keypress(function(e) {
-    var k = ((typeof Editor === undefined
-            || Editor.editInProgress === undefined)
+    var k = (( typeof Editor === 'undefined'
+            || _.isUndefined(Editor.editInProgress))
             && !isEmbedded())
-             ? String.fromCharCode(e.which).toLowerCase() : undefined;
+             ? String.fromCharCode(e.which).toLowerCase()
+             : undefined;
     //logLady('key/code:'+k+'/'+e.which);
     if (k==='?') {
       $('#help-toggle').click();
