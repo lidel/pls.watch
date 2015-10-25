@@ -401,9 +401,8 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
                   + '&key=' + GOOGLE_API_KEY;
   var normalizedUrl = urlMatch;
   $.ajax({ url: apiRequest, async: false}).done(function(data) {
-    var item = data.items[0];
     // if position does match, remove duplicate from URL
-    if (data.length > 0 && item.kind === 'youtube#playlistItem' && item.snippet.position == parseInt(index,10)-1) {
+    if (data.items.length > 0 && data.items[0].kind === 'youtube#playlistItem' && data.items[0].snippet.position+1 === Number(index)) {
       normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+|index=[^&]+&list=[^&]+)/, '$1$3');
     }
   }).fail(function(jqxhr, textStatus) {
