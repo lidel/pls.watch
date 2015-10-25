@@ -997,23 +997,35 @@ function ImgurPlayer() { /*jshint ignore:line*/
       });
 
     } else {
+      var img160px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
+      var img320px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1m'));
+      var img640px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1l'));
+      var img1024px = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h'));
       $('<img/>')
         .attr('src', imgUrl)
+        .attr('srcset', img160px  + '  160w, ' +
+                        img320px  + '  320w, ' +
+                        img640px  + '  640w, ' +
+                        img1024px + ' 1024w, ' +
+                        imgUrl    + ' 2048w  ' )
         .on('load', function() {
           var image = this;
           var $image = $(image).height('100%').width('100%');
           $player.empty().append($image);
 
           /*jshint -W030*/
+          /*
           $image.attr('src','');
           image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
           $image.attr('src',imgUrl);
+          */
           /*jshint +W030*/
 
           setSplash(null);
           changeFavicon(faviconPlay);
           startSlideshowTimerIfPresent();
-        });
+        }
+      );
     }
 
     Player.toggle = null;
