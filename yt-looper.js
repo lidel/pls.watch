@@ -959,23 +959,26 @@ function ImgurPlayer() { /*jshint ignore:line*/
 
     // fetching image metadata (mainly to detect GIFs)
     var apiData = null;
-    $.ajax({ url: 'https://api.imgur.com/3/image/' + playback.videoId.replace(/\.\w+$/,''),
-             headers: { 'Authorization': 'Client-ID ' + IMGUR_API_CLIENT_ID },
-             async: false
-    }).done(function(data) {
-      if (data.data) {
-        apiData = data.data;
-        setImagePlayerSize($player, apiData.width, apiData.height);
+    $.ajax({
+      url: 'https://api.imgur.com/3/image/' + playback.videoId.replace(/\.\w+$/,''),
+      headers: { 'Authorization': 'Client-ID ' + IMGUR_API_CLIENT_ID },
+      async: false,
+      success: function(data) {
+        if (data.data) {
+          apiData = data.data;
+          setImagePlayerSize($player, apiData.width, apiData.height);
+        }
+        //logLady('Received Imgur MetaData', apiData);
+      },
+      error: function(jqxhr, textStatus) {
+        logLady('Unable to get metadata about Imgur resource "'+playback.videoId+'" ('+ textStatus +'): ', jqxhr);
+        // read ratio from thumbnail as a falback
+        $('<img/>')
+          .attr('src', thumbUrl)
+          .on('load', function() {
+            setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
+          });
       }
-      //logLady('Received Imgur MetaData: ', apiData);
-    }).fail(function(jqxhr, textStatus) {
-      logLady('Unable to get metadata about Imgur resource "'+playback.videoId+'" ('+ textStatus +'): ', jqxhr);
-      // read ratio from thumbnail as a falback
-      $('<img/>')
-        .attr('src', thumbUrl)
-        .on('load', function() {
-          setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
-        });
     });
 
     if (apiData && apiData.animated) {
@@ -1001,13 +1004,15 @@ function ImgurPlayer() { /*jshint ignore:line*/
       var img320px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1m'));
       var img640px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1l'));
       var img1024px = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h'));
+      var origW     = ' ' + (apiData && apiData.width ? apiData.width : '2048') + 'w ';
       $('<img/>')
         .attr('src', imgUrl)
+        .attr('sizes', '80vw')
         .attr('srcset', img160px  + '  160w, ' +
                         img320px  + '  320w, ' +
                         img640px  + '  640w, ' +
                         img1024px + ' 1024w, ' +
-                        imgUrl    + ' 2048w  ' )
+                        imgUrl    +   origW    )
         .on('load', function() {
           var image = this;
           var $image = $(image).height('100%').width('100%');
