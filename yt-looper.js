@@ -230,19 +230,21 @@ function showShortUrl() {
     contentType: 'application/json; charset=utf-8',
     data: '{ longUrl: "'+ longUrl +'" }',
     dataType: 'json',
-    async: false
-  }).done(function(data) {
-    logLady('data', data);
-    if (copyToClipboard(data.id)) {
-      notification('success', 'Copied to clipboard: ' + data.id,
-          'Paste via CTRL+V <br/>See stats <a href="'+data.id+'.info">here</a>');
-    } else {
-      fallbackGui(data.id);
+    async: false,
+    success: function(data) {
+      logLady('data', data);
+      if (copyToClipboard(data.id)) {
+        notification('success', 'Copied to clipboard: ' + data.id,
+            'Paste via CTRL+V <br/>See stats <a href="'+data.id+'.info">here</a>');
+      } else {
+        fallbackGui(data.id);
+      }
+    },
+    error: function(jqxhr, textStatus) {
+      var msg = 'Unable to get short URL: ';
+      logLady(msg + textStatus, jqxhr);
+      notification('error', 'goo.gl API Error', msg + 'check error in JS console');
     }
-  }).fail(function(jqxhr, textStatus) {
-    var msg = 'Unable to get short URL: ';
-    logLady(msg + textStatus, jqxhr);
-    notification('error', 'goo.gl API Error', msg + 'check error in JS console');
   });
 }
 
@@ -400,19 +402,24 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
                   + '&fields=items(kind%2Csnippet(position%2CresourceId))%2CnextPageToken'
                   + '&key=' + GOOGLE_API_KEY;
   var normalizedUrl = urlMatch;
-  $.ajax({ url: apiRequest, async: false}).done(function(data) {
-    // if position does match, remove duplicate from URL
-    if (data.items.length > 0 && data.items[0].kind === 'youtube#playlistItem' && data.items[0].snippet.position+1 === Number(index)) {
-      normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+|index=[^&]+&list=[^&]+)/, '$1$3');
-    }
-  }).fail(function(jqxhr, textStatus) {
-    if (jqxhr.status === 404) {
-      // videoId is not a member of playlistId
-      // no need to change URL
-    } else {
-      var msg = 'Unable to get playlistId='+playlistId+': ';
-      logLady(msg + textStatus, jqxhr);
-      notification('error', 'YouTube API Error', msg + 'check error in JS console');
+  $.ajax({
+    url: apiRequest,
+    async: false,
+    success: function(data) {
+      // if position does match, remove duplicate from URL
+      if (data.items.length > 0 && data.items[0].kind === 'youtube#playlistItem' && data.items[0].snippet.position+1 === Number(index)) {
+        normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+|index=[^&]+&list=[^&]+)/, '$1$3');
+      }
+    },
+    error: function(jqxhr, textStatus) {
+      if (jqxhr.status === 404) {
+        // videoId is not a member of playlistId
+        // no need to change URL
+      } else {
+        var msg = 'Unable to get playlistId='+playlistId+': ';
+        logLady(msg + textStatus, jqxhr);
+        notification('error', 'YouTube API Error', msg + 'check error in JS console');
+      }
     }
   });
 
@@ -447,28 +454,33 @@ function inlineYTPlaylist(urlMatch, playlistId) {
     /*jshint -W083*/
     while (retries>0 && (pageToken || !Object.keys(playlist).length)) {
       pageToken = (pageToken ? '&pageToken=' + pageToken : '');
-      $.ajax({ url: apiRequest+pageToken, async: false}).done(function(data) {
-        for (var i=0;i<data.items.length;i++) {
-          var item = data.items[i];
-          if (item.kind === 'youtube#playlistItem' && item.snippet.resourceId.kind === 'youtube#video') {
-            playlist[item.snippet.position] = item.snippet.resourceId.videoId;
+      $.ajax({
+        url: apiRequest+pageToken,
+        async: false,
+        success: function(data) {
+          for (var i=0;i<data.items.length;i++) {
+            var item = data.items[i];
+            if (item.kind === 'youtube#playlistItem' && item.snippet.resourceId.kind === 'youtube#video') {
+              playlist[item.snippet.position] = item.snippet.resourceId.videoId;
+            }
           }
-        }
-        pageToken = data.nextPageToken;
-        retries = 3;
-      }).fail(function(jqxhr, textStatus) {
-        retries = retries - 1;
-        if (retries < 1) {
-          var msg = 'Unable to get playlistId='+playlistId+': ';
-          logLady(msg + textStatus, jqxhr);
-          if (jqxhr.status === 403) {
-            msg = 'playlistId='+playlistId+' is not public and can\'t be displayed in yt-looper';
-            notification('error', 'ERR-403: private playlist', msg);
-          } else {
-            notification('error', 'YouTube API Error', msg + 'check error in JS console');
+          pageToken = data.nextPageToken;
+          retries = 3;
+        },
+        error: function(jqxhr, textStatus) {
+          retries = retries - 1;
+          if (retries < 1) {
+            var msg = 'Unable to get playlistId='+playlistId+': ';
+            logLady(msg + textStatus, jqxhr);
+            if (jqxhr.status === 403) {
+              msg = 'playlistId='+playlistId+' is not public and can\'t be displayed in yt-looper';
+              notification('error', 'ERR-403: private playlist', msg);
+            } else {
+              notification('error', 'YouTube API Error', msg + 'check error in JS console');
+            }
+            // restore URL if all retries failed
+            inlinedPlaylist = urlMatch;
           }
-          // restore URL if all retries failed
-          inlinedPlaylist = urlMatch;
         }
       });
     }
@@ -500,14 +512,19 @@ function inlineShortenedPlaylist(urlMatch, shortUrl) {
                   + '?key=' + GOOGLE_API_KEY
                   + '&shortUrl=' + shortUrl;
 
-  $.ajax({ url: apiRequest, async: false}).done(function(data) {
-    if (data.kind === 'urlshortener#url' && data.longUrl.indexOf('#') > -1) {
-      normalizedUrl = data.longUrl.split('#')[1];
+  $.ajax({
+    url: apiRequest,
+    async: false,
+    success: function(data) {
+      if (data.kind === 'urlshortener#url' && data.longUrl.indexOf('#') > -1) {
+        normalizedUrl = data.longUrl.split('#')[1];
+      }
+    },
+    error: function(jqxhr, textStatus) {
+      var msg = 'Unable to inline Short URL "'+ shortUrl +'": ';
+      logLady(msg + textStatus, jqxhr);
+      notification('error', 'goo.gl API Error', msg + 'check error in JS console');
     }
-  }).fail(function(jqxhr, textStatus) {
-    var msg = 'Unable to inline Short URL "'+ shortUrl +'": ';
-    logLady(msg + textStatus, jqxhr);
-    notification('error', 'goo.gl API Error', msg + 'check error in JS console');
   });
 
   return normalizedUrl;

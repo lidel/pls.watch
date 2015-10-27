@@ -52,13 +52,18 @@ function Editor(Playlist, Player) { /*jshint ignore:line*/
                     + '&fields=kind%2Citems%2Fsnippet(title)'
                     + '&key=' + GOOGLE_API_KEY;
     var retries = 3;
-    $.ajax({ url: apiRequest, async: true }).done(function(data) {
-      if (data.kind === 'youtube#videoListResponse' && data.items.length) {
-        setTitle(data.items[0].snippet.title, intervalLink);
+    $.ajax({
+      url: apiRequest,
+      async: true,
+      success: function(data) {
+        if (data.kind === 'youtube#videoListResponse' && data.items.length) {
+          setTitle(data.items[0].snippet.title, intervalLink);
+        }
+      },
+      error: function(jqxhr, textStatus) {
+        logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
+        retries = retries - 1;
       }
-    }).fail(function(jqxhr, textStatus) {
-      logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
-      retries = retries - 1;
     });
   };
 
