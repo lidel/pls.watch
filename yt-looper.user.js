@@ -11,10 +11,10 @@
 // @include     http://imgur.com/*
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
-// @version     1.6.2
+// @version     1.6.3
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
-// @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
+// @require     https://cdn.jsdelivr.net/jquery/3.0.0-alpha1/jquery.min.js
 // @grant       none
 // ==/UserScript==
 (function ($, undefined) {
@@ -35,7 +35,7 @@
       var ytplayer = doc.getElementById('movie_player') || doc.getElementById('movie_player-flash');
       return ytplayer;
     };
-    var renderLooperActions = function () {
+    var renderLooperActions = function() {
       $('#yt-looper-start').remove();
       $('#yt-looper-end').remove();
       $('#yt-looper').remove();
@@ -61,42 +61,55 @@
         window.open(url);
       });
     };
-    window.onYouTubePlayerReady = function () {
-      console.log('yt-looper @ onYouTubePlayerReady');
-      var newVideo = true;
-      window.ytPlayerStateChanged = function (state) {
-        if (state === 2) {
-          $('#yt-looper-start').val(humanize(getYtPlayer().getCurrentTime()));
-          $('#yt-looper-interval').fadeIn('slow');
-        } else if (state === 1) {
-          // youtube redraws div.watch-action-buttons AFTER 5 and -1 events
-          // and 1 is the only one we have after GUI stabilizes
-          // ANGST.
-          newVideo = true;
-        } else {
-          $('#yt-looper-interval').hide();
-          $('#yt-looper-start').val(humanize(0));
-        }
-        if (newVideo) {
-          renderLooperActions();
-          newVideo = false;
-        }
+
+    var initButton = function() {
+      window.onYouTubePlayerReady = function () {
+        console.log('yt-looper @ onYouTubePlayerReady');
+        var newVideo = true;
+        window.ytPlayerStateChanged = function (state) {
+          if (state === 2) {
+            $('#yt-looper-start').val(humanize(getYtPlayer().getCurrentTime()));
+            $('#yt-looper-interval').fadeIn('slow');
+          } else if (state === 1) {
+            // youtube redraws div.watch-action-buttons AFTER 5 and -1 events
+            // and 1 is the only one we have after GUI stabilizes
+            // ANGST.
+            newVideo = true;
+          } else {
+            $('#yt-looper-interval').hide();
+            $('#yt-looper-start').val(humanize(0));
+          }
+          if (newVideo) {
+            renderLooperActions();
+            newVideo = false;
+          }
+        };
+        renderLooperActions();
+        getYtPlayer().addEventListener('onStateChange', 'ytPlayerStateChanged');
       };
-      renderLooperActions();
-      getYtPlayer().addEventListener('onStateChange', 'ytPlayerStateChanged');
     };
+    initButton();
   };
   var imgurHandler = function () {
+    var $oldButton = $('li#yt-looper');
     var imgurId = window.location.pathname.replace(/\/(?:[^\/]+\/)*/, '');
-    // display button only on single-image pages
-    if (/[a-zA-Z0-9]+/.test(imgurId) && ($('div.post-image img').length === 1 || $('div.post-image video').length === 1)) {
-      console.log('yt-looper @ imgurHandler()');
-      var url = 'https://yt.aergia.eu/#i=' + imgurId;
-      var html = '<a style="min-width:28px;min-height:26px;padding:12px 6px;pointer:cursor"><span style="font-size:2em;vertical-align:middle;line-height:26px">&#x21BB;</span>&nbsp;yt.aergia.eu</a>';
-      var $a = $(html).click(function () {
-        window.open(url);
-      });
-      $('#main-nav ul').append($('<li>').append($a));
+    var renderButton = function() {
+      // display button only on single-image pages
+      if (/[a-zA-Z0-9]+/.test(imgurId) && ($('div.post-image img').length === 1 || $('div.post-image video').length === 1)) {
+        console.log('yt-looper @ imgurHandler('+imgurId+')');
+        var url = 'https://yt.aergia.eu/#i=' + imgurId;
+        var html = '<a style="min-width:28px;min-height:26px;padding:12px 6px;pointer:cursor"><span style="font-size:2em;vertical-align:middle;line-height:26px">&#x21BB;</span>&nbsp;yt.aergia.eu</a>';
+        var $a = $(html).click(function () {
+          window.open(url);
+        });
+        var $newButton = $('<li id="yt-looper">').append($a).data('imgurId', imgurId);
+        $('#main-nav ul').append($newButton);
+
+      }
+    };
+    if ($oldButton.length === 0 || $oldButton.data('imgurId') != imgurId) {
+      $oldButton.remove();
+      renderButton();
     }
   };
   var soundCloudHandler = function () {
@@ -119,11 +132,10 @@
       youtubeHandler();
       break;
     case 'imgur.com':
-      imgurHandler();
+      window.setInterval(imgurHandler, 1000); // quick hack for reactive gui
       break;
     case 'soundcloud.com':
-      // yeah.. so this happened..
-      window.setInterval(soundCloudHandler, 1000);
+      window.setInterval(soundCloudHandler, 1000); // same
       break;
   }
 }(window.jQuery.noConflict(true)));
