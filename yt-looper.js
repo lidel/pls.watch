@@ -1224,6 +1224,29 @@ function HTML5Player() { /*jshint ignore:line*/
   logLady('HTML5Player()');
 
   HTML5Player.newPlayer = function(playback) {
+    HTML5Player.instance = null; // clear previous instance, if any
+
+    var ratioAttempts = 10;
+    var detectVideoRatio = function() {
+      var player = HTML5Player.instance;
+      var getHTML5PlayerSize = function(vidW, vidH) {
+        var p = _.extend({}, getPlayerSize(HTML5Player));
+        var w = Math.floor(vidW * (p.height / vidH));
+        var h = Math.floor(vidH * (p.width  / vidW));
+        p.width  = Math.min(w, p.width);
+        p.height = Math.min(h, p.height);
+        logLady('Calculated HTML5PlayerSize with ratio fix: '+p.width+'x'+p.height);
+        return p;
+      };
+      if (player && player.videoWidth > 0 && player.videoHeight > 0) {
+        player.removeEventListener('loadeddata', this);
+        Player.autosize = _.compose(getAutosize, function(){return getHTML5PlayerSize(player.videoWidth, player.videoHeight);});
+        Player.autosize();
+      } else if (ratioAttempts > 0) {
+        ratioAttempts--;
+        window.setTimeout(detectVideoRatio, AUTOSIZE_TIME);
+      }
+    };
     var eventHandlers = [
       {
         type: 'play',
@@ -1258,6 +1281,10 @@ function HTML5Player() { /*jshint ignore:line*/
           cookieMonster('volume', event.target.volume);
           cookieMonster('muted', event.target.muted);
         }
+      },
+      {
+        type: 'loadeddata',
+        func: detectVideoRatio
       }
     ];
 
@@ -1272,7 +1299,7 @@ function HTML5Player() { /*jshint ignore:line*/
     );
 
     var $player = $('div#player');
-    
+
     var $video = $(video({ loop: Playlist.multivideo ? '' : 'loop',
                             src: playback.videoId,
                            time: timeSpec })).appendTo($player);
