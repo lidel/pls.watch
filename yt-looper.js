@@ -1240,6 +1240,13 @@ function HTML5Player() { /*jshint ignore:line*/
 
     var eventHandlers = [
       {
+        type: 'loadstart',
+        func: function() {
+          // there is no thumbnail, just use background
+          setSplash('/assets/zwartevilt.png');
+        }
+      },
+      {
         type: 'loadedmetadata',
         func: function(event) {
           _(HTML5Player).extend(_.pick(event.target, 'videoWidth', 'videoHeight'));
