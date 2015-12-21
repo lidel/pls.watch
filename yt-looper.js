@@ -1244,6 +1244,7 @@ function HTML5Player() { /*jshint ignore:line*/
         func: function() {
           // there is no thumbnail, just use background
           setSplash('/assets/zwartevilt.png');
+          $(document).prop('title', playback.videoId);
         }
       },
       {
