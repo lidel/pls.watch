@@ -1310,10 +1310,10 @@ function HTML5Player() { /*jshint ignore:line*/
   };
 
   Player.toggle = function() {
-    if (HTML5Player.instance.playing) {
-      HTML5Player.instance.pause();
-    } else {
+    if (HTML5Player.instance.paused) {
       HTML5Player.instance.play();
+    } else {
+      HTML5Player.instance.pause();
     }
   };
 
