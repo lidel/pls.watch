@@ -333,7 +333,7 @@ function getPlayerSize(engine) {
 
   var size = {width: w, height: h};
 
-  if (engine === YouTubePlayer || engine === HTML5Player) {
+  if (engine === YouTubePlayer) {
     size = YT_PLAYER_SIZES.small;
     $.each(YT_PLAYER_SIZES, function(k, v) {
       if (v.width > size.width && v.width < w && v.height < h) {
@@ -1223,31 +1223,29 @@ function SoundCloudPlayer() {
 function HTML5Player() { /*jshint ignore:line*/
   logLady('HTML5Player()');
 
-  HTML5Player.newPlayer = function(playback) {
-    HTML5Player.instance = null; // clear previous instance, if any
+  HTML5Player.getPlayerSize = function() {
+    var size = getPlayerSize(); // base size
+    if (_(HTML5Player).has('videoWidth') && _(HTML5Player).has('videoHeight')) {
+      var w = Math.floor(HTML5Player.videoWidth  * (size.height / HTML5Player.videoHeight));
+      var h = Math.floor(HTML5Player.videoHeight * (size.width  / HTML5Player.videoWidth));
+      size.width  = Math.min(w, size.width);
+      size.height = Math.min(h, size.height);
+      logLady('Calculated HTML5PlayerSize with ratio fix: '+p.width+'x'+p.height);
+    }
+    return size;
+  };
+  Player.autosize = _.compose(getAutosize, HTML5Player.getPlayerSize);
 
-    var ratioAttempts = 10;
-    var detectVideoRatio = function() {
-      var player = HTML5Player.instance;
-      var getHTML5PlayerSize = function(vidW, vidH) {
-        var p = _.extend({}, getPlayerSize(HTML5Player));
-        var w = Math.floor(vidW * (p.height / vidH));
-        var h = Math.floor(vidH * (p.width  / vidW));
-        p.width  = Math.min(w, p.width);
-        p.height = Math.min(h, p.height);
-        logLady('Calculated HTML5PlayerSize with ratio fix: '+p.width+'x'+p.height);
-        return p;
-      };
-      if (player && player.videoWidth > 0 && player.videoHeight > 0) {
-        player.removeEventListener('loadeddata', this);
-        Player.autosize = _.compose(getAutosize, function(){return getHTML5PlayerSize(player.videoWidth, player.videoHeight);});
-        Player.autosize();
-      } else if (ratioAttempts > 0) {
-        ratioAttempts--;
-        window.setTimeout(detectVideoRatio, AUTOSIZE_TIME);
-      }
-    };
+  HTML5Player.newPlayer = function(playback) {
+
     var eventHandlers = [
+      {
+        type: 'loadedmetadata',
+        func: function(event) {
+          _(HTML5Player).extend(_.pick(event.target, 'videoWidth', 'videoHeight'));
+          Player.autosize();
+        }
+      },
       {
         type: 'play',
         func: function() {
@@ -1281,10 +1279,6 @@ function HTML5Player() { /*jshint ignore:line*/
           cookieMonster('volume', event.target.volume);
           cookieMonster('muted', event.target.muted);
         }
-      },
-      {
-        type: 'loadeddata',
-        func: detectVideoRatio
       }
     ];
 
@@ -1355,8 +1349,6 @@ function HTML5Player() { /*jshint ignore:line*/
     }
   };
 
-  Player.autosize = _.compose(getAutosize, function(){return getPlayerSize(HTML5Player);});
-  Player.autosize();
 }
 
 
