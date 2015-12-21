@@ -23,6 +23,26 @@ function logLady(a, b) { // kek
                                  : a);
 }
 
+function cookieMonster(key, value) { // hihi
+  if (value !== undefined) {  // naive implementation: set, get, !remove
+    var cookie = _.template(
+      '<%= key %>=<%= value %>; path=/'
+    );
+    document.cookie = cookie({ key: key, value: value });
+  } else {
+    var regx = new RegExp('^[ ]*'+ key +'=');
+    var result;
+    _(document.cookie.split(';')).find(function(cookie) {
+      var match = cookie.match(regx);
+      if (match) {
+        result = cookie.substr(match[0].length);
+        return true;  // breaks the loop
+      }
+    });
+    return result;
+  }
+}
+
 function isEmbedded() {
   return window.location != window.parent.location;
 }
@@ -61,7 +81,7 @@ var faviconPause = 'assets/pause.ico';
 var faviconWait  = 'assets/wait.ico';
 
 // PROTOTYPES (fufuf jshitn!)
-var Player, YouTubePlayer, ImgurPlayer, SoundCloudPlayer;
+var Player, YouTubePlayer, ImgurPlayer, SoundCloudPlayer, HTML5Player;
 
 
 // ENUMS
@@ -76,7 +96,8 @@ var YT_PLAYER_SIZES = Object.freeze({ // size reference: http://goo.gl/45VxXT
 var PLAYER_TYPES = Object.freeze({
                      v: {engine: YouTubePlayer,    api: initYT },
                      i: {engine: ImgurPlayer,      api: null   },
-                     s: {engine: SoundCloudPlayer, api: initSC }
+                     s: {engine: SoundCloudPlayer, api: initSC },
+                     5: {engine: HTML5Player,      api: null   }
                    });
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
@@ -90,6 +111,17 @@ var IMGUR_API_CLIENT_ID = '494753a104c250a';
 
 var AUTOSIZE_TIME = 200;
 
+var HTML5PLAYER_REGX = [ /^https?:.*?[.]mp[34]$/,
+                         /^https?:.*?[.]og[gv]$/,
+                         /^https?:.*?[.]webm$/ ];
+
+
+function detectHTML5Video(videoId) {
+  var r = _(HTML5PLAYER_REGX).find(function(regx) {
+    return videoId.match(regx);
+  });
+  return r !== undefined;
+}
 
 // Displays notification in top right corner
 function notification(type, title, message, options) {
@@ -301,7 +333,7 @@ function getPlayerSize(engine) {
 
   var size = {width: w, height: h};
 
-  if (engine === YouTubePlayer) {
+  if (engine === YouTubePlayer || engine === HTML5Player) {
     size = YT_PLAYER_SIZES.small;
     $.each(YT_PLAYER_SIZES, function(k, v) {
       if (v.width > size.width && v.width < w && v.height < h) {
@@ -682,6 +714,9 @@ function togglePanicOverlay() {
     else if (Player.engine === SoundCloudPlayer) {
       SoundCloudPlayer.instance.pause();
     }
+    else if (Player.engine === HTML5Player) {
+      HTML5Player.instance.pause();
+    }
   } else {
     osd('kekeke');
     $('#box').show();
@@ -696,6 +731,9 @@ function togglePanicOverlay() {
     }
     else if (Player.engine === SoundCloudPlayer) {
       SoundCloudPlayer.instance.play();
+    }
+    else if (Player.engine === HTML5Player) {
+      HTML5Player.instance.play();
     }
   }
 }
@@ -1181,6 +1219,119 @@ function SoundCloudPlayer() {
 }
 
 
+// reloadable singleton! d8> ...kek wat? fuf! o_0
+function HTML5Player() { /*jshint ignore:line*/
+  logLady('HTML5Player()');
+
+  HTML5Player.newPlayer = function(playback) {
+    var eventHandlers = [
+      {
+        type: 'play',
+        func: function() {
+          setSplash(null);
+          changeFavicon(faviconPlay);
+          if (isEmbedded()) {
+            isEmbedded.clickedPlay = true;
+          }
+        }
+      },
+      {
+        type: 'pause',
+        func: function(event) {
+          // doing hackity hack, because 'ended' does not work with intervals...
+          if (playback.end !== null && event.target.currentTime >= playback.end) {
+            changeFavicon(faviconWait);
+            Player.newPlayer(Playlist.cycle());
+          }
+        }
+      },
+      {
+        type: 'ended',  // does not hit when 'loop' is active
+        func: function() {
+          changeFavicon(faviconWait);
+          Player.newPlayer(Playlist.cycle());
+        }
+      },
+      {
+        type: 'volumechange',
+        func: function(event) {
+          cookieMonster('volume', event.target.volume);
+          cookieMonster('muted', event.target.muted);
+        }
+      }
+    ];
+
+    var timeSpec = playback.start  // can be null or 0 or >0
+                 ? '#t=' + playback.start + (playback.end !== null ? ',' + playback.end : '')
+                 : (playback.end !== null ? '#t=0,' + playback.end : '');
+
+    var video = _.template(
+      '<video autoplay controls <%= loop %> id="video" width="100%" height="100%" preload="auto">'
+    +   '<source src="<%= src %><%= time %>">'
+    + '</video>'
+    );
+
+    var $player = $('div#player');
+    
+    var $video = $(video({ loop: Playlist.multivideo ? '' : 'loop',
+                            src: playback.videoId,
+                           time: timeSpec })).appendTo($player);
+
+    HTML5Player.instance = $video[0];
+
+    // we have to cache volume and (un)muted state ourselves...
+    // using cookies here may seem weird, but this behavior is consistent with YouTube player! \:D/
+    var initialVolume = cookieMonster('volume');
+    if (initialVolume !== undefined) {
+      HTML5Player.instance.volume = initialVolume;
+    } else {
+      cookieMonster('volume', HTML5Player.instance.volume);  // create if missing
+    }
+    var initiallyMuted = cookieMonster('muted');
+    if (initiallyMuted !== undefined) {
+      HTML5Player.instance.muted = initiallyMuted == 'true' ? true : false;  // :s
+    } else {
+      cookieMonster('muted', HTML5Player.instance.muted);  // create if missing
+    }
+
+    // bind all events
+    _(eventHandlers).reduce(function(acc, eventHandler) {
+      return acc.bind(eventHandler.type, eventHandler.func);
+    }, $video.unbind());
+
+    // behave more like YouTube player
+    $video.click(function(event) {
+      if (event.target.paused) {
+        event.target.play();
+      } else {
+        event.target.pause();
+      }
+    });
+  };
+
+  Player.toggle = function() {
+    if (HTML5Player.instance.playing) {
+      HTML5Player.instance.pause();
+    } else {
+      HTML5Player.instance.play();
+    }
+  };
+
+  Player.volume = function(diff) {
+    var current = Math.floor(HTML5Player.instance.volume*100);
+    if (diff) {
+      var diffd = current + diff;
+      var normalized = diffd < 0 ? 0 : diffd > 100 ? 100 : diffd;
+      HTML5Player.instance.volume = normalized/100.0;
+    } else {
+      return current;
+    }
+  };
+
+  Player.autosize = _.compose(getAutosize, function(){return getPlayerSize(HTML5Player);});
+  Player.autosize();
+}
+
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
 function Player() {
@@ -1214,8 +1365,12 @@ function Player() {
       Player.engine.newPlayer(playback);
     };
 
-    Player.engine  = PLAYER_TYPES[playback.urlKey].engine;
-    var initApi    = PLAYER_TYPES[playback.urlKey].api;
+    var urlKey = playback.urlKey == 'v' && detectHTML5Video(playback.videoId)
+               ? '5'  // hackity-hackity-hack... :/
+               : playback.urlKey;
+
+    Player.engine = PLAYER_TYPES[urlKey].engine;
+    var initApi   = PLAYER_TYPES[urlKey].api;
     if (_.isFunction(initApi)) {
       initApi(initPlayer);
     } else {
@@ -1276,7 +1431,7 @@ function renderPage() {
   var $menu = $('#menu').show();
 
   // early splash screen if YouTube image is the first interval
-  if (video.urlKey == 'v') {
+  if (video.urlKey == 'v' && !detectHTML5Video(video.videoId)) {
     setSplash('https://i.ytimg.com/vi/' + video.videoId + '/default.jpg');
   }
 
@@ -1396,6 +1551,17 @@ function renderPage() {
           // There is no video, so we pause instead
           osd('Toggled SoundCloud');
           SoundCloudPlayer.instance.toggle();
+          break;
+        case HTML5Player:
+          if (HTML5Player.instance.muted) {
+            osd('Unmuted HTML5Player');
+            HTML5Player.instance.muted = false;
+            cookieMonster('muted', false);
+          } else {
+            osd('Muted HTML5Player');
+            HTML5Player.instance.muted = true;
+            cookieMonster('muted', true);
+          }
           break;
      }
 

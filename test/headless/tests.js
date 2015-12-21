@@ -1,5 +1,5 @@
 'use strict';
-/* global QUnit, recalculateYTPlaylistIndex, normalizeUrl, jackiechanMyIntervals */
+/* global QUnit, recalculateYTPlaylistIndex, normalizeUrl, jackiechanMyIntervals, detectHTML5Video */
 /* global Playlist, parseIntervals, getParam, parseVideos, inlineYTPlaylist */
 /* global encodeToken, decodeToken */
 
@@ -68,6 +68,60 @@ QUnit.test('two videos, mixed intervals', function (assert) {
   });
 
 });
+
+QUnit.test('HTML5 video detection', function (assert) {
+  var tests = [
+    {expect: true,  href: '#v=http://xyz.org/abcdefg.mp4'        },
+    {expect: true,  href: '#v=https://xyz.org/abcdefg.mp4'       },
+    {expect: false, href: '#v=xyz.org/abcdefg.mp4'               }, 
+    {expect: true,  href: '#v=http://xyz.org/abcdefg.mp4&t=;5s'  },
+    {expect: true,  href: '#v=https://xyz.org/abcdefg.mp4&t=;5s' },
+    {expect: false, href: '#v=xyz.org/abcdefg.mp4&t=;5s'         }, 
+                                                                 
+    {expect: true,  href: '#v=http://xyz.org/abcdefg.ogg'        },
+    {expect: true,  href: '#v=https://xyz.org/abcdefg.ogg'       },
+    {expect: false, href: '#v=xyz.org/abcdefg.ogg'               }, 
+    {expect: true,  href: '#v=http://xyz.org/abcdefg.ogg&t=;5s'  },
+    {expect: true,  href: '#v=https://xyz.org/abcdefg.ogg&t=;5s' },
+    {expect: false, href: '#v=xyz.org/abcdefg.ogg&t=;5s'         }, 
+
+    {expect: true,  href: '#v=http://xyz.org/abcdefg.webm'       },
+    {expect: true,  href: '#v=https://xyz.org/abcdefg.webm'      },
+    {expect: false, href: '#v=xyz.org/abcdefg.webm'              }, 
+    {expect: true,  href: '#v=http://xyz.org/abcdefg.webm&t=;5s' },
+    {expect: true,  href: '#v=https://xyz.org/abcdefg.webm&t=;5s'},
+    {expect: false, href: '#v=xyz.org/abcdefg.webm&t=;5s'        } 
+  ];
+
+  _(tests).each(function(test) {
+    var videoId = jackiechanMyIntervals(test.href).intervals[0].videoId;
+    assert.ok(test.expect ?  detectHTML5Video(videoId)
+                          : !detectHTML5Video(videoId), test.href);
+  });
+
+});
+
+QUnit.test('YT video + HTML5 video + IG image + HTML5 video: intervals', function (assert) {
+  var url = normalizeUrl(
+    'https://yt.aergia.eu/'
+  + '#v=HMMofOPRo7A&t=20s;29s'
+  + '&v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=1s;3s'
+  + '&i=8Fy3db9&t=2s'
+  + '&v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=2s;4s'
+  );
+
+  var expected_intervals = [
+    {urlKey:'v', videoId:'HMMofOPRo7A',                                        start:20,end:29  , prevI:0,nextI:0, prevV:3,nextV:1},
+    {urlKey:'v', videoId:'https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4', start:1 ,end:3   , prevI:1,nextI:1, prevV:0,nextV:2},
+    {urlKey:'i', videoId:'8Fy3db9'                                           , start:2 ,end:null, prevI:2,nextI:2, prevV:1,nextV:3},
+    {urlKey:'v', videoId:'https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4', start:2 ,end:4   , prevI:3,nextI:3, prevV:2,nextV:0}
+  ];
+
+  var generated = jackiechanMyIntervals(url);
+
+  assert.deepEqual(expected_intervals, generated.intervals, 'regression');
+});
+
 
 QUnit.module('Advanced interval indexing');
 
@@ -263,6 +317,7 @@ QUnit.test('Alternative time separator: \'-\'', function (assert) {
                                 'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23s;30',
                                 'regression');
 });
+
 
 QUnit.module('YouTube Playlist Import');
 
