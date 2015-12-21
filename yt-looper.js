@@ -1230,7 +1230,7 @@ function HTML5Player() { /*jshint ignore:line*/
       var h = Math.floor(HTML5Player.videoHeight * (size.width  / HTML5Player.videoWidth));
       size.width  = Math.min(w, size.width);
       size.height = Math.min(h, size.height);
-      logLady('Calculated HTML5PlayerSize with ratio fix: '+p.width+'x'+p.height);
+      logLady('Calculated HTML5PlayerSize with ratio fix: '+size.width+'x'+size.height);
     }
     return size;
   };

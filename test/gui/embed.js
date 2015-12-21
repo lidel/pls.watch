@@ -38,6 +38,7 @@ module.exports = {
       .end();
   },
 
+  /* PhantomJS does not suppor <video> as of now 
   'HTML5 Player size in IFrame' : function (browser) {
     browser
       .page.embed().uri('#v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=1s;8s')
@@ -45,5 +46,6 @@ module.exports = {
       .assert.cssClassPresent('#box', 'embedded')
       .end();
   },
+  */
 
 };
