@@ -30,11 +30,18 @@ module.exports = {
       .end();
   },
 
-
   'SoundCloudPlayer size in IFrame' : function (browser) {
     browser
       .page.embed().uri('#s=sacredbones/pharmakon-body-betrays-itself')
       .waitForElementVisible('iframe#player')
+      .assert.cssClassPresent('#box', 'embedded')
+      .end();
+  },
+
+  'HTML5 Player size in IFrame' : function (browser) {
+    browser
+      .page.embed().uri('#v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=1s;8s')
+      .waitForElementVisible('div#player')
       .assert.cssClassPresent('#box', 'embedded')
       .end();
   },

@@ -85,6 +85,14 @@ Playlists (sets) are lazy-inlined on first play:
 
 Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
 
+### Generic HTML5 Player
+
+Similar to YouTube Player - main difference is format for `videoId`.
+
+Currently, to be detected, `videoId` has to begin with `http` and end with: `.mp3`, `.mp4`, `.ogg`, `.ogv` or `.webm`. 
+
+Example: https://yt.aergia.eu/#v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=4s;5s
+
 ### Global
 
 **Random Mode**
