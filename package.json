@@ -4,10 +4,11 @@
   "description": "A simple YT looper",
   "main": "yt-looper.js",
   "scripts": {
-      "httpd": "grunt httpd",
-      "selenium-download": "grunt selenium",
-      "grunt": "grunt",
-      "test": "grunt test"
+    "httpd": "grunt httpd",
+    "selenium-download": "grunt selenium",
+    "grunt": "grunt",
+    "eslint": "grunt eslint",
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
@@ -20,17 +21,19 @@
   },
   "homepage": "https://github.com/lidel/yt-looper",
   "devDependencies": {
+    "eslint": "^1.10.3",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-connect": "^0.10.1",
-    "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-qunit": "^0.7.0",
     "grunt-env": "^0.4.4",
+    "grunt-eslint": "^17.3.1",
     "grunt-purifycss": "^0.1.0",
+    "load-grunt-tasks": "^3.4.0",
     "nightwatch": "^0.6.15",
     "phantomjs": "^1.9.18",
     "purify-css": "^1.0.10",
-    "travis-multirunner": "latest",
-    "selenium-standalone": "^4.6.1"
+    "selenium-standalone": "^4.6.1",
+    "travis-multirunner": "latest"
   }
 }

@@ -146,7 +146,7 @@ function notification(type, title, message, options) {
     if (type === 'error') {
       options = _.extend(options, {closeButton: true, timeOut: 0, extendedTimeOut: 0});
     }
-    toastr[type](message, title, options); /*jshint ignore:line*/
+    toastr[type](message, title, options); // eslint-disable-line no-undef
   });
 }
 
@@ -371,7 +371,7 @@ function urlFlag(key) {
   return !rslt ? urlParam(key) == 'true' : true;
 }
 
-function urlParams() {/*jshint ignore:line*/
+function urlParams() {// eslint-disable-line no-unused-vars
   return {
     index: urlParam('index'),
     quality: urlParam('quality'),
@@ -380,7 +380,7 @@ function urlParams() {/*jshint ignore:line*/
   };
 }
 
-function urlArgs(params) {/*jshint ignore:line*/
+function urlArgs(params) {// eslint-disable-line no-unused-vars
   var suffix = function(a,v){return v === true ? '' : '=' + v;};
   var keys = _.sortBy(_.keys(params), function(s){return s;});
   return _.reduce(keys, function(a, b) {
@@ -483,7 +483,6 @@ function inlineYTPlaylist(urlMatch, playlistId) {
   var inlinedPlaylist = '';
 
   if (!Object.keys(playlist).length) { // hit API only if there is no 'testData'
-    /*jshint -W083*/
     while (retries>0 && (pageToken || !Object.keys(playlist).length)) {
       pageToken = (pageToken ? '&pageToken=' + pageToken : '');
       $.ajax({
@@ -516,7 +515,6 @@ function inlineYTPlaylist(urlMatch, playlistId) {
         }
       });
     }
-    /*jshint +W083*/
   }
 
 
@@ -867,7 +865,7 @@ function getAutosize(size) {
 }
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
-function YouTubePlayer() {
+function YouTubePlayer() { // eslint-disable-line no-redeclare
   logLady('YouTubePlayer()');
 
   YouTubePlayer.newPlayer = function(playback) {
@@ -966,7 +964,7 @@ function YouTubePlayer() {
 
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
-function ImgurPlayer() { /*jshint ignore:line*/
+function ImgurPlayer() { // eslint-disable-line no-redeclare
   logLady('ImgurPlayer()');
 
   var imgurCDN = 'https://i.imgur.com/';
@@ -1073,13 +1071,11 @@ function ImgurPlayer() { /*jshint ignore:line*/
           var $image = $(image).height('100%').width('100%');
           $player.empty().append($image);
 
-          /*jshint -W030*/
           /*
           $image.attr('src','');
           image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
           $image.attr('src',imgUrl);
           */
-          /*jshint +W030*/
 
           setSplash(null);
           changeFavicon(faviconPlay);
@@ -1100,7 +1096,7 @@ function ImgurPlayer() { /*jshint ignore:line*/
   };
 }
 
-function SoundCloudPlayer() {
+function SoundCloudPlayer() { // eslint-disable-line no-redeclare
   logLady('SoundCloudPlayer()');
 
   SoundCloudPlayer.newPlayer = function(playback) {
@@ -1220,7 +1216,7 @@ function SoundCloudPlayer() {
 
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
-function HTML5Player() { /*jshint ignore:line*/
+function HTML5Player() { // eslint-disable-line no-redeclare
   logLady('HTML5Player()');
 
   HTML5Player.getPlayerSize = function() {
@@ -1361,7 +1357,7 @@ function HTML5Player() { /*jshint ignore:line*/
 
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
-function Player() {
+function Player() { // eslint-disable-line no-redeclare
   logLady('Player()');
 
   var editorNotification = null;
@@ -1421,10 +1417,8 @@ function Player() {
       logLady('isFulscreen()=' +  isFullscreen());
   };
 
-  /*jshint -W064*/
   Playlist(window.location.href);
   Playlist.log();
-  /*jshint +W064*/
 
   Player.newPlayer(Playlist.current());
 }
@@ -1439,14 +1433,12 @@ function initLooper() {
     $('#menu').remove();
     $('body').append($('<a id="embed" href="'+ window.location.href +'" target="_blank">&#x21BB;</a>'));
   }
-  /*jshint -W064*/
   Player();
   Editor(Playlist, Player);
-  /*jshint +W064*/
 
 }
 
-function onYouTubeIframeAPIReady() { /*jshint ignore:line*/
+function onYouTubeIframeAPIReady() {
   logLady('onYouTubeIframeAPIReady()');
   if (_.isFunction(onYouTubeIframeAPIReady.callback)) onYouTubeIframeAPIReady.callback();
 }

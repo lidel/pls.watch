@@ -38,7 +38,7 @@ before_script:
 script:
     - grunt qunit --verbose
     - grunt nightwatch:${NIGHTWATCH_TARGET}
-    - grunt jshint
+    - grunt eslint
 after_failure:
     - ls -la test/
     - ls -la test/screenshots

@@ -17,7 +17,7 @@
 // @require     https://cdn.jsdelivr.net/jquery/3.0.0-alpha1/jquery.min.js
 // @grant       none
 // ==/UserScript==
-(function ($, undefined) {
+(function ($, undefined) { // eslint-disable-line no-unused-vars
   'use strict';
   var youtubeHandler = function () {
     var humanize = function (sec) {

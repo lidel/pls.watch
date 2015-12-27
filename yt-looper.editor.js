@@ -33,7 +33,7 @@ function _assembleInterval(interval) {
 }
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
-function Editor(Playlist, Player) { /*jshint ignore:line*/
+function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
   var _Playlist = Playlist; // these are singletons!
   var _Player = Player;     // but still we pass them in params to indicate dependency q:'V
                             // Mother, forgive us for what we have done

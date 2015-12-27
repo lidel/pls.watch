@@ -1,7 +1,6 @@
 module.exports = function(grunt) {
-  var nightwatch = require('nightwatch');
-  nightwatch.initGrunt(grunt);
-
+  require('load-grunt-tasks')(grunt);
+  require('nightwatch').initGrunt(grunt);
 
   grunt.initConfig({
     connect: {
@@ -53,27 +52,8 @@ module.exports = function(grunt) {
         dest: 'pure_style.css'
       },
     },
-    jshint: {
-      all: ['*.js', 'test/**/*.js'],
-      options: {
-        'jquery': true,
-        'quotmark': 'single',
-        'white': true,
-        'indent': 2,
-        'latedef': true,
-        'unused': true,
-        '-W014': true, // ignore [W014] Bad line breaking
-        '-W097': true, // global strict
-        'predef':[
-          'jQuery',
-          'window',
-          'console',
-          'document',
-          '$LAB',
-          '$',
-          '_',
-          ],
-      },
+    eslint: {
+      target: ['*.js', 'test/**/*.js']
     },
     env: {
       options: {
@@ -116,7 +96,7 @@ module.exports = function(grunt) {
         grunt.verbose.writeln(message);
       },
 
-      progressCb: function(total, progress, chunk) { /*jshint ignore:line*/
+      progressCb: function(total, progress, chunk) { // eslint-disable-line no-unused-vars
         grunt.log.write('\rDownloading Selenium.. '+Math.round(progress/total*100)+'%');
       }
 
@@ -127,16 +107,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-purifycss');
   grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', 'test');
-  grunt.registerTask('common',  ['env', 'jshint', 'qunit', 'env:test', 'connect', 'selenium']);
+  grunt.registerTask('common',  ['env', 'eslint', 'qunit', 'env:test', 'connect', 'selenium']);
 
   grunt.registerTask('test',    ['common', 'nightwatch:phantomjs']);
   grunt.registerTask('firefox', ['common', 'nightwatch:firefox']);
   grunt.registerTask('chrome',  ['common', 'nightwatch:chrome']);
-
 
   grunt.registerTask('httpd', 'connect:server:keepalive');
 
