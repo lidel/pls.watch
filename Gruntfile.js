@@ -39,9 +39,11 @@ module.exports = function(grunt) {
       }
     },
     qunit: {
-      files: ['test/headless/index.html'],
-      options: {
-        timeout: 30000,
+      all: {
+        options: {
+          urls: ['http://yt.127.0.0.1.xip.io:28080/test/headless/index.html'],
+          timeout: 30000
+        }
       }
     },
     purifycss: {
@@ -110,7 +112,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', 'test');
-  grunt.registerTask('common',  ['env', 'eslint', 'qunit', 'env:test', 'connect', 'selenium']);
+  grunt.registerTask('common',  ['env', 'eslint', 'connect', 'qunit', 'env:test', 'selenium']);
 
   grunt.registerTask('test',    ['common', 'nightwatch:phantomjs']);
   grunt.registerTask('firefox', ['common', 'nightwatch:firefox']);

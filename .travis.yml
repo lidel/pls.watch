@@ -32,12 +32,12 @@ install:
     - npm run selenium-download
     - test "$NIGHTWATCH_TARGET" = "phantomjs" || (text -x ${BINPATH}/${BROWSER}-${BVER} || ./node_modules/travis-multirunner/setup.sh )
 before_script:
-    - npm run httpd &
     # start xvfb for non-phantomjs tests
     - test "$NIGHTWATCH_TARGET" = "phantomjs" || /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16
 script:
-    - grunt qunit --verbose
-    - grunt nightwatch:${NIGHTWATCH_TARGET}
+    - grunt connect qunit --verbose
+    # sometimes GUI tests fail due to slow network/APIs, run 3 times just to be sure
+    - for i in 1 2 3; do echo "Nightwatch run (${i}/3)" && grunt connect nightwatch:${NIGHTWATCH_TARGET} && break; done
     - grunt eslint
 after_failure:
     - ls -la test/
