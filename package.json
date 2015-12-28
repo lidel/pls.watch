@@ -30,7 +30,7 @@
     "grunt-eslint": "^17.3.1",
     "grunt-purifycss": "^0.1.0",
     "load-grunt-tasks": "^3.4.0",
-    "nightwatch": "^0.8.10",
+    "nightwatch": "^0.8.11",
     "phantomjs": "^1.9.18",
     "purify-css": "^1.0.10",
     "selenium-standalone": "^4.6.1",
