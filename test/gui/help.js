@@ -10,7 +10,7 @@ module.exports = {
       .waitForElementVisible('#help')
       .assert.cssClassPresent('#help-toggle','ticker')
       .assert.visible('#help')
-      .click('#help-toggle')
+      .keys('?') // use key as toggle button may be hidden by #help
       .waitForElementNotVisible('#help')
       .assert.cssClassNotPresent('#help-toggle', 'ticker')
       .assert.hidden('#help')
