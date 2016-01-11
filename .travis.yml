@@ -6,38 +6,52 @@ env:
     global:
         - DISPLAY=':99.0'
         - FIREFOX_BIN='./firefox/firefox'
-        - BINPATH=./browsers/bin
-        - PATH=./node_modules/.bin:${BINPATH}:${PATH}
+        - PATH=./node_modules/.bin:${PATH}
     matrix:
         - NIGHTWATCH_TARGET=phantomjs
-        - NIGHTWATCH_TARGET=chrome  BROWSER=chrome  BVER=stable
-        - NIGHTWATCH_TARGET=firefox BROWSER=firefox BVER=stable
+        #- NIGHTWATCH_TARGET=chrome  BVER=stable
+        - NIGHTWATCH_TARGET=firefox BVER=latest
+        - NIGHTWATCH_TARGET=firefox BVER=esr-latest
+        - NIGHTWATCH_TARGET=firefox BVER=31.0
+        - NIGHTWATCH_TARGET=firefox BVER=38.0
+        - NIGHTWATCH_TARGET=firefox BVER=39.0
+        - NIGHTWATCH_TARGET=firefox BVER=43.0
 matrix:
     fast_finish: true
     allow_failures:
-        - env: NIGHTWATCH_TARGET=chrome  BROWSER=chrome  BVER=stable
-        - env: NIGHTWATCH_TARGET=firefox BROWSER=firefox BVER=stable
+        #- env: NIGHTWATCH_TARGET=chrome  BVER=stable
+        - env: NIGHTWATCH_TARGET=firefox BVER=latest
+        - env: NIGHTWATCH_TARGET=firefox BVER=esr-latest
+        - env: NIGHTWATCH_TARGET=firefox BVER=31.0
+        - env: NIGHTWATCH_TARGET=firefox BVER=38.0
+        - env: NIGHTWATCH_TARGET=firefox BVER=39.0
+        - env: NIGHTWATCH_TARGET=firefox BVER=43.0
 addons:
     hosts:
         - yt.127.0.0.1.xip.io
     apt:
         packages:
             - python-pip
+            - aria2c
 cache:
     directories:
+        - $HOME/cache
         - $HOME/node_modules/selenium-standalone/.selenium/selenium-server
+before_install:
+    - mkdir -p $HOME/cache
 install:
     # devDependencies from package.json
     - npm install
     - npm run selenium-download
-    - test "$NIGHTWATCH_TARGET" = "phantomjs" || (text -x ${BINPATH}/${BROWSER}-${BVER} || ./node_modules/travis-multirunner/setup.sh )
+    - test "$NIGHTWATCH_TARGET" = "firefox" && (text -x $HOME/cache/firefox-${BVER}.tar.bz2 || aria2c -o $HOME/cache/firefox-${BVER}.tar.bz2 "https://download.mozilla.org/?product=firefox-$BVER&os=linux64&lang=en-US") && tar xvf firefox-${BVER}.tar.bz2 || true
 before_script:
     # start xvfb for non-phantomjs tests
     - test "$NIGHTWATCH_TARGET" = "phantomjs" || /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16
 script:
     - grunt connect qunit --verbose
     # sometimes GUI tests fail due to slow network/APIs, run 3 times just to be sure
-    - for i in 1 2 3; do echo "Nightwatch run (${i}/3)" && grunt connect nightwatch:${NIGHTWATCH_TARGET} && break; done
+    #- for i in 1 2 3; do echo "Nightwatch run (${i}/3)" && grunt connect nightwatch:${NIGHTWATCH_TARGET} && break; done
+    - grunt connect nightwatch:${NIGHTWATCH_TARGET}
     - grunt eslint
 after_failure:
     - ls -la test/
