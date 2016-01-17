@@ -14,7 +14,7 @@
 // @version     1.6.3
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
-// @require     https://cdn.jsdelivr.net/jquery/3.0.0-alpha1/jquery.min.js
+// @require     https://cdn.jsdelivr.net/jquery/3.0.0-beta1/jquery.min.js
 // @grant       none
 // ==/UserScript==
 (function ($, undefined) { // eslint-disable-line no-unused-vars
