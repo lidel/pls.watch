@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
   require('nightwatch').initGrunt(grunt);
+  require('time-grunt')(grunt);
 
   grunt.initConfig({
     connect: {
@@ -97,10 +98,6 @@ module.exports = function(grunt) {
     }, done);
 
   });
-
-  grunt.loadNpmTasks('grunt-env');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', 'test');
   grunt.registerTask('common',  ['env', 'eslint', 'connect', 'qunit', 'env:test', 'selenium']);
