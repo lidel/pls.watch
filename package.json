@@ -32,7 +32,7 @@
     "load-grunt-tasks": "^3.4.0",
     "nightwatch": "^0.8.15",
     "phantomjs": "^2.1.2",
-    "purify-css": "^1.0.10",
+    "purify-css": "^1.0.22",
     "selenium-standalone": "^4.8.0",
     "travis-multirunner": "latest"
   }
