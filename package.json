@@ -29,7 +29,7 @@
     "grunt-env": "^0.4.4",
     "grunt-eslint": "^17.3.1",
     "load-grunt-tasks": "^3.4.0",
-    "nightwatch": "^0.8.15",
+    "nightwatch": "^0.8.16",
     "phantomjs": "^2.1.2",
     "selenium-standalone": "^4.8.0",
     "travis-multirunner": "latest"
