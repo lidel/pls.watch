@@ -46,14 +46,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    purifycss: {
-      options: {},
-      target: {
-        src: ['*.html', 'yt-looper*.js'],
-        css: ['*.css'],
-        dest: 'pure_style.css'
-      },
-    },
     eslint: {
       target: ['*.js', 'test/**/*.js']
     },
@@ -107,7 +99,6 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-env');
-  grunt.loadNpmTasks('grunt-purifycss');
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-connect');
 

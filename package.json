@@ -28,11 +28,9 @@
     "grunt-contrib-qunit": "^1.0.1",
     "grunt-env": "^0.4.4",
     "grunt-eslint": "^17.3.1",
-    "grunt-purifycss": "^0.1.0",
     "load-grunt-tasks": "^3.4.0",
     "nightwatch": "^0.8.15",
     "phantomjs": "^2.1.2",
-    "purify-css": "^1.0.10",
     "selenium-standalone": "^4.8.0",
     "travis-multirunner": "latest"
   }
