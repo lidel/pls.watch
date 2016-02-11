@@ -35,8 +35,8 @@ addons:
             - aria2c
 cache:
     directories:
-        - $HOME/cache
-        - $HOME/node_modules/selenium-standalone/.selenium/selenium-server
+        - cache
+        - node_modules
 before_install:
     - mkdir -p $HOME/cache
 install:
