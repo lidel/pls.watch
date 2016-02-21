@@ -968,10 +968,10 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
 
   ImagePlayer.getImagePlayerSize = function(imgW, imgH) {
     var p = _.extend({}, getPlayerSize(ImagePlayer));
-    var w = Math.floor(imgW * (p.height / imgH));
-    var h = Math.floor(imgH * (p.width  / imgW));
-    p.width  = Math.min(w, p.width);
-    p.height = Math.min(h, p.height);
+    var w = imgW * (p.height / imgH);
+    var h = imgH * (p.width  / imgW);
+    p.width  = Math.floor(Math.min(w, p.width));
+    p.height = Math.floor(Math.min(h, p.height));
     return p;
   };
 
