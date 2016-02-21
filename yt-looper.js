@@ -967,7 +967,7 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
   logLady('ImagePlayer()');
 
   ImagePlayer.getImagePlayerSize = function(imgW, imgH) {
-    var p = _.extend({}, getPlayerSize(ImgurPlayer));
+    var p = _.extend({}, getPlayerSize(ImagePlayer));
     var w = Math.floor(imgW * (p.height / imgH));
     var h = Math.floor(imgH * (p.width  / imgW));
     p.width  = Math.min(w, p.width);
@@ -996,24 +996,26 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
     // smart splash screen
     $(document).prop('title', imgUrl);
     $player.empty();
+    // there is no thumbnail, just use background
+    setSplash('/assets/zwartevilt.png');
 
-      $('<img/>')
-        .attr('src', imgUrl)
-        .on('load', function() {
-          ImagePlayer.setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
-          var image = this;
-          var $image = $(image).height('100%').width('100%');
-          $player.empty().append($image);
+    $('<img/>')
+      .attr('src', imgUrl)
+      .on('load', function() {
+        ImagePlayer.setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
+        var image = this;
+        var $image = $(image).height('100%').width('100%');
+        $player.empty().append($image);
 
-          $image.attr('src','');
-          image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
-          $image.attr('src',imgUrl);
+        $image.attr('src','');
+        image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
+        $image.attr('src',imgUrl);
 
-          setSplash(null);
-          changeFavicon(faviconPlay);
-          ImagePlayer.startSlideshowTimerIfPresent($player, playback);
-        }
-      );
+        setSplash(null);
+        changeFavicon(faviconPlay);
+        ImagePlayer.startSlideshowTimerIfPresent($player, playback);
+      }
+    );
 
     Player.toggle = null;
   };

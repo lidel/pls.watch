@@ -32,7 +32,7 @@ To chain intervals from multiple videos just append another `&v=(...)` at the en
 ```
 
 
-**YouTube Playlist Import**
+**Playlist Import**
 
 To generate `v=(...)` items from `<playlistId>` and start autoplay from `<n>`-th element:
 ```
@@ -85,13 +85,19 @@ Playlists (sets) are lazy-inlined on first play:
 
 Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
 
-### Generic HTML5 Player
+### Generic HTML5 (URL) Player
 
 Similar to YouTube Player - main difference is format for `videoId`.
 
 Currently, to be detected, `videoId` has to begin with `http` and end with: `.mp3`, `.mp4`, `.ogg`, `.ogv` or `.webm`. 
 
 Example: https://yt.aergia.eu/#v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=4s;5s
+
+### Generic Image (URL) Player
+
+Similar to Imgur Player, can load an arbitrary URL.
+
+Example: https://yt.aergia.eu/#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm
 
 ### Global
 
