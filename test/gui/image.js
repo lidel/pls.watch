@@ -15,7 +15,7 @@ module.exports = {
     browser
       .resizeWindow(640,360)
       .page.looper()
-      .uri('#i=http://yt.127.0.0.1.xip.io:28080/assets/zwartevilt.png&i=https://travis-ci.org/lidel/yt-looper.svg')
+      .uri('#i=http://yt.127.0.0.1.xip.io:28080/assets/zwartevilt.png&i=https://travis-ci.org/lidel/yt-looper.png')
       .waitForElementVisible('div#player img')
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
@@ -35,16 +35,16 @@ module.exports = {
       .waitForElementVisible('div#player img')
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
-        console.log('[svg] For 640x360 window Image player');
+        console.log('[png2] For 640x360 window Image player');
         this.assert.equal(result.value.width, 512);
         this.assert.equal(result.value.height, 126);
       })
       .resizeWindow(1920,1080)
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
-        console.log('[svg] For 1920x1080 window Image player fits inside of 1280x720');
+        console.log('[png2] For 1920x1080 window Image player fits inside of 1280x720');
         this.assert.equal(result.value.width, 1536);
-        this.assert.equal(result.value.height, 378);
+        this.assert.equal(result.value.height, 379);
       })
       .end();
   },
