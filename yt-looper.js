@@ -112,13 +112,12 @@ var IMGUR_API_CLIENT_ID = '494753a104c250a';
 
 var AUTOSIZE_TIME = 200;
 
-var HTML5PLAYER_REGX = [ /^https?:.*?[.]mp[34]$/,
-                         /^https?:.*?[.]og[gv]$/,
-                         /^https?:.*?[.]webm$/ ];
+var EXTERNAL_URI = [ /^https?:\/\/.+/,
+                     /^https?:\/\/.+/,
+                     /^\/ip[fn]s\/.+/  ];
 
-
-function detectHTML5Video(videoId) {
-  var r = _(HTML5PLAYER_REGX).find(function(regx) {
+function isExternalURI(videoId) {
+  var r = _(EXTERNAL_URI).find(function(regx) {
     return videoId.match(regx);
   });
   return r !== undefined;
@@ -565,6 +564,23 @@ function inlinePlaylistToken(urlMatch, token) {
   return urlMatch.replace('h='+token, decodeToken(token));
 }
 
+function minimizeImgurURL(urlMatch, host, token) {
+  return urlMatch.replace(host, '');
+}
+
+function minimizeIpfsURL(urlMatch, host, token) {
+  return urlMatch.replace(host, '');
+}
+
+
+function urlForIntervalToken(token) {
+  if (/^\/ip[fn]s\//.test(token)) {
+    return 'https://ipfs.io' + token;
+  }
+  return token;
+}
+
+
 function normalizeUrl(href, done) {
   var url    = href || window.location.href;
   var apiUrl = url;
@@ -592,6 +608,10 @@ function normalizeUrl(href, done) {
   apiUrl = apiUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/g, recalculateYTPlaylistIndex);
   apiUrl = apiUrl.replace(/list=([^&:#]+)/g, inlineYTPlaylist);
   apiUrl = apiUrl.replace(/(https?:\/\/goo\.gl\/[^&#]+)/g, inlineShortenedPlaylist);
+
+  // minimize URLs from known services
+  apiUrl = apiUrl.replace(/[#&]i=(https?:\/\/i\.imgur\.com\/)([^&]+)/g, minimizeImgurURL);
+  apiUrl = apiUrl.replace(/[#&][iv]=(https?:\/\/ipfs\.io)(\/ip[fn]s\/[^&]+)/g, minimizeIpfsURL);
 
   // hashed playlists
   apiUrl = apiUrl.replace(/[#&]h=([^&]+)/g, inlinePlaylistToken);
@@ -991,10 +1011,10 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
   ImagePlayer.newPlayer = function(playback) {
     var $player = $('div#player');
 
-    var imgUrl = playback.videoId;
+    var imgUrl = urlForIntervalToken(playback.videoId);
 
     // smart splash screen
-    $(document).prop('title', imgUrl);
+    $(document).prop('title', playback.videoId);
     $player.empty();
     // there is no thumbnail, just use background
     setSplash('/assets/zwartevilt.png');
@@ -1340,7 +1360,7 @@ function HTML5Player() { // eslint-disable-line no-redeclare
     var $player = $('div#player');
 
     var $video = $(video({ loop: Playlist.multivideo ? '' : 'loop',
-                            src: playback.videoId,
+                            src: urlForIntervalToken(playback.videoId),
                            time: timeSpec })).appendTo($player);
 
     HTML5Player.instance = $video[0];
@@ -1414,10 +1434,10 @@ function Player() { // eslint-disable-line no-redeclare
   };
 
   Player.type = function (playback) {
-    if (playback.urlKey === 'v' && detectHTML5Video(playback.videoId)) {
+    if (playback.urlKey === 'v' && isExternalURI(playback.videoId)) {
       return PLAYER_TYPES['V'];
     }
-    if (playback.urlKey === 'i' && playback.videoId.match(/^https?:/)) {
+    if (playback.urlKey === 'i' && isExternalURI(playback.videoId)) {
       return PLAYER_TYPES['I'];
     }
     return PLAYER_TYPES[playback.urlKey];
@@ -1499,7 +1519,7 @@ function renderPage() {
   var $menu = $('#menu').show();
 
   // early splash screen if YouTube image is the first interval
-  if (video.urlKey == 'v' && !detectHTML5Video(video.videoId)) {
+  if (video.urlKey == 'v' && !isExternalURI(video.videoId)) {
     setSplash('https://i.ytimg.com/vi/' + video.videoId + '/default.jpg');
   }
 

@@ -1,5 +1,5 @@
 'use strict';
-/* global QUnit, recalculateYTPlaylistIndex, normalizeUrl, jackiechanMyIntervals, detectHTML5Video */
+/* global QUnit, recalculateYTPlaylistIndex, normalizeUrl, jackiechanMyIntervals, isExternalURI */
 /* global Playlist, parseIntervals, getParam, parseVideos, inlineYTPlaylist */
 /* global encodeToken, decodeToken */
 
@@ -69,34 +69,60 @@ QUnit.test('two videos, mixed intervals', function (assert) {
 
 });
 
-QUnit.test('HTML5 video detection', function (assert) {
+QUnit.test('External URI detection', function (assert) {
   var tests = [
     {expect: true,  href: '#v=http://xyz.org/abcdefg.mp4'        },
     {expect: true,  href: '#v=https://xyz.org/abcdefg.mp4'       },
-    {expect: false, href: '#v=xyz.org/abcdefg.mp4'               }, 
+    {expect: false, href: '#v=xyz.org/abcdefg.mp4'               },
     {expect: true,  href: '#v=http://xyz.org/abcdefg.mp4&t=;5s'  },
     {expect: true,  href: '#v=https://xyz.org/abcdefg.mp4&t=;5s' },
-    {expect: false, href: '#v=xyz.org/abcdefg.mp4&t=;5s'         }, 
-                                                                 
+    {expect: false, href: '#v=xyz.org/abcdefg.mp4&t=;5s'         },
+
     {expect: true,  href: '#v=http://xyz.org/abcdefg.ogg'        },
     {expect: true,  href: '#v=https://xyz.org/abcdefg.ogg'       },
-    {expect: false, href: '#v=xyz.org/abcdefg.ogg'               }, 
+    {expect: false, href: '#v=xyz.org/abcdefg.ogg'               },
     {expect: true,  href: '#v=http://xyz.org/abcdefg.ogg&t=;5s'  },
     {expect: true,  href: '#v=https://xyz.org/abcdefg.ogg&t=;5s' },
-    {expect: false, href: '#v=xyz.org/abcdefg.ogg&t=;5s'         }, 
+    {expect: false, href: '#v=xyz.org/abcdefg.ogg&t=;5s'         },
 
     {expect: true,  href: '#v=http://xyz.org/abcdefg.webm'       },
     {expect: true,  href: '#v=https://xyz.org/abcdefg.webm'      },
-    {expect: false, href: '#v=xyz.org/abcdefg.webm'              }, 
+    {expect: false, href: '#v=xyz.org/abcdefg.webm'              },
     {expect: true,  href: '#v=http://xyz.org/abcdefg.webm&t=;5s' },
     {expect: true,  href: '#v=https://xyz.org/abcdefg.webm&t=;5s'},
-    {expect: false, href: '#v=xyz.org/abcdefg.webm&t=;5s'        } 
+    {expect: false, href: '#v=xyz.org/abcdefg.webm&t=;5s'        },
+
+    {expect: true,  href: '#i=http://xyz.org/abcdefg.jpg'        },
+    {expect: true,  href: '#i=https://xyz.org/abcdefg.jpg'       },
+    {expect: false, href: '#i=xyz.org/abcdefg.jpg'               },
+    {expect: true,  href: '#i=http://xyz.org/abcdefg.jpg&t=5s'   },
+    {expect: true,  href: '#i=https://xyz.org/abcdefg.jpg&t=5s'  },
+    {expect: false, href: '#i=xyz.org/abcdefg.jpg&t=5s'          },
+
+    {expect: true,  href: '#i=http://xyz.org/abcdefg.gif'        },
+    {expect: true,  href: '#i=https://xyz.org/abcdefg.gif'       },
+    {expect: false, href: '#i=xyz.org/abcdefg.gif'               },
+    {expect: true,  href: '#i=http://xyz.org/abcdefg.gif&t=5s'   },
+    {expect: true,  href: '#i=https://xyz.org/abcdefg.gif&t=5s'  },
+    {expect: false, href: '#i=xyz.org/abcdefg.gif&t=5s'          },
+
+    {expect: true,  href: '#i=http://xyz.org/abcdefg'            },
+    {expect: true,  href: '#i=https://xyz.org/abcdefg'           },
+    {expect: false, href: '#i=xyz.org/abcdefg'                   },
+    {expect: true,  href: '#i=http://xyz.org/abcdefg&t=5s'       },
+    {expect: true,  href: '#i=https://xyz.org/abcdefg&t=5s'      },
+    {expect: false, href: '#i=xyz.org/abcdefgt=5s'               },
+
+    {expect: true,  href: '#v=/ipns/some/path.webm'              },
+    {expect: true,  href: '#v=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm' },
+    {expect: true,  href: '#i=/ipns/some/path.webm'              },
+    {expect: true,  href: '#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm' }
   ];
 
   _(tests).each(function(test) {
     var videoId = jackiechanMyIntervals(test.href).intervals[0].videoId;
-    assert.ok(test.expect ?  detectHTML5Video(videoId)
-                          : !detectHTML5Video(videoId), test.href);
+    assert.ok(test.expect ?  isExternalURI(videoId)
+                          : !isExternalURI(videoId), test.href);
   });
 
 });
@@ -389,6 +415,22 @@ QUnit.test('Decode', function (assert) {
 QUnit.test('Encode+Decode', function (assert) {
   var playlist = 'v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2&v=T0rs3R4E1Sk&t=23s;30';
   assert.deepEqual(decodeToken(encodeToken(playlist)), playlist, 'token encoding+decoding error');
+});
+
+
+QUnit.module('Minimizing URLs From Known Services');
+
+
+QUnit.test('Direct Imgur URL', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=https://i.imgur.com/fooo.gif'),
+                                'http://yt.aergia.eu/#i=fooo.gif',
+                                'Direct Imgur URL regression');
+});
+
+QUnit.test('Public IPFS Gateway URL', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
+                                'http://yt.aergia.eu/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
+                                'IPFS URL regression');
 });
 
 

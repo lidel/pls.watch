@@ -1,6 +1,6 @@
 'use strict';
 
-/* global GOOGLE_API_KEY, jackiechanMyIntervals, logLady, osd, urlFlag, urlParams, urlArgs, detectHTML5Video */
+/* global GOOGLE_API_KEY, jackiechanMyIntervals, logLady, osd, urlFlag, urlParams, urlArgs, isExternalURI */
 
 
 function _humanReadableTime(interval) {
@@ -83,7 +83,7 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
     // Keep canonical URI of a single interval in data attribute
     intervalLink.attr('data-interval-uri', intervalLink.text());
 
-    if (interval.urlKey === 'v' && !detectHTML5Video(interval.videoId)) {
+    if (interval.urlKey === 'v' && !isExternalURI(interval.videoId)) {
       Editor._createAsyncVideoTitle(interval.videoId, intervalLink);
     }
 
