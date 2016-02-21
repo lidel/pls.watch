@@ -81,7 +81,7 @@ var faviconPause = 'assets/pause.ico';
 var faviconWait  = 'assets/wait.ico';
 
 // PROTOTYPES (fufuf jshitn!)
-var Player, YouTubePlayer, ImgurPlayer, SoundCloudPlayer, HTML5Player;
+var Player, YouTubePlayer, ImgurPlayer, SoundCloudPlayer, HTML5Player, ImagePlayer;
 
 
 // ENUMS
@@ -95,9 +95,10 @@ var YT_PLAYER_SIZES = Object.freeze({ // size reference: http://goo.gl/45VxXT
 
 var PLAYER_TYPES = Object.freeze({
                      v: {engine: YouTubePlayer,    api: initYT },
+                     V: {engine: HTML5Player,      api: null   },
                      i: {engine: ImgurPlayer,      api: null   },
-                     s: {engine: SoundCloudPlayer, api: initSC },
-                     5: {engine: HTML5Player,      api: null   }
+                     I: {engine: ImagePlayer,      api: null   },
+                     s: {engine: SoundCloudPlayer, api: initSC }
                    });
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
@@ -962,10 +963,77 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
   };
 }
 
+function ImagePlayer() { // eslint-disable-line no-redeclare
+  logLady('ImagePlayer()');
+
+  ImagePlayer.getImagePlayerSize = function(imgW, imgH) {
+    var p = _.extend({}, getPlayerSize(ImgurPlayer));
+    var w = Math.floor(imgW * (p.height / imgH));
+    var h = Math.floor(imgH * (p.width  / imgW));
+    p.width  = Math.min(w, p.width);
+    p.height = Math.min(h, p.height);
+    return p;
+  };
+
+  ImagePlayer.setImagePlayerSize = function($player, w, h) {
+    logLady('setImagePlayerSize(_,'+w+','+h+')');
+    Player.autosize = _.compose(getAutosize, function(){return ImagePlayer.getImagePlayerSize(w, h);});
+    Player.autosize();
+  };
+
+  ImagePlayer.startSlideshowTimerIfPresent = function ($player, playback) {
+    if (Playlist.multivideo && playback.start > 0) {
+      $player.on('destroyed', ImagePlayer.onImagePlayerRemove);
+      ImagePlayer.timerId = _.delay(ImagePlayer.onImagePlayerStateChange, 1000*playback.start); // milis
+    }
+  };
+
+  ImagePlayer.newPlayer = function(playback) {
+    var $player = $('div#player');
+
+    var imgUrl = playback.videoId;
+
+    // smart splash screen
+    $(document).prop('title', imgUrl);
+    $player.empty();
+
+      $('<img/>')
+        .attr('src', imgUrl)
+        .on('load', function() {
+          ImagePlayer.setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
+          var image = this;
+          var $image = $(image).height('100%').width('100%');
+          $player.empty().append($image);
+
+          $image.attr('src','');
+          image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
+          $image.attr('src',imgUrl);
+
+          setSplash(null);
+          changeFavicon(faviconPlay);
+          ImagePlayer.startSlideshowTimerIfPresent($player, playback);
+        }
+      );
+
+    Player.toggle = null;
+  };
+
+  ImagePlayer.onImagePlayerStateChange = function() {
+    Player.newPlayer(Playlist.cycle());
+  };
+
+  ImagePlayer.onImagePlayerRemove = function() {
+    window.clearTimeout(ImagePlayer.timerId);
+  };
+}
 
 // reloadable singleton! d8> ...kek wat? fuf! o_0
 function ImgurPlayer() { // eslint-disable-line no-redeclare
   logLady('ImgurPlayer()');
+
+  if (!_.isFunction(ImagePlayer.setImagePlayerSize)) {
+    ImagePlayer();
+  }
 
   var imgurCDN = 'https://i.imgur.com/';
 
@@ -980,28 +1048,6 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
       return /\.[a-z]+$/i.test(resource) ? url : url + '.jpg';
     };
     var imgUrl  = imgurUrl(playback.videoId);
-
-    var getImagePlayerSize = function(imgW, imgH) {
-      var p = _.extend({}, getPlayerSize(ImgurPlayer));
-      var w = Math.floor(imgW * (p.height / imgH));
-      var h = Math.floor(imgH * (p.width  / imgW));
-      p.width  = Math.min(w, p.width);
-      p.height = Math.min(h, p.height);
-      return p;
-    };
-    var setImagePlayerSize = function($player, w, h) {
-      logLady('setImagePlayerSize(_,'+w+','+h+')');
-      Player.autosize = _.compose(getAutosize, function(){return getImagePlayerSize(w, h);});
-      Player.autosize();
-    };
-
-    var startSlideshowTimerIfPresent = function () {
-      if (Playlist.multivideo && playback.start > 0) {
-        $player.on('destroyed', onImgurPlayerRemove);
-        ImgurPlayer.timerId = _.delay(onImgurPlayerStateChange, 1000*playback.start); // milis
-      }
-    };
-
 
     // smart splash screen
     $(document).prop('title', playback.videoId);
@@ -1019,7 +1065,7 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
       success: function(data) {
         if (data.data) {
           apiData = data.data;
-          setImagePlayerSize($player, apiData.width, apiData.height);
+          ImagePlayer.setImagePlayerSize($player, apiData.width, apiData.height);
         }
         //logLady('Received Imgur MetaData', apiData);
       },
@@ -1029,7 +1075,7 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
         $('<img/>')
           .attr('src', thumbUrl)
           .on('load', function() {
-            setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
+            ImagePlayer.setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
           });
       }
     });
@@ -1049,7 +1095,7 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
       $gifv.appendTo($player).bind('play', function() {
                     setSplash(null);
                     changeFavicon(faviconPlay);
-                    startSlideshowTimerIfPresent();
+                    ImagePlayer.startSlideshowTimerIfPresent($player, playback);
       });
 
     } else {
@@ -1079,7 +1125,7 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
 
           setSplash(null);
           changeFavicon(faviconPlay);
-          startSlideshowTimerIfPresent();
+          ImagePlayer.startSlideshowTimerIfPresent($player, playback);
         }
       );
     }
@@ -1087,13 +1133,6 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
     Player.toggle = null;
   };
 
-  var onImgurPlayerStateChange = function() {
-    Player.newPlayer(Playlist.cycle());
-  };
-
-  var onImgurPlayerRemove = function() {
-    window.clearTimeout(ImgurPlayer.timerId);
-  };
 }
 
 function SoundCloudPlayer() { // eslint-disable-line no-redeclare
@@ -1372,6 +1411,16 @@ function Player() { // eslint-disable-line no-redeclare
     editorNotification = null;
   };
 
+  Player.type = function (playback) {
+    if (playback.urlKey === 'v' && detectHTML5Video(playback.videoId)) {
+      return PLAYER_TYPES['V'];
+    }
+    if (playback.urlKey === 'i' && playback.videoId.match(/^https?:/)) {
+      return PLAYER_TYPES['I'];
+    }
+    return PLAYER_TYPES[playback.urlKey];
+  };
+
   Player.newPlayer = function(playback) {
     logLady('Player.newPlayer()', playback);
 
@@ -1388,12 +1437,10 @@ function Player() { // eslint-disable-line no-redeclare
       Player.engine.newPlayer(playback);
     };
 
-    var urlKey = playback.urlKey == 'v' && detectHTML5Video(playback.videoId)
-               ? '5'  // hackity-hackity-hack... :/
-               : playback.urlKey;
+    var playerType = Player.type(playback);
 
-    Player.engine = PLAYER_TYPES[urlKey].engine;
-    var initApi   = PLAYER_TYPES[urlKey].api;
+    Player.engine = playerType.engine;
+    var initApi   = playerType.api;
     if (_.isFunction(initApi)) {
       initApi(initPlayer);
     } else {
