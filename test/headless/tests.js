@@ -433,5 +433,19 @@ QUnit.test('Public IPFS Gateway URL', function (assert) {
                                 'IPFS URL regression');
 });
 
+QUnit.test('fs: IPFS URI', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=fs:/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
+                                'http://yt.aergia.eu/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
+                                'IPFS URL regression');
+});
+
+
+QUnit.test('web+fs: IPFS URI', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=web+fs:/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
+                                'http://yt.aergia.eu/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
+                                'IPFS URL regression');
+});
+
+
 
 // vim:ts=2:sw=2:et:

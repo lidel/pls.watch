@@ -564,16 +564,17 @@ function inlinePlaylistToken(urlMatch, token) {
   return urlMatch.replace('h='+token, decodeToken(token));
 }
 
-function minimizeImgurURL(urlMatch, host, token) {
+function minimizeImgurURL(urlMatch, host) {
   return urlMatch.replace(host, '');
 }
 
-function minimizeIpfsURL(urlMatch, host, token) {
+function minimizeIpfsURL(urlMatch, host) {
   return urlMatch.replace(host, '');
 }
 
 
 function urlForIntervalToken(token) {
+  // fetch IPFS assets from the public gateway
   if (/^\/ip[fn]s\//.test(token)) {
     return 'https://ipfs.io' + token;
   }
@@ -611,7 +612,7 @@ function normalizeUrl(href, done) {
 
   // minimize URLs from known services
   apiUrl = apiUrl.replace(/[#&]i=(https?:\/\/i\.imgur\.com\/)([^&]+)/g, minimizeImgurURL);
-  apiUrl = apiUrl.replace(/[#&][iv]=(https?:\/\/ipfs\.io)(\/ip[fn]s\/[^&]+)/g, minimizeIpfsURL);
+  apiUrl = apiUrl.replace(/[#&][iv]=(https?:\/\/ipfs\.io|(?:web\+)?fs:)(\/ip[fn]s\/[^&]+)/g, minimizeIpfsURL);
 
   // hashed playlists
   apiUrl = apiUrl.replace(/[#&]h=([^&]+)/g, inlinePlaylistToken);
