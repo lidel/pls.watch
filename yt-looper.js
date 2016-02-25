@@ -1034,13 +1034,19 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
       changeFavicon(faviconPlay);
       ImagePlayer.startSlideshowTimerIfPresent($player, playback);
     };
+    var showError = function () {
+      setSplash(null);
+      notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
+    };
 
     $('<img/>')
       .attr('src', imgUrl)
-      .on('load', showImage)
-      .on('error', function () {
-        setSplash(null);
-        notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
+      .on('load',  showImage)
+      .on('error', function() {
+        $('<img/>')
+          .attr('src', imgUrl)
+          .on('load',  showImage)
+          .on('error', showError);
       });
 
     Player.toggle = null;
