@@ -1020,23 +1020,28 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
     // there is no thumbnail, just use background
     setSplash('/assets/zwartevilt.png');
 
+    var showImage = function() {
+      ImagePlayer.setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
+      var image = this;
+      var $image = $(image).height('100%').width('100%');
+      $player.empty().append($image);
+
+      $image.attr('src','');
+      image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
+      $image.attr('src',imgUrl);
+
+      setSplash(null);
+      changeFavicon(faviconPlay);
+      ImagePlayer.startSlideshowTimerIfPresent($player, playback);
+    };
+
     $('<img/>')
       .attr('src', imgUrl)
-      .on('load', function() {
-        ImagePlayer.setImagePlayerSize($player, this.naturalWidth, this.naturalHeight);
-        var image = this;
-        var $image = $(image).height('100%').width('100%');
-        $player.empty().append($image);
-
-        $image.attr('src','');
-        image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
-        $image.attr('src',imgUrl);
-
+      .on('load', showImage)
+      .on('error', function () {
         setSplash(null);
-        changeFavicon(faviconPlay);
-        ImagePlayer.startSlideshowTimerIfPresent($player, playback);
-      }
-    );
+        notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
+      });
 
     Player.toggle = null;
   };
@@ -1127,6 +1132,23 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
       var img640px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1l'));
       var img1024px = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h'));
       var origW     = ' ' + (apiData && apiData.width ? apiData.width : '2048') + 'w ';
+
+      var showImgur = function() {
+        var image = this;
+        var $image = $(image).height('100%').width('100%');
+        $player.empty().append($image);
+
+        /*
+        $image.attr('src','');
+        image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
+        $image.attr('src',imgUrl);
+        */
+
+        setSplash(null);
+        changeFavicon(faviconPlay);
+        ImagePlayer.startSlideshowTimerIfPresent($player, playback);
+      };
+
       $('<img/>')
         .attr('src', imgUrl)
         .attr('sizes', '80vw')
@@ -1135,22 +1157,11 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
                         img640px  + '  640w, ' +
                         img1024px + ' 1024w, ' +
                         imgUrl    +   origW    )
-        .on('load', function() {
-          var image = this;
-          var $image = $(image).height('100%').width('100%');
-          $player.empty().append($image);
-
-          /*
-          $image.attr('src','');
-          image.offsetHeight; // a hack to force redraw in Chrome to start cached .gif from the first frame
-          $image.attr('src',imgUrl);
-          */
-
+        .on('load', showImgur)
+        .on('error', function () {
           setSplash(null);
-          changeFavicon(faviconPlay);
-          ImagePlayer.startSlideshowTimerIfPresent($player, playback);
-        }
-      );
+          notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
+        });
     }
 
     Player.toggle = null;
@@ -1360,11 +1371,16 @@ function HTML5Player() { // eslint-disable-line no-redeclare
 
     var $player = $('div#player');
 
+    var videoUrl = urlForIntervalToken(playback.videoId);
     var $video = $(video({ loop: Playlist.multivideo ? '' : 'loop',
-                            src: urlForIntervalToken(playback.videoId),
+                            src: videoUrl,
                            time: timeSpec })).appendTo($player);
 
     HTML5Player.instance = $video[0];
+    HTML5Player.instance.addEventListener('error', function() {
+      setSplash(null);
+      notification('error', 'Unable to load URL:',  '<code>' + videoUrl + '</code><p>Refresh page to try again</p>');
+    }, true);
 
     // we have to cache volume and (un)muted state ourselves...
     // using cookies here may seem weird, but this behavior is consistent with YouTube player! \:D/
