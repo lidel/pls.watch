@@ -121,6 +121,13 @@ This parameter will force playlist editor to be visible from the start.
 
 Press <kbd>?</kbd> to toggle help screen listing available shortcuts.
 
+## Known Issues
+
+### Playback pauses when tab is not active (Google Chrome/Chromium)
+
+See [issue #151](https://github.com/lidel/yt-looper/issues/151#issuecomment-190417962).
+
+
 ## Companion userscript
 
 There is a simple userscript that adds a button on supported pages to open current video in yt-looper.
