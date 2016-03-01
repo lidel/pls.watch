@@ -31,7 +31,7 @@
     "grunt-contrib-qunit": "^1.0.1",
     "grunt-env": "^0.4.4",
     "grunt-eslint": "^18.0.0",
-    "load-grunt-tasks": "^3.4.0",
+    "load-grunt-tasks": "^3.4.1",
     "nightwatch": "^0.8.16",
     "phantomjs-prebuilt": "^2.1.4",
     "pre-push": "^0.1.1",
