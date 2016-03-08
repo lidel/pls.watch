@@ -592,7 +592,6 @@ function normalizeUrl(href, done) {
   // translate YouTube URL shenanigans (yes, this is redundant, but was broken in past..)
   apiUrl = apiUrl.replace('#t=','&t=');
   apiUrl = apiUrl.replace('/watch','/');
-  apiUrl = apiUrl.replace(/feature=[^&#]+[&#]/,'');
 
   // support legacy URLs
   apiUrl = apiUrl.replace(/[?#]|%23/g,'&').replace(/[&]/,'#');
@@ -611,6 +610,7 @@ function normalizeUrl(href, done) {
   apiUrl = apiUrl.replace(/(https?:\/\/goo\.gl\/[^&#]+)/g, inlineShortenedPlaylist);
 
   // minimize URLs from known services
+  apiUrl = apiUrl.replace(/(?:feature=[^&#]+[&#]|&feature=[^&#]+$)/,'');
   apiUrl = apiUrl.replace(/[#&]i=(https?:\/\/i\.imgur\.com\/)([^&]+)/g, minimizeImgurURL);
   apiUrl = apiUrl.replace(/[#&][iv]=(https?:\/\/ipfs\.io|(?:web\+)?fs:)(\/ip[fn]s\/[^&]+)/g, minimizeIpfsURL);
 

@@ -295,9 +295,15 @@ QUnit.test('YouTube with start parameter', function (assert) {
                                 'regression');
 });
 
-QUnit.test('YouTube with feature parameter', function (assert) {
+QUnit.test('YouTube with feature parameter in the front', function (assert) {
   assert.deepEqual(normalizeUrl('http://yt.aergia.eu/watch?feature=player_detailpage&v=n0CJfPsPOqE#t=245'),
                                 'http://yt.aergia.eu/#v=n0CJfPsPOqE&t=245',
+                                'regression');
+});
+
+QUnit.test('YouTube with feature parameter at the end', function (assert) {
+  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=D033L_aSsCw&feature=youtu.be'),
+                                'https://yt.aergia.eu/#v=D033L_aSsCw',
                                 'regression');
 });
 
