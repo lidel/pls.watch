@@ -46,13 +46,23 @@ YouTube URLs are supported transparently: if `<videoId>` is inside of the playli
 If URL already had some videos `<n>` will be recalculated.
 
 
-**Video Quality**
+**Override Video Quality**
 
-To cap video quality at a preferred level (global setting):
+To cap YouTube quality at a preferred level (global setting):
 ```
 &quality=<level>
 ```
 Current list of available levels can be found in [YouTube Player API Reference](https://developers.google.com/youtube/iframe_api_reference#Playback_quality).
+
+
+**Override Playback Rate**
+
+The default playback rate is `1`, which indicates that the video is playing at normal speed. Playback rates may include values like `0.25`, `0.5`, `1`, `1.5`, and `2`. It is a global flag (sets speed of all YouTube videos in playlist).
+```
+&speed=<rate>
+```
+Current list of available playback rates can be found in [YouTube Player API Reference](https://developers.google.com/youtube/iframe_api_reference#Playback_rate).
+
 
 
 ### Imgur

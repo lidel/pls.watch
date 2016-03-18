@@ -952,6 +952,11 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       event.target.setPlaybackQuality(quality);
     }
 
+    var speed = urlParam('speed');
+    if (speed) {
+      event.target.setPlaybackRate(speed);
+    }
+
     if (isAutoplay()) event.target.playVideo();
   };
 
