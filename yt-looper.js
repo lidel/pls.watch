@@ -599,7 +599,7 @@ function normalizeUrl(href, done) {
   apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
   // fix obvious typos
-  apiUrl = apiUrl.replace(/t=([^&:-]+)[:-]([^&]+)/g,'t=$1;$2');
+  apiUrl = apiUrl.replace(/([#&])t=(\w+)[,\.:-](\w+)/g,'$1t=$2;$3');
 
   // inline playlists
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, deduplicateYTPlaylist);
