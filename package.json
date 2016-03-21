@@ -26,7 +26,7 @@
   "devDependencies": {
     "eslint": "^2.0.0",
     "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
+    "grunt-cli": "^1.0.0",
     "grunt-contrib-connect": "^1.0.0",
     "grunt-contrib-qunit": "^1.0.1",
     "grunt-env": "^0.4.4",
