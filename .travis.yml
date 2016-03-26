@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-    - "4.1"
+    - "5.9"
 sudo: false
 env:
     global:
@@ -53,10 +53,10 @@ script:
     #- for i in 1 2 3; do echo "Nightwatch run (${i}/3)" && grunt connect nightwatch:${NIGHTWATCH_TARGET} && break; done
     - grunt connect nightwatch:${NIGHTWATCH_TARGET}
     - grunt eslint
-after_failure:
-    - ls -la test/
-    - ls -la test/screenshots
-    - bash test/upload_screenshots.sh
+#after_failure:
+#    - ls -la test/
+#    - ls -la test/screenshots
+#    - bash test/upload_screenshots.sh
 
 #- test "$NIGHTWATCH_TARGET" != "firefox" || pip install --user mozdownload
 #- test "$NIGHTWATCH_TARGET" != "firefox" || $HOME/.local/bin/mozdownload -t release -v $FIREFOX_VERSION
