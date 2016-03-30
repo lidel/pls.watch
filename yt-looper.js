@@ -936,6 +936,21 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       }
     };
 
+    Player.speed = function(diff) {
+      var ytApi = YouTubePlayer.instance;
+      var current = ytApi.getPlaybackRate();
+      if (ytApi && diff) {
+        var availableRates = ytApi.getAvailablePlaybackRates();
+        var newIndex = _.indexOf(availableRates, current) + 1*diff;
+        if (newIndex >= 0 && newIndex < availableRates.length) {
+          var newRate = availableRates[newIndex];
+          ytApi.setPlaybackRate(newRate);
+          return newRate;
+        }
+      }
+      return current;
+    };
+
     Player.autosize = _.compose(getAutosize, function(){return getPlayerSize(YouTubePlayer);});
 
     Player.autosize();
@@ -1691,6 +1706,16 @@ function renderPage() {
       if (Player.volume) {
         osd('Volume -10%');
         Player.volume(-10);
+      }
+
+    } else if (k===']' || k==='}') {
+      if (Player.speed) {
+        osd('Playback speed: &times;' + Player.speed(+1));
+      }
+
+    } else if (k==='[' || k==='{') {
+      if (Player.speed) {
+        osd('Playback speed: &times;' + Player.speed(-1));
       }
 
     } else if (k===' ') {
