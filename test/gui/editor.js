@@ -1,6 +1,7 @@
 module.exports = {
 
   'Editor drag&drop should trigger URL update' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .resizeWindow(640,360)
       .page.looper()
