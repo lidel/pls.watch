@@ -3,11 +3,11 @@ module.exports = {
   'Player with single Image interval (png)' : function (browser) {
     browser
       .page.looper()
-      .uri('#i=http://yt.127.0.0.1.xip.io:28080/assets/zwartevilt.png&t=50s')
+      .uri('#i=http://127.0.0.1:28080/assets/zwartevilt.png&t=50s')
       .waitForElementVisible('div#player img')
       .keys(['e']) // open editor
       .waitForElementVisible('#editor .highlighted')
-      .assert.editorHighlightUri('i=http://yt.127.0.0.1.xip.io:28080/assets/zwartevilt.png&t=50s')
+      .assert.editorHighlightUri('i=http://127.0.0.1:28080/assets/zwartevilt.png&t=50s')
       .end();
   },
 
@@ -29,7 +29,7 @@ module.exports = {
     browser
       .resizeWindow(640,360)
       .page.looper()
-      .uri('#i=http://yt.127.0.0.1.xip.io:28080/assets/zwartevilt.png&i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm')
+      .uri('#i=http://127.0.0.1:28080/assets/zwartevilt.png&i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm')
       .waitForElementVisible('div#player img')
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
