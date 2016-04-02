@@ -4,7 +4,7 @@ module.exports = {
     browser
       .page.looper()
       .uri('#i=cJjBEQP.png&editor')
-      .waitForElementVisible('div#player img')
+      .waitForLoadedId('cJjBEQP.png')
       .waitForElementVisible('#editor .highlighted')
       .assert.editorHighlightUri('i=cJjBEQP.png')
       .assert.title('cJjBEQP.png')

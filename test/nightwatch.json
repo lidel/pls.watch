@@ -4,7 +4,7 @@
   "custom_commands_path" : "lib/commands",
   "custom_assertions_path" : "lib/asserts",
   "page_objects_path" : "lib/pages",
-  "globals_path" : "",
+  "globals_path" : "lib/globals.js",
 
   "selenium" : {
     "start_process" : true,

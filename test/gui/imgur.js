@@ -23,6 +23,7 @@ module.exports = {
   },
 
   'Autosize of Imgur player' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .resizeWindow(640,360)
       .page.looper()
@@ -59,7 +60,5 @@ module.exports = {
       })
       .end();
   },
-
-
 
 };

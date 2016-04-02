@@ -3,7 +3,7 @@ module.exports = {
   'There should be no GUI beside small icon' : function (browser) {
     browser
       .page.embed().uri('#i=50yPd6G')
-      .waitForElementVisible('div#player')
+      .waitForLoadedId('50yPd6G')
       .waitForElementNotPresent('#help')
       .waitForElementNotPresent('#menu')
       .waitForElementNotPresent('#editor')
@@ -17,7 +17,7 @@ module.exports = {
   'YouTube Player size in IFrame' : function (browser) {
     browser
       .page.embed().uri('#v=T0rs3R4E1Sk&t=23;30')
-      .waitForElementVisible('iframe#player')
+      .waitForLoadedId('T0rs3R4E1Sk')
       .assert.cssClassPresent('#box', 'embedded')
       .end();
   },
@@ -25,7 +25,7 @@ module.exports = {
   'Imgur Player size in IFrame' : function (browser) {
     browser
       .page.embed().uri('#i=vo9DPpp.gif')
-      .waitForElementVisible('div#player')
+      .waitForLoadedId('vo9DPpp.gif')
       .assert.cssClassPresent('#box', 'embedded')
       .end();
   },
@@ -33,7 +33,7 @@ module.exports = {
   'SoundCloudPlayer size in IFrame' : function (browser) {
     browser
       .page.embed().uri('#s=sacredbones/pharmakon-body-betrays-itself')
-      .waitForElementVisible('iframe#player')
+      .waitForLoadedId('sacredbones/pharmakon-body-betrays-itself')
       .assert.cssClassPresent('#box', 'embedded')
       .end();
   },

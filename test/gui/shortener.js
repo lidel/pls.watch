@@ -1,6 +1,7 @@
 module.exports = {
 
   'Get short URL via menu item' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper().uri('#v=T0rs3R4E1Sk&t=23;30')
       .waitForElementVisible('#shorten-ui')
@@ -14,6 +15,7 @@ module.exports = {
   },
 
   'Get short URL via keyboard shortcut' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper().uri('#v=T0rs3R4E1Sk&t=23;30')
       .waitForElementVisible('#shorten-ui')
@@ -28,6 +30,7 @@ module.exports = {
 
 
   'Legacy UI: Get short URL via menu item' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper().uri('#v=T0rs3R4E1Sk&t=23;30')
       .waitForElementVisible('#shorten-ui')
@@ -47,6 +50,7 @@ module.exports = {
   },
 
   'Legacy UI: Get short URL via keyboard shortcut' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper().uri('#v=T0rs3R4E1Sk&t=23;30')
       .waitForElementVisible('#shorten-ui')
@@ -75,6 +79,7 @@ module.exports = {
   },
 
   'Inline shortened playlists' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper().uri('#http://goo.gl/ycH3Px&http://goo.gl/LKbVEc&http://goo.gl/WTz6Nj')
       .waitForElementVisible('iframe#player')

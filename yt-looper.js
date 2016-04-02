@@ -1489,17 +1489,20 @@ function Player() { // eslint-disable-line no-redeclare
   Player.newPlayer = function(playback) {
     logLady('Player.newPlayer()', playback);
 
+    var $box = $('#box');
     var $player = $('#player');
     if ($player.length) {
+      $box.removeAttr('data-loaded-id');
       $player.remove();
     }
 
     if (_.isFunction(editorNotification)) editorNotification();
 
     var initPlayer = function() {
-      $('#box').html('<div id="player"></div>');
+      $box.html('<div id="player"></div>');
       Player.engine();
       Player.engine.newPlayer(playback);
+      $box.attr('data-loaded-id', playback.videoId);
     };
 
     var playerType = Player.type(playback);

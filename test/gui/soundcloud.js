@@ -4,7 +4,7 @@ module.exports = {
     browser
       .page.looper()
       .uri('#s=juandedeboca/spacex-thales-mission-webcast-song')
-      .waitForElementVisible('iframe#player')
+      .waitForLoadedId('juandedeboca/spacex-thales-mission-webcast-song')
       .keys(['e']) // open editor
       .waitForElementVisible('#editor .highlighted')
       .assert.editorHighlightUri('s=juandedeboca/spacex-thales-mission-webcast-song')
@@ -12,6 +12,7 @@ module.exports = {
   },
 
   'Autosize of SoundCloud player' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     /* For some reason SoundCloud widget adds 2px padding around the player.
      * This is not a big issue and for now we simply bump expected value in tests
      */

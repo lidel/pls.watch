@@ -1,11 +1,12 @@
 module.exports = {
 
   'Autosize of YouTube video' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .resizeWindow(640,360)
       .page.looper()
       .uri('#v=T0rs3R4E1Sk&t=23;30')
-      .waitForElementVisible('iframe#player')
+      .waitForAttribute('#box', 'data-loaded-id', (id) => id === 'T0rs3R4E1Sk')
       .getElementSize('#player', function(result) {
         console.log('For 640x360 window YT player size should be 320x240');
         this.assert.equal(result.value.width, 320);
@@ -22,6 +23,7 @@ module.exports = {
   },
 
   'Playlist Import with deduplication and recalculated index' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper()
       .uri('#index=13&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS')

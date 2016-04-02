@@ -12,6 +12,7 @@ module.exports = {
   },
 
   'Player with single Image from IPFS' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper()
       .uri('#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm')
@@ -24,6 +25,7 @@ module.exports = {
 
 
   'Autosize of Image player' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .resizeWindow(640,360)
       .page.looper()
