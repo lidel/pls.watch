@@ -1574,6 +1574,7 @@ function renderPage() {
   } else {
     // no valid hash, display #help
     changeFavicon();
+    $(document).prop('title', 'yt-looper');
     $box.hide();
     $menu.hide();
     showHelpUi(true);
@@ -1597,9 +1598,12 @@ function renderPage() {
     showHelpUi(false);
 
     // reset player or entire page
-    if ($('#player').length > 0) {
+    var $player = $('#player');
+    var hash = window.location.hash;
+    if ($player.length > 0 && hash) {
       initLooper();
     } else {
+      $player.remove();
       renderPage();
     }
   };
