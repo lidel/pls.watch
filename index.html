@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=640">
-  <title>Minimalistic Youtube Looper</title>
+  <title>yt-looper - Minimalistic Youtube Looper</title>
   <link href="/style.css" media="all" rel="stylesheet" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <script src="https://cdn.jsdelivr.net/labjs/2.0.3/LAB.min.js" integrity="sha384-9bG4pXPbbRR8k5WFJlBoi1cCH8ifOFaZBVoyR2kthY3Q8uKfLguzsZ+3/NamHHXl" crossorigin="anonymous"></script>
@@ -52,28 +52,30 @@
   <div id="version">%git-hash%</div>
 
 
-  <h3>YouTube</h3>
+  <h3>About</h3>
 
-  <p>append <tt>#v=&lt;videoId&gt;&amp;t=&lt;start&gt;;&lt;end&gt;</tt> to the URL and enjoy a loop<br/>
+  <p>
+  create shareable loops and playlists using simple URL tokens<br/>
   <span class="example">eg:
   <a href="#v=ZuHZSbPJhaY&amp;t=1h1s;1h4s">#v=ZuHZSbPJhaY&amp;=1h1s;1h4s</a>
   or <a href="#v=lWqJTKdznaM&amp;t=58;68&amp;v=ZuHZSbPJhaY&amp;t=1h;1h5s">#v=lWqJTKdznaM&amp;t=58;68&amp;v=ZuHZSbPJhaY&amp;t=1h;1h5s</a>
+  </span>
   </p>
 
-  <p>to import playlist and play n<sup>th</sup> video with editor open from start:<br/>
-  <tt>#list=&lt;playlistId&gt;&amp;index=&lt;n&gt;&amp;editor</tt><br/>
-  <span class="example">eg:
-  <a href="#list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&amp;index=13&amp;editor">#list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&amp;index=13&amp;editor</a></span>
-  </p>
 
-  <h3>Imgur and SoundCloud</h3>
-  <p><tt>#i=&lt;imgurId&gt;&amp;t=&lt;duration&gt;</tt><br/>
-  <tt>#s=&lt;soundCloudPathTo/sound&gt;&amp;t=&lt;start&gt;;&lt;end&gt;</tt> <br/>
-  <span class="example">eg:
-  <a href="#i=lkD38.gifv&amp;t=5s&amp;s=sacredbones/pharmakon-body-betrays-itself">#i=lkD38.gifv&amp;t=5s&amp;s=sacredbones/pharmakon-body-betrays-itself</a></span>
-  </p>
+  <h3>Basic Syntax</h3>
 
-  <p style="text-align:right;font-size:small"><a href="https://github.com/lidel/yt-looper#url-parameters">more examples at GitHub</a></p>
+  <p>
+  a video <span class="example">(.webm, .mp4 URL or YouTube ID)</span> <tt>#v=&lt;video&gt;[&amp;t=&lt;start&gt;[;&lt;end&gt;]]</tt><br/>
+  an image <span class="example">(.png, .jpg, .gif URL or Imgur ID)</span> <tt>#i=&lt;image&gt;[&amp;t=&lt;duration&gt;]</tt><br/>
+  a sound <span class="example">(SoundCloud Path)</span> <tt>#s=&lt;path/sound&gt;[&amp;t=&lt;start&gt;[;&lt;end&gt;]]</tt>
+  </p>
+  <ul class="feature-list">
+    <li>→ <a href="https://github.com/lidel/yt-looper#url-parameters">Full Syntax Documentation with Examples</a></li>
+  <li>→ <a href="https://github.com/lidel/yt-looper#youtube">YouTube Playlist Import, Speed &amp; Quality Control</a></li>
+  <li>→ <a href="https://github.com/lidel/yt-looper#imgur">Imgur and SoundCloud Support</a></li>
+  </ul>
+
 
   <h2>keyboard shortcuts</h2>
 

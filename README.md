@@ -3,8 +3,9 @@ yt-looper
 
 [![Build Status](https://travis-ci.org/lidel/yt-looper.svg)](https://travis-ci.org/lidel/yt-looper)
 
-Minimalistic Youtube Looper at https://yt.aergia.eu
+Create shareable loops and playlists using simple URL tokens.
 
+Deployed at https://yt.aergia.eu
 
 ## URL Parameters
 
@@ -73,7 +74,7 @@ By default image is displayed forever (useful for GIFs). A slideshow can be crea
 #i=<imageId>.jpg[&t=<displayTime>]
 ```
 
-Example: https://yt.aergia.eu/#i=cJjBEQP.jpg&t=3s&i=vo9DPpp.gif&t=3s
+Example: https://yt.aergia.eu/#i=lkD38.gifv&t=3&i=cJjBEQP.jpg&t=1s&i=vo9DPpp.gif&t=3s
 
 Note: [GIF intervals](https://yt.aergia.eu/#i=zvATqgs) are automatically rendered as [GIFV](https://imgur.com/blog/2014/10/09/introducing-gifv/).
 

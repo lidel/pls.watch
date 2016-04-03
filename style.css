@@ -171,7 +171,7 @@ body>div {
   text-decoration: none;
 }
 
-#help a,
+#help .example>a,
 #help kbd,
 #help tt {
   font-family: "Lucida Sans Typewriter","Lucida Console",Monaco,"Bitstream Vera Sans Mono",monospace;
@@ -198,8 +198,12 @@ body>div {
   font-size:0.8em;
   color: #888;
 }
+#help .feature-list {
+  font-size:0.75rem;
+  text-align:right;
+}
 #help ul>li {
-  padding:0.5em 0;
+  padding:0.3em 0;
 }
 #help kbd {
   display:inline-block;
