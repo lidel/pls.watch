@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       all: {
         options: {
           urls: ['http://yt.127.0.0.1.xip.io:28080/test/headless/index.html'],
-          timeout: 30000
+          timeout: 5000
         }
       }
     },
