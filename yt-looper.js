@@ -113,7 +113,7 @@ var IMGUR_API_CLIENT_ID = '494753a104c250a';
 var AUTOSIZE_TIME = 200;
 
 var EXTERNAL_URI = [ /^https?:\/\/.+/,
-                     /^https?:\/\/.+/,
+                     /^goo\.gl\/.+/,
                      /^\/ip[fn]s\/.+/  ];
 
 function isExternalURI(videoId) {
@@ -546,7 +546,7 @@ function inlineShortenedPlaylist(urlMatch, shortUrl) {
     url: apiRequest,
     async: false,
     success: function(data) {
-      if (data.kind === 'urlshortener#url' && data.longUrl.indexOf('#') > -1) {
+      if (data.kind === 'urlshortener#url' && data.longUrl && data.longUrl.indexOf('#') > -1) {
         normalizedUrl = data.longUrl.split('#')[1];
       }
     },
@@ -572,12 +572,23 @@ function minimizeIpfsURL(urlMatch, host) {
   return urlMatch.replace(host, '');
 }
 
+function minimizeDirectURL(urlMatch, directUrl) {
+  var googlRx = /https?:\/\/goo\.gl\//;
+  if (googlRx.test(directUrl)) {
+    return urlMatch.replace(googlRx, 'goo.gl/');
+  }
+  return urlMatch;
+}
 
 function urlForIntervalToken(token) {
   // fetch IPFS assets from the public gateway
   if (/^\/ip[fn]s\//.test(token)) {
     return 'https://ipfs.io' + token;
   }
+  if (/^goo\.gl\//.test(token)) {
+    return 'https://' + token;
+  }
+
   return token;
 }
 
@@ -613,6 +624,7 @@ function normalizeUrl(href, done) {
   apiUrl = apiUrl.replace(/(?:feature=[^&#]+[&#]|&feature=[^&#]+$)/,'');
   apiUrl = apiUrl.replace(/[#&]i=(https?:\/\/i\.imgur\.com\/)([^&]+)/g, minimizeImgurURL);
   apiUrl = apiUrl.replace(/[#&][iv]=(https?:\/\/ipfs\.io|(?:web\+)?fs:)(\/ip[fn]s\/[^&]+)/g, minimizeIpfsURL);
+  apiUrl = apiUrl.replace(/[#&][iv]=(https?:\/\/[^&]+)/g, minimizeDirectURL);
 
   // hashed playlists
   apiUrl = apiUrl.replace(/[#&]h=([^&]+)/g, inlinePlaylistToken);

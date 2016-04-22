@@ -426,6 +426,17 @@ QUnit.test('Encode+Decode', function (assert) {
 
 QUnit.module('Minimizing URLs From Known Services');
 
+QUnit.test('Direct Image URL', function (assert) {
+  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#i=https://goo.gl/R9z9r0'),
+                                'https://yt.aergia.eu/#i=goo.gl/R9z9r0',
+                                'Direct Image URL regression');
+});
+
+QUnit.test('Direct Video URL', function (assert) {
+  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=https://goo.gl/WN8BkV'),
+                                'https://yt.aergia.eu/#v=goo.gl/WN8BkV',
+                                'Direct Video URL regression');
+});
 
 QUnit.test('Direct Imgur URL', function (assert) {
   assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=https://i.imgur.com/fooo.gif'),
