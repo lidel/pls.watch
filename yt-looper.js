@@ -988,7 +988,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
   };
 
   var onYouTubePlayerStateChange = function(event) {
-    logLady('onYouTubePlayerStateChange()', event.data);
+    logLady('YouTube Player State Change', event.data);
 
     if (event.data == YT.PlayerState.ENDED) {
       changeFavicon(faviconWait);
