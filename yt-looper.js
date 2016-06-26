@@ -1154,8 +1154,11 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
     });
 
     var isGifvPossible = function(apiData) {
-      return apiData && apiData.animated && !_.isUndefined(apiData.mp4);
-    }
+      return apiData
+        && apiData.animated
+        && !_.isUndefined(apiData.mp4)
+        && apiData.mp4_size > 0;
+    };
 
     if (isGifvPossible(apiData)) {
       logLady('GIFV detected, switching to HTML5 <video> player');
