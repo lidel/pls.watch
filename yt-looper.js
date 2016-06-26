@@ -1149,14 +1149,20 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
     if (apiData && apiData.animated) {
       logLady('GIFV detected, switching to HTML5 <video> player');
 
-      var https = function(url) {
-        return url.replace('http:','https:');
+      var videoSource = function(type, url) {
+        if (url !== undefined) {
+          return '<source src="'+ url.replace('http:','https:') +'" type="video/' + type + '">';
+        }
+        return '';
+      };
+
+      var videoSources = function(apiData) {
+        return videoSource('mp4', apiData.mp4) + videoSource('webm', apiData.webm);
       };
 
       var $gifv = $('<video id="gifv" width="100%" height="100%" poster="'+ thumbUrl + '" '
                 + '         autoplay="autoplay" muted="muted" preload="auto" loop="loop">'
-                + '<source src="'+ https(apiData.webm) +'" type="video/webm">'
-                + '<source src="'+ https(apiData.mp4) +'" type="video/mp4">'
+                + videoSources(apiData)
                 + '</video>');
       $gifv.appendTo($player).bind('play', function() {
                     setSplash(null);
