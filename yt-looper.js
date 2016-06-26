@@ -52,8 +52,15 @@ function isAutoplay() {
 }
 
 function isFullscreen() {
-  var fullScreenElement = document.fullScreenElement || document.mozFullScreenElement || document.webkitFullScreenElement || document.webkitFullscreenElement;
-  return fullScreenElement !== undefined && fullScreenElement !== null;
+  // Historically, Fullscreen API was a big turd of bikeshedding:
+  // https://web.archive.org/web/20160626102855/https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API#Prefixing
+  var d = document;
+  var fs = d.fullscreenElement
+    || d.fullScreenElement
+    || d.mozFullScreenElement
+    || d.webkitFullScreenElement
+    || d.webkitFullscreenElement;
+  return fs !== undefined && fs !== null;
 }
 
 // YouTube IFrame API
@@ -1530,14 +1537,21 @@ function Player() { // eslint-disable-line no-redeclare
   Player.fullscreenToggle = function() {
       if (!isFullscreen()) {
         var fs = $('body')[0];
-        var requestFullScreen = fs.requestFullScreen || fs.mozRequestFullScreen || fs.webkitRequestFullScreen;
-        if (requestFullScreen) {
-          requestFullScreen.bind(fs)();
+        var requestFs = fs.requestFullscreen
+          || fs.requestFullScreen
+          || fs.mozRequestFullScreen
+          || fs.webkitRequestFullScreen;
+        if (requestFs) {
+          requestFs.bind(fs)();
         }
       } else {
-        var cancelFullScreen = document.cancelFullScreen || document.mozCancelFullScreen || document.webkitCancelFullScreen;
-        if (cancelFullScreen) {
-          cancelFullScreen.bind(document)();
+        var d = document;
+        var cancelFs = d.exitFullscreen
+          || d.cancelFullScreen
+          || d.mozCancelFullScreen
+          || d.webkitCancelFullScreen;
+        if (cancelFs) {
+          cancelFs.bind(d)();
         }
       }
       logLady('isFulscreen()=' +  isFullscreen());
