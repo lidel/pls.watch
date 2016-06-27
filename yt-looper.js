@@ -1174,12 +1174,6 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
       });
 
     } else {
-      var img160px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
-      var img320px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1m'));
-      var img640px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1l'));
-      var img1024px = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h'));
-      var origW     = ' ' + (apiData && apiData.width ? apiData.width : '2048') + 'w ';
-
       var showImgur = function() {
         var image = this;
         var $image = $(image).height('100%').width('100%');
@@ -1196,19 +1190,36 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
         ImagePlayer.startSlideshowTimerIfPresent($player, playback);
       };
 
-      $('<img/>')
-        .attr('src', imgUrl)
-        .attr('sizes', '80vw')
-        .attr('srcset', img160px  + '  160w, ' +
-                        img320px  + '  320w, ' +
-                        img640px  + '  640w, ' +
-                        img1024px + ' 1024w, ' +
-                        imgUrl    +   origW    )
+      var hasSrcset = function(apiData) {
+        return apiData && !(apiData.type === 'image/gif' && apiData.looping);
+      };
+
+      var buildImageTag = function(imgUrl, playback, apiData) {
+        var $img = $('<img/>');
+        if (hasSrcset(apiData)) {
+          var img160px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1t'));
+          var img320px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1m'));
+          var img640px  = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1l'));
+          var img1024px = imgurUrl(playback.videoId.replace(/^([a-zA-Z0-9]+)/, '$1h'));
+          var origW     = ' ' + (apiData && apiData.width ? apiData.width : '2048') + 'w ';
+          $img
+            .attr('sizes', '80vw')
+            .attr('srcset', img160px  + '  160w, ' +
+              img320px  + '  320w, ' +
+              img640px  + '  640w, ' +
+              img1024px + ' 1024w, ' +
+              imgUrl    +   origW    );
+        }
+        return $img.attr('src', imgUrl);
+      };
+
+      buildImageTag(imgUrl, playback, apiData)
         .on('load', showImgur)
         .on('error', function () {
           setSplash(null);
           notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
         });
+
     }
 
     Player.toggle = null;
