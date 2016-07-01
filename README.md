@@ -1,4 +1,4 @@
-yt-looper
+yt-looper: Minimalistic Media Looper
 =========
 
 [![Build Status](https://travis-ci.org/lidel/yt-looper.svg)](https://travis-ci.org/lidel/yt-looper)
