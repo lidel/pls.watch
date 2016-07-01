@@ -405,13 +405,16 @@ function parseVideos(url) {
 
 
 function parseIntervals(v) {
+  var floatSecond = function(t) {
+    return parseFloat(t.replace(',', '.'), 10);
+  };
   var getSeconds = function(t) {
-    var tokens = /(\d+h)?(\d+m)?(\d+s)?/.exec(t); // converting from 1h2m3s
+    var tokens = /(\d+h)?(\d+m)?(\d+(?:\.\d+)?s)?/.exec(t); // converting from 1h2m3s
     var tt = 0;
     _(tokens).each(function(token, i) {
       if (token && i > 0) {
         if (token.indexOf('s') != -1) {
-          tt += parseInt(token.split('s')[0], 10);
+          tt += floatSecond(token.split('s')[0]);
         } else if (token.indexOf('m') != -1) {
           tt += 60 * parseInt(token.split('m')[0], 10);
         } else if (token.indexOf('h') != -1) {
@@ -419,7 +422,7 @@ function parseIntervals(v) {
         }
       }
     });
-    return tt > 0 ? tt : parseInt(t, 10);
+    return tt > 0 ? tt : floatSecond(t);
   };
   var t;
   return v && (t = getParam(v, 't')) && t.length
@@ -616,8 +619,9 @@ function normalizeUrl(href, done) {
   apiUrl = apiUrl.replace(/:([vit])=/g,'&$1=');
   apiUrl = apiUrl.replace(/[:&](shuffle|random)/,'&random');
 
-  // fix obvious typos
-  apiUrl = apiUrl.replace(/([#&])t=(\w+)[,\.:-](\w+)/g,'$1t=$2;$3');
+  // fix time parameters
+  apiUrl = apiUrl.replace(/([#&])t=(\w+)[:-](\w+)/g,'$1t=$2;$3');
+  apiUrl = apiUrl.replace(/([#&])t=(\w+)[,](\w+)/g,'$1t=$2.$3');
 
   // inline playlists
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, deduplicateYTPlaylist);
@@ -885,14 +889,14 @@ function Playlist(href) {
 
 function setSplash(imgUrl) {
   if (imgUrl) {
-    changeFavicon(faviconWait);
-    $('#box').css('background-image', 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url(' + imgUrl + ')');
     if ($('#spinner').length === 0) {
       $('body').append($('<div id="spinner"></div>'));
     }
+    changeFavicon(faviconWait);
+    $('#box').css('background-image', 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url(' + imgUrl + ')');
   } else {
-    $('#box').css('background-image', 'none');
     $('#spinner').remove();
+    $('#box').css('background-image', 'none');
   }
 }
 
@@ -917,17 +921,19 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     YouTubePlayer.instance = new YT.Player('player',{
       height: size.height,
       width:  size.width,
-      videoId: playback.videoId,
       playerVars: {
-        start: playback.start,
-        end: playback.end,
+        autoplay: '0',
         autohide: '1',
         html5: '1',
         iv_load_policy: '3',
         modestbranding: '1',
         showinfo: '0',
+        disablekb: '0',
+        enablejsapi: '1',
+        origin: window.location.origin,
         rel: '0',
         theme: 'dark',
+        color: 'white',
         fs: '0',
       },
       events: {
@@ -978,8 +984,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
   var onYouTubePlayerReady = function(event) {
     logLady('onYouTubePlayerReady()');
 
-    $(document).prop('title', event.target.getVideoData().title);
-    setSplash(null);
+    $(document).prop('title', Playlist.current().videoId);
 
     var quality = urlParam('quality');
     if (quality) {
@@ -991,7 +996,16 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       event.target.setPlaybackRate(speed);
     }
 
-    if (isAutoplay()) event.target.playVideo();
+    event.target.cueVideoById({
+      'videoId':      Playlist.current().videoId,
+      'startSeconds': Playlist.current().start,
+      'endSeconds':   Playlist.current().end
+    });
+
+    if (isAutoplay()) {
+      event.target.playVideo();
+    }
+
   };
 
   var onYouTubePlayerStateChange = function(event) {
@@ -1001,14 +1015,19 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       changeFavicon(faviconWait);
 
       if (Playlist.multivideo) {
-        Player.newPlayer(Playlist.cycle());
+        var next = Playlist.cycle();
+        $(document).prop('title', next.videoId);
+        Player.newPlayer(next);
       } else {
+        event.target.pauseVideo();
         event.target.seekTo(Playlist.current().start);
         event.target.playVideo();
       }
 
     } else if (event.data == YT.PlayerState.PLAYING) {
+      $(document).prop('title', event.target.getVideoData().title);
       changeFavicon(faviconPlay);
+      setSplash(null);
       if (isEmbedded()) {
         isEmbedded.clickedPlay = true;
       }

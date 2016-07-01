@@ -350,6 +350,18 @@ QUnit.test('Alternative time separator: \'-\'', function (assert) {
                                 'regression');
 });
 
+QUnit.test('Support decimal in time attribute', function (assert) {
+  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72.5;1m16s'),
+                                'https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72.5;1m16s',
+                                'regression');
+});
+
+QUnit.test('Fix decimal in time attribute', function (assert) {
+  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72,5;1m16s'),
+                                'https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72.5;1m16s',
+                                'regression');
+});
+
 
 QUnit.module('YouTube Playlist Import');
 
