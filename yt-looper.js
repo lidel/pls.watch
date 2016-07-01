@@ -67,7 +67,7 @@ function isFullscreen() {
 function initYT(callback) {
   if (typeof YT === 'undefined') {
     onYouTubeIframeAPIReady.callback = callback;
-    $.loadCachedScript('https://www.youtube.com/iframe_api');
+    $.loadCachedScript('https://www.youtube.com/player_api');
   } else {
     callback();
   }
