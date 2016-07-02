@@ -30,7 +30,7 @@
     "grunt-contrib-connect": "^1.0.1",
     "grunt-contrib-qunit": "^1.1.0",
     "grunt-env": "^0.4.4",
-    "grunt-eslint": "^18.0.0",
+    "grunt-eslint": "^19.0.0",
     "load-grunt-tasks": "^3.4.1",
     "nightwatch": "^0.9.5",
     "phantomjs-prebuilt": "^2.1.4",
