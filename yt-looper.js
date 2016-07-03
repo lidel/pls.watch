@@ -1016,7 +1016,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
   };
 
   var playFromStart = function(player, video) {
-    player.stopVideo();
+    player.pauseVideo();
     player.seekTo(video.start, true);
     player.playVideo();
   };
