@@ -937,10 +937,21 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
         fs: '0',
       },
       events: {
+        onError: function(e) { logLady('YouTubePlayer error', e); },
         onReady: onYouTubePlayerReady,
         onStateChange: onYouTubePlayerStateChange
       }
     });
+
+
+    YouTubePlayer.load = function(playback) {
+      if (!_.isUndefined(YouTubePlayer.instance)) {
+        logLady('Reusing existing YouTubePlayer for', playback);
+        cueVideo(playback);
+      } else {
+        Player.newPlayer(playback);
+      }
+    };
 
     Player.toggle = function() {
       if (YT.PlayerState.PLAYING === YouTubePlayer.instance.getPlayerState()) {
@@ -981,50 +992,65 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     Player.autosize();
   };
 
+  var cueVideo = function(playback) {
+    $(document).prop('title', playback.videoId);
+    var id = {
+      'videoId':      playback.videoId,
+      'startSeconds': playback.start,
+      'endSeconds':   playback.end
+    };
+    YouTubePlayer.instance.cueVideoById(id);
+  };
+
   var onYouTubePlayerReady = function(event) {
     logLady('onYouTubePlayerReady()');
-
-    $(document).prop('title', Playlist.current().videoId);
-
     var quality = urlParam('quality');
     if (quality) {
       event.target.setPlaybackQuality(quality);
     }
-
     var speed = urlParam('speed');
     if (speed) {
       event.target.setPlaybackRate(speed);
     }
+    cueVideo(Playlist.current());
+  };
 
-    event.target.cueVideoById({
-      'videoId':      Playlist.current().videoId,
-      'startSeconds': Playlist.current().start,
-      'endSeconds':   Playlist.current().end
-    });
-
-    if (isAutoplay()) {
-      event.target.playVideo();
-    }
-
+  var playFromStart = function(player, video) {
+    player.stopVideo();
+    player.seekTo(video.start, true);
+    player.playVideo();
   };
 
   var onYouTubePlayerStateChange = function(event) {
     logLady('YouTube Player State Change', event.data);
-
-    if (event.data == YT.PlayerState.ENDED) {
-      changeFavicon(faviconWait);
-
-      if (Playlist.multivideo) {
-        var next = Playlist.cycle();
-        $(document).prop('title', next.videoId);
-        Player.newPlayer(next);
-      } else {
-        event.target.pauseVideo();
-        event.target.seekTo(Playlist.current().start);
+    var current = Playlist.current();
+    if (event.data == YT.PlayerState.CUED) {
+      logLady('CUED', current);
+      setSplash(null);
+      if (isAutoplay()) {
         event.target.playVideo();
       }
-
+    } else if (event.data == YT.PlayerState.ENDED) {
+      logLady('ENDED', current);
+      changeFavicon(faviconWait);
+      if (event.target.getCurrentTime() >= current.end) {
+        if (Playlist.multivideo) {
+          Player.playNext();
+        } else {
+          playFromStart(event.target, current);
+        }
+      } else {
+        // Sometimes YT player sends false-positive "ENDED" signal
+        // just after item finished buffering, which causes premature
+        // advancement to the next playlist item.
+        // Workaround below reinitializes playback of impacted items.
+        logLady('ENDED at', event.target.getCurrentTime());
+        logLady('END was', current.end);
+        logLady('Executing workaround for YT API bug');
+        playFromStart(event.target, current);
+      }
     } else if (event.data == YT.PlayerState.PLAYING) {
+      logLady('PLAYING', current);
       $(document).prop('title', event.target.getVideoData().title);
       changeFavicon(faviconPlay);
       setSplash(null);
@@ -1539,6 +1565,7 @@ function Player() { // eslint-disable-line no-redeclare
 
   Player.newPlayer = function(playback) {
     logLady('Player.newPlayer()', playback);
+    $(document).prop('title', playback.videoId);
 
     var $box = $('#box');
     var $player = $('#player');
@@ -1564,6 +1591,22 @@ function Player() { // eslint-disable-line no-redeclare
       initApi(initPlayer);
     } else {
       initPlayer();
+    }
+  };
+
+  Player.playNext = function() {
+    var prev = Playlist.current();
+    var next = Playlist.cycle();
+    var prevEngine = Player.type(prev).engine;
+    var nextEngine = Player.type(next).engine;
+    // reuse player engine when possible
+    // https://github.com/lidel/yt-looper/issues/152
+    if (prevEngine === nextEngine && _.isFunction(prevEngine.load)) {
+      prevEngine.load(next);
+      $('#box').attr('data-loaded-id', next.videoId);
+      if (_.isFunction(editorNotification)) editorNotification();
+    } else {
+      Player.newPlayer(next);
     }
   };
 

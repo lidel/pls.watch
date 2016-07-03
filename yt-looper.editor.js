@@ -51,7 +51,7 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
                     + '&maxResults=1'
                     + '&fields=kind%2Citems%2Fsnippet(title)'
                     + '&key=' + GOOGLE_API_KEY;
-    var retries = 3;
+    var retries = 3; // eslint-disable-line
     $.ajax({
       url: apiRequest,
       async: true,
