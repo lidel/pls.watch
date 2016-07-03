@@ -6,9 +6,9 @@
   <title>yt-looper - Minimalistic Media Looper</title>
   <link href="/style.css" media="all" rel="stylesheet" />
   <link rel="shortcut icon" href="/favicon.ico" />
-  <script src="https://cdn.jsdelivr.net/labjs/2.0.3/LAB.min.js" integrity="sha384-9bG4pXPbbRR8k5WFJlBoi1cCH8ifOFaZBVoyR2kthY3Q8uKfLguzsZ+3/NamHHXl" crossorigin="anonymous"></script>
-  <link rel="preload" href="https://cdn.jsdelivr.net/jquery/3.0.0/jquery.min.js" as="script" />
-  <link rel="preload" href="https://cdn.jsdelivr.net/underscorejs/1.8.3/underscore-min.js" as="script" />
+  <script src="https://cdn.jsdelivr.net/labjs/2.0.3/LAB.min.js" integrity="sha256-vx/OFQ/5RbFjcNI77SMCh/l9NqGwoT9iq+uJwso/Yec=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/jquery/3.0.0/jquery.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/underscorejs/1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script>
   <link rel="preload" href="https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js" as="script" />
   <link rel="preload" href="https://cdn.jsdelivr.net/toastr/2.1.2/toastr.min.css" as="style" />
   <link rel="preload" href="https://cdn.jsdelivr.net/toastr/2.1.2/toastr.min.js" as="script" />
@@ -35,9 +35,6 @@
 <script>
   'use strict';
   $LAB
-  .script('https://cdn.jsdelivr.net/jquery/3.0.0/jquery.min.js')
-  .script('https://cdn.jsdelivr.net/underscorejs/1.8.3/underscore-min.js')
-  .wait()
   .script('yt-looper.js')
   .script('yt-looper.editor.js')
   .wait(function(){

@@ -3,26 +3,9 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net/labjs/2.0.3/LAB.js"></script>
 </head>
 
 <body>
-<script>
-  'use strict';
-  $LAB
-  .script('https://cdn.jsdelivr.net/jquery/3.0.0/jquery.min.js')
-  .wait(function(){
-    var loadIFrame = function() {
-      var $iframe = $('iframe');
-      $iframe.attr('src', '../'+window.location.hash);
-    }
-    $(window).bind('hashchange', function() {
-      loadIFrame();
-    });
-    loadIFrame();
-  });
-</script>
-
 
 <h1>IFrame test</h1>
 <iframe width="420" height="315" src="" frameborder="0" allowfullscreen></iframe>
@@ -35,6 +18,17 @@
 <iframe width="420" height="315" src="/#i=cJjBEQP.jpg&t=3s&i=vo9DPpp.gif&t=3s" frameborder="0" allowfullscreen></iframe>
 <iframe width="420" height="315" src="/#i=50yPd6G" frameborder="0" allowfullscreen></iframe>
 -->
+
+<script src="https://cdn.jsdelivr.net/jquery/3.0.0/jquery.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+<script>
+  'use strict';
+  var loadIFrame = function() {
+    var $iframe = $('iframe');
+    $iframe.attr('src', '../'+window.location.hash);
+  };
+  $(window).bind('hashchange', loadIFrame);
+  loadIFrame();
+</script>
 
 </body>
 </html>
