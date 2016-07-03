@@ -11,6 +11,7 @@ module.exports = {
     "modules": true,
     "arrowFunctions": true
   },
+  "plugins": ["you-dont-need-lodash-underscore"],
     "rules": {
         "indent": [
             0,
