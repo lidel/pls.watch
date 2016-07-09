@@ -1,12 +1,39 @@
-yt-looper: Minimalistic Media Looper
-=========
+# yt-looper: The Minimalistic Media Looper
 
 [![Build Status](https://travis-ci.org/lidel/yt-looper.svg)](https://travis-ci.org/lidel/yt-looper)
 
-Create shareable loops and playlists using simple URL tokens.
+> Create shareable loops and playlists using simple URL tokens.
+
+A snowball of JavaScript antipatterns that turned into an avalanche of features.    
+Supports YouTube for video (with playlist import), Imgur for images (with gifv support) and SoundCloud for audio.
 
 Deployed at https://yt.aergia.eu
 
+## Table of Contents
+
+- [Background](#background)
+- [URL Parameters](#url-parameters)
+  - [YouTube](#youtube)
+  - [Imgur](#imgur)
+  - [SoundCloud](#soundcloud)
+  - or [any External URL](#any-external-url)
+- [Contribute](#contribute)
+- [License](#license)
+
+## Background
+
+Scratching own itches.
+
+At the time YouTube did not provide any way to specify end timestamp when sharing a link to a video.    
+The amount of distractions and advertisements on third party sites that provided this functionality was abysmal.
+
+Out of frustration, `yt-looper` was born as a clean way to:
+
+- share specific fragment of YouTube video
+- display content without any distractions such as related videos or ads
+- create playlists with mixed content from YouTube, Imgur (image/gifv) and SoundCloud (audio)
+- guarantee backward-compatible API to create clean permalinks (see [URL Parameters](#url-parameters))
+ 
 ## URL Parameters
 
 The most basic loop is one video with optional range:
@@ -96,7 +123,9 @@ Playlists (sets) are lazy-inlined on first play:
 
 Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
 
-### Generic HTML5 (URL) Player
+### Any External URL
+
+#### Generic HTML5 Player
 
 Similar to YouTube Player - main difference is format for `videoId`.
 
@@ -104,9 +133,9 @@ Currently, to be detected, `videoId` has to begin with `http` and end with: `.mp
 
 Example: https://yt.aergia.eu/#v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=4s;5s
 
-### Generic Image (URL) Player
+#### Generic Image Player
 
-Similar to Imgur Player, can load an arbitrary URL.
+Similar to Imgur Player but if `videoId` starts with `http` it loads the URL and naïvely believes it is an image.
 
 Example: https://yt.aergia.eu/#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm
 
@@ -167,8 +196,11 @@ It may require preinstalled browser extension:
 
 > ![](https://cloud.githubusercontent.com/assets/157609/7513707/80d419c8-f4b6-11e4-9413-3d6ede9bd5d0.png)
 
+## Contribute
 
-## Licenses
+Ideas and bug reports are most welcome.
+
+## License
 
 - [Underscore.js](http://underscorejs.org/), [jQuery](https://jquery.com/), [mCustomScrollbar](https://github.com/malihu/malihu-custom-scrollbar-plugin) and [toastr](https://github.com/CodeSeven/toastr) are under [MIT license](http://opensource.org/licenses/MIT)
 - [Black Felt](http://subtlepatterns.com/black-felt/) is under [CC-BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/)
