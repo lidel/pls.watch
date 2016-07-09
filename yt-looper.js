@@ -1395,7 +1395,7 @@ function SoundCloudPlayer() { // eslint-disable-line no-redeclare
 function HTML5Player() { // eslint-disable-line no-redeclare
   logLady('HTML5Player()');
 
-  HTML5Player.getPlayerSize = function() {
+  var getHTML5PlayerSize = function() {
     var size = getPlayerSize(); // base size
     if (_(HTML5Player).has('videoWidth') && _(HTML5Player).has('videoHeight')) {
       var w = Math.floor(HTML5Player.videoWidth  * (size.height / HTML5Player.videoHeight));
@@ -1406,21 +1406,31 @@ function HTML5Player() { // eslint-disable-line no-redeclare
     }
     return size;
   };
-  Player.autosize = _.compose(getAutosize, HTML5Player.getPlayerSize);
+  Player.autosize = _.compose(getAutosize, getHTML5PlayerSize);
+
 
   HTML5Player.newPlayer = function(playback) {
+
+    var handleVideoEnd = function(event) {
+      if (Playlist.multivideo) {
+        Player.playNext();
+      } else {
+        event.target.currentTime = playback.start;
+        event.target.play();
+      }
+    }
 
     var eventHandlers = [
       {
         type: 'loadstart',
-        func: function() {
+        func: function(event) {
           // there is no thumbnail, just use background
           setSplash('/assets/zwartevilt.png');
           $(document).prop('title', playback.videoId);
         }
       },
       {
-        type: 'loadedmetadata',
+        type: 'loadeddata',
         func: function(event) {
           _(HTML5Player).extend(_.pick(event.target, 'videoWidth', 'videoHeight'));
           Player.autosize();
@@ -1428,7 +1438,7 @@ function HTML5Player() { // eslint-disable-line no-redeclare
       },
       {
         type: 'play',
-        func: function() {
+        func: function(event) {
           setSplash(null);
           changeFavicon(faviconPlay);
           if (isEmbedded()) {
@@ -1437,20 +1447,18 @@ function HTML5Player() { // eslint-disable-line no-redeclare
         }
       },
       {
-        type: 'pause',
+        type: 'ended', 
         func: function(event) {
-          // doing hackity hack, because 'ended' does not work with intervals...
-          if (playback.end !== null && event.target.currentTime >= playback.end) {
-            changeFavicon(faviconWait);
-            Player.newPlayer(Playlist.cycle());
-          }
+          handleVideoEnd(event);
         }
       },
       {
-        type: 'ended',  // does not hit when 'loop' is active
-        func: function() {
-          changeFavicon(faviconWait);
-          Player.newPlayer(Playlist.cycle());
+        type: 'timeupdate',
+        func: function(event) {
+          // hackity hack, because 'ended' is not fired if playback has .end attribute
+          if (playback.end !== null && event.target.currentTime >= playback.end) {
+            handleVideoEnd(event);
+          }
         }
       },
       {
@@ -1467,7 +1475,8 @@ function HTML5Player() { // eslint-disable-line no-redeclare
                  : (playback.end !== null ? '#t=0,' + playback.end : '');
 
     var video = _.template(
-      '<video autoplay controls <%= loop %> id="video" width="100%" height="100%" preload="auto">'
+      '<video id="video" width="100%" height="100%" '
+    +   '<%= autoplay %> controls preload="<%= preload %>">'
     +   '<source src="<%= src %><%= time %>">'
     + '</video>'
     );
@@ -1475,9 +1484,11 @@ function HTML5Player() { // eslint-disable-line no-redeclare
     var $player = $('div#player');
 
     var videoUrl = urlForIntervalToken(playback.videoId);
-    var $video = $(video({ loop: Playlist.multivideo ? '' : 'loop',
-                            src: videoUrl,
-                           time: timeSpec })).appendTo($player);
+    var $video = $(video({    loop: Playlist.multivideo ? '' : 'loop',
+                          autoplay: isAutoplay() ? 'autoplay' : '',
+                           preload: isAutoplay() ? 'auto' : 'none',
+                               src: videoUrl,
+                              time: timeSpec })).appendTo($player);
 
     HTML5Player.instance = $video[0];
     HTML5Player.instance.addEventListener('error', function() {
@@ -1595,6 +1606,7 @@ function Player() { // eslint-disable-line no-redeclare
   };
 
   Player.playNext = function() {
+    changeFavicon(faviconWait);
     var prev = Playlist.current();
     var next = Playlist.cycle();
     var prevEngine = Player.type(prev).engine;
