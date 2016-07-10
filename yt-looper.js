@@ -1418,12 +1418,12 @@ function HTML5Player() { // eslint-disable-line no-redeclare
         event.target.currentTime = playback.start;
         event.target.play();
       }
-    }
+    };
 
     var eventHandlers = [
       {
         type: 'loadstart',
-        func: function(event) {
+        func: function(event) { // eslint-disable-line no-unused-vars
           // there is no thumbnail, just use background
           setSplash('/assets/zwartevilt.png');
           $(document).prop('title', playback.videoId);
@@ -1438,7 +1438,7 @@ function HTML5Player() { // eslint-disable-line no-redeclare
       },
       {
         type: 'play',
-        func: function(event) {
+        func: function(event) { // eslint-disable-line no-unused-vars
           setSplash(null);
           changeFavicon(faviconPlay);
           if (isEmbedded()) {
