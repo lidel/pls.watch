@@ -17,6 +17,8 @@ Deployed at https://yt.aergia.eu
   - [Imgur](#imgur)
   - [SoundCloud](#soundcloud)
   - or [any External URL](#any-external-url)
+- [Known Issues](#known-issues)
+- [Companion UserScript](#companion-userscript)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -168,9 +170,9 @@ Press <kbd>?</kbd> to toggle help screen listing available shortcuts.
 See [issue #151](https://github.com/lidel/yt-looper/issues/151#issuecomment-190417962).
 
 
-## Companion userscript
+## Companion UserScript
 
-There is a simple userscript that adds a button on supported pages to open current video in yt-looper.
+There is a simple [UserScript](https://openuserjs.org/about/Userscript-Beginners-HOWTO) that adds a button on supported pages to open current resource in the app.
 
 ### Installation
 
@@ -180,7 +182,6 @@ It may require preinstalled browser extension:
 
 - Firefox: [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
 - Chrome/Opera: [Tampermonkey](http://tampermonkey.net)
-
 
 ### Examples
 
