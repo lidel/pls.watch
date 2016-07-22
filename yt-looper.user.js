@@ -11,7 +11,7 @@
 // @include     http://imgur.com/*
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
-// @version     1.6.5
+// @version     1.7.0
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://cdn.jsdelivr.net/jquery/3.1.0/jquery.min.js
@@ -92,31 +92,33 @@
       initButton();
     }
   };
-  var imgurHandler = function () {
-    var $oldButton = $('li#yt-looper');
-    var imgurId = window.location.pathname.replace(/\/(?:[^\/]+\/)*/, '');
-    var renderButton = function() {
-      // display button only on single-image pages
-      if (/[a-zA-Z0-9]+/.test(imgurId) && ($('div.post-image img').length === 1 || $('div.post-image video').length === 1)) {
-        console.log('yt-looper @ imgurHandler('+imgurId+')');
-        var containerId = $('div.post-image-container').attr('id');
-        if (containerId && containerId !== imgurId) {
-          // https://github.com/lidel/yt-looper/issues/155
-          imgurId = containerId;
-        }
-        var url = 'https://yt.aergia.eu/#i=' + imgurId;
-        var html = '<a style="min-width:28px;min-height:26px;padding:12px 6px;pointer:cursor"><span style="font-size:2em;vertical-align:middle;line-height:26px">&#x21BB;</span>&nbsp;yt.aergia.eu</a>';
-        var $a = $(html).click(function () {
-          window.open(url);
-        });
-        var $newButton = $('<li id="yt-looper">').append($a).data('imgurId', imgurId);
-        $('#main-nav ul').append($newButton);
+  var imgurHandlerRenderButton = function(ids) {
+    var id = ids[0];
+    if (/[a-zA-Z0-9]+/.test(id) && ($('div.post-image img').length > 0 || $('div.post-image video').length > 0)) {
+      console.log('yt-looper → renderButton for ' + ids.join(', '));
+      var url = 'https://yt.aergia.eu/#i=' + ids.join('&i=');
+      var html = '<a style="pointer:cursor;text-decoration:none;color:#ccc" title="Open in yt.aergia.eu"><span style="font-size:1.5em">&#x21BB;</span><br>yt.looper</a>';
+      var $a = $(html).click(function () {
+        window.open(url);
+      });
+      $('<div class="post-account" id="yt-looper">')
+        .data('imgurId', id)
+        .css('margin-left','1em')
+        .css('float', 'right')
+        .css('text-align', 'center')
+        .append($a)
+        .hide()
+        .prependTo($('div.post-header'))
+        .fadeIn('slow');
 
-      }
-    };
-    if ($oldButton.length === 0 || $oldButton.data('imgurId') != imgurId) {
+    }
+  };
+  var imgurHandler = function () {
+    var $oldButton = $('#yt-looper');
+    var imgurIds = $('div.post-image-container').map(function() { return $(this).attr('id'); }).get();
+    if (imgurIds.length > 0 && $oldButton.data('imgurId') != imgurIds[0]) {
       $oldButton.remove();
-      renderButton();
+      imgurHandlerRenderButton(imgurIds);
     }
   };
   var soundCloudHandler = function () {
@@ -134,8 +136,7 @@
       }
     }
   };
-  // since everyone does reactive gui,
-  // just poll DOM continuously and react when elements appear/disappear
+  // since everyone does reactive gui, we just poll to see if elements are present/gone
   console.log('yt-looper userscript loaded');
   switch (window.location.hostname.replace('www.', '')) {
     case 'youtube.com':
