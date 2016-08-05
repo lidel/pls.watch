@@ -199,7 +199,7 @@ It may require preinstalled browser extension:
 
 #### Imgur
 
-> ![](https://cloud.githubusercontent.com/assets/157609/7513677/5cc261a2-f4b6-11e4-8f1e-e06950d0a057.png)
+> ![](https://cloud.githubusercontent.com/assets/157609/17445828/cfc2705a-5b46-11e6-8e2a-c12940b998b7.png)
 
 #### SoundCloud
 
