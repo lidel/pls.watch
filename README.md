@@ -75,6 +75,14 @@ YouTube URLs are supported transparently: if `<videoId>` is inside of the playli
 ```
 If URL already had some videos `<n>` will be recalculated.
 
+**Override Video Volume**
+
+To cap YouTube sound volume at a preferred level (global setting):
+```
+&volume=<level>
+```
+Level is a number between 0 (muted) and 100 (max volume).
+
 
 **Override Video Quality**
 

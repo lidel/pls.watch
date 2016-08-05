@@ -382,6 +382,7 @@ function urlParams() {// eslint-disable-line no-unused-vars
   return {
     index: urlParam('index'),
     quality: urlParam('quality'),
+    volume: urlParam('volume'),
     random: urlFlag('random'),
     editor: urlFlag('editor')
   };
@@ -1011,6 +1012,10 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     var speed = urlParam('speed');
     if (speed) {
       event.target.setPlaybackRate(speed);
+    }
+    var volume = urlParam('volume');
+    if (volume) {
+      event.target.setVolume(volume);
     }
     cueVideo(Playlist.current());
   };
