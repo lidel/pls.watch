@@ -1397,12 +1397,26 @@ function HTML5Player() { // eslint-disable-line no-redeclare
 
   var getHTML5PlayerSize = function() {
     var size = getPlayerSize(); // base size
-    if (_(HTML5Player).has('videoWidth') && _(HTML5Player).has('videoHeight')) {
+    if (_(HTML5Player).has('videoWidth') && _(HTML5Player).has('videoHeight')
+        && HTML5Player.videoWidth > 0 && HTML5Player.videoHeight > 0) {
       var w = Math.floor(HTML5Player.videoWidth  * (size.height / HTML5Player.videoHeight));
       var h = Math.floor(HTML5Player.videoHeight * (size.width  / HTML5Player.videoWidth));
       size.width  = Math.min(w, size.width);
       size.height = Math.min(h, size.height);
       logLady('Calculated HTML5PlayerSize with ratio fix: '+size.width+'x'+size.height);
+    } else {
+      // audio only -- set poster
+      var canvas = document.createElement('canvas');
+      _(canvas).extend(_.pick(size, 'width', 'height'));
+      var ctx = canvas.getContext('2d');
+      ctx.font = '100px sans-serif';
+      ctx.fillStyle = '#555';
+      ctx.fillText('🔊', 50, 100);
+      ctx.font = '30px sans-serif';
+      ctx.fillStyle = '#444';
+      ctx.fillText(Playlist.current().videoId, 50, 150);
+      ctx.fillText('(audio only)', 50, 250);
+      $('#player video').attr('poster', canvas.toDataURL('image/png'));
     }
     return size;
   };
