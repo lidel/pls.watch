@@ -1439,55 +1439,6 @@ function HTML5Player() { // eslint-disable-line no-redeclare
       }
     };
 
-    var eventHandlers = [
-      {
-        type: 'loadstart',
-        func: function(event) { // eslint-disable-line no-unused-vars
-          // there is no thumbnail, just use background
-          setSplash('/assets/zwartevilt.png');
-          $(document).prop('title', playback.videoId);
-        }
-      },
-      {
-        type: 'loadeddata',
-        func: function(event) {
-          _(HTML5Player).extend(_.pick(event.target, 'videoWidth', 'videoHeight'));
-          Player.autosize();
-        }
-      },
-      {
-        type: 'play',
-        func: function(event) { // eslint-disable-line no-unused-vars
-          setSplash(null);
-          changeFavicon(faviconPlay);
-          if (isEmbedded()) {
-            isEmbedded.clickedPlay = true;
-          }
-        }
-      },
-      {
-        type: 'ended', 
-        func: function(event) {
-          handleVideoEnd(event);
-        }
-      },
-      {
-        type: 'timeupdate',
-        func: function(event) {
-          // hackity hack, because 'ended' is not fired if playback has .end attribute
-          if (playback.end !== null && event.target.currentTime >= playback.end) {
-            handleVideoEnd(event);
-          }
-        }
-      },
-      {
-        type: 'volumechange',
-        func: function(event) {
-          cookieMonster('volume', event.target.volume);
-          cookieMonster('muted', event.target.muted);
-        }
-      }
-    ];
 
     var timeSpec = playback.start  // can be null or 0 or >0
                  ? '#t=' + playback.start + (playback.end !== null ? ',' + playback.end : '')
@@ -1510,10 +1461,58 @@ function HTML5Player() { // eslint-disable-line no-redeclare
                               time: timeSpec })).appendTo($player);
 
     HTML5Player.instance = $video[0];
-    HTML5Player.instance.addEventListener('error', function() {
-      setSplash(null);
-      notification('error', 'Unable to load URL:',  '<code>' + videoUrl + '</code><p>Refresh page to try again</p>');
-    }, true);
+
+    $video
+      .on('error', function() {
+        setSplash(null);
+        notification('error', 'Unable to load URL:',  '<code>' + videoUrl + '</code><p>Refresh page to try again</p>');
+      })
+      .on('loadstart', function(event) { // eslint-disable-line no-unused-vars
+        // there is no thumbnail, just use background
+        setSplash('/assets/zwartevilt.png');
+        $(document).prop('title', playback.videoId);
+        //logLady('event.' + event.type);
+      })
+      .on('loadeddata', function(event) {
+        _(HTML5Player).extend(_.pick(event.target, 'videoWidth', 'videoHeight'));
+        Player.autosize();
+        //logLady('event.' + event.type);
+      })
+      .on('play', function(event) { // eslint-disable-line no-unused-vars
+        setSplash(null);
+        changeFavicon(faviconPlay);
+        if (isEmbedded()) {
+          isEmbedded.clickedPlay = true;
+        }
+        //logLady('event.' + event.type);
+      })
+      .on('pause', function(event) { // eslint-disable-line no-unused-vars
+        //logLady('event.' + event.type);
+      })
+      .on('ended', function(event) {
+        handleVideoEnd(event);
+        //logLady('event.' + event.type);
+      })
+      .on('timeupdate', function(event) {
+        // hackity hack, because 'ended' is not fired if playback has .end attribute
+        if (playback.end !== null && event.target.currentTime >= playback.end) {
+          handleVideoEnd(event);
+        }
+      })
+      .on('volumechange', function(event) {
+        cookieMonster('volume', event.target.volume);
+        cookieMonster('muted', event.target.muted);
+      })
+      .on('click', function(event) {
+        var clickY = (event.pageY - $(this).offset().top);
+        var height = parseFloat($(this).height());
+        if (clickY > 0.90*height) {
+          // abort to avoid interference with controls
+          return;
+        }
+        event.preventDefault(); // disable native handler (eg. Firefox)
+        Player.toggle();
+      });
 
     // we have to cache volume and (un)muted state ourselves...
     // using cookies here may seem weird, but this behavior is consistent with YouTube player! \:D/
@@ -1530,19 +1529,6 @@ function HTML5Player() { // eslint-disable-line no-redeclare
       cookieMonster('muted', HTML5Player.instance.muted);  // create if missing
     }
 
-    // bind all events
-    _(eventHandlers).reduce(function(acc, eventHandler) {
-      return acc.bind(eventHandler.type, eventHandler.func);
-    }, $video.unbind());
-
-    // behave more like YouTube player
-    $video.click(function(event) {
-      if (event.target.paused) {
-        event.target.play();
-      } else {
-        event.target.pause();
-      }
-    });
   };
 
   Player.toggle = function() {
