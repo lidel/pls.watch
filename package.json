@@ -25,7 +25,7 @@
   ],
   "devDependencies": {
     "eslint": "^3.3.1",
-    "eslint-plugin-you-dont-need-lodash-underscore": "^5.0.0",
+    "eslint-plugin-you-dont-need-lodash-underscore": "^5.0.1",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-connect": "^1.0.1",
