@@ -11,10 +11,10 @@
 // @include     http://imgur.com/*
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
-// @version     1.7.0
+// @version     1.7.1
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
-// @require     https://cdn.jsdelivr.net/jquery/3.1.0/jquery.min.js
+// @require     https://cdn.jsdelivr.net/jquery/3.1.1/jquery.min.js
 // @grant       none
 // @noframes
 // ==/UserScript==

@@ -8,7 +8,7 @@ module.exports = {
       .waitForElementVisible('#player')
       .click('#shorten')
       .waitForElementPresent('div.toast-success')
-      .assert.containsText('div.toast-success', 'http://goo.gl/WTz6Nj')
+      .assert.containsText('div.toast-success', 'WTz6Nj')
       .page.looper().uri('#v=ZuHZSbPJhaY&t=1h1s;1h4s')
       .assert.elementNotPresent('#shortened')
       .end();
@@ -22,7 +22,7 @@ module.exports = {
       .waitForElementVisible('#player')
       .keys('s')
       .waitForElementPresent('div.toast-success')
-      .assert.containsText('div.toast-success', 'http://goo.gl/WTz6Nj')
+      .assert.containsText('div.toast-success', 'WTz6Nj')
       .page.looper().uri('#v=ZuHZSbPJhaY&t=1h1s;1h4s')
       .assert.elementNotPresent('#shortened')
       .end();
@@ -39,7 +39,7 @@ module.exports = {
       .element('id','shortened', function(result) {
         if (result.status !== -1) {
           browser
-          .assert.value('#shortened input', 'http://goo.gl/WTz6Nj')
+          .assert.valueContains('#shortened input', 'WTz6Nj')
           .page.looper().uri('#v=ZuHZSbPJhaY&t=1h1s;1h4s')
           .assert.elementNotPresent('#shortened');
         } else {
@@ -59,7 +59,7 @@ module.exports = {
       .element('id','shortened', function(result) {
         if (result.status !== -1) {
           browser
-          .assert.value('#shortened input', 'http://goo.gl/WTz6Nj')
+          .assert.valueContains('#shortened input', 'WTz6Nj')
           .page.looper().uri('#v=ZuHZSbPJhaY&t=1h1s;1h4s')
           .assert.elementNotPresent('#shortened');
         } else {
