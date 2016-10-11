@@ -1668,7 +1668,10 @@ function initLooper() {
   }
   Player();
   Editor(Playlist, Player);
-
+  if (urlFlag('random')) {
+    // Random mode should work from the start: https://github.com/lidel/yt-looper/issues/221
+    Playlist.random();
+  }
 }
 
 function onYouTubeIframeAPIReady() {
