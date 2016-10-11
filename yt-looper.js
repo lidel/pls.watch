@@ -1764,10 +1764,10 @@ function renderPage() {
   $(document).unbind('keypress').keypress(function(e) {
     var k = (( typeof Editor === 'undefined'
             || _.isUndefined(Editor.editInProgress))
-            && !isEmbedded())
+            && !isEmbedded() && !e.ctrlKey)
              ? String.fromCharCode(e.which).toLowerCase()
              : undefined;
-    //logLady('key/code:'+k+'/'+e.which);
+    //logLady('key/code:'+k+'/'+e.which+'/ctrl:'+e.ctrlKey);
     if (k==='?') {
       $('#help-toggle').click();
 
