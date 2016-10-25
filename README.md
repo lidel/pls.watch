@@ -1,6 +1,6 @@
 # yt-looper: The Minimalistic Media Looper
 
-[![Build Status](https://travis-ci.org/lidel/yt-looper.svg)](https://travis-ci.org/lidel/yt-looper)
+[![Build Status](https://travis-ci.org/lidel/ipfs-firefox-addon.svg?branch=master)](https://travis-ci.org/lidel/yt-looper)
 
 > Create shareable loops and playlists using simple URL tokens.
 
