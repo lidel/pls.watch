@@ -39,4 +39,4 @@ To run test suite under a specific browser:
 
 To check code style:
 
-- `npm run grunt jshint`
+- `npm run eslint`

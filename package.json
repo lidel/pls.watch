@@ -1,43 +1,37 @@
 {
-  "name": "yt-looper",
-  "version": "1.0.0",
-  "description": "A simple YT looper",
-  "main": "yt-looper.js",
   "scripts": {
     "httpd": "grunt httpd",
+    "start": "run-s httpd",
     "selenium-download": "grunt selenium",
     "grunt": "grunt",
     "eslint": "grunt eslint",
     "test": "grunt test"
   },
+  "homepage": "https://github.com/lidel/yt-looper",
   "repository": {
     "type": "git",
     "url": "https://github.com/lidel/yt-looper.git"
   },
-  "author": "Marcin Rataj",
   "license": "CC0-1.0",
-  "bugs": {
-    "url": "https://github.com/lidel/yt-looper/issues"
-  },
-  "homepage": "https://github.com/lidel/yt-looper",
   "pre-push": [
     "test"
   ],
   "devDependencies": {
-    "eslint": "^3.3.1",
-    "eslint-plugin-you-dont-need-lodash-underscore": "^5.0.0",
-    "grunt": "^1.0.1",
-    "grunt-cli": "^1.2.0",
-    "grunt-contrib-connect": "^1.0.1",
-    "grunt-contrib-qunit": "^1.1.0",
-    "grunt-env": "^0.4.4",
-    "grunt-eslint": "^19.0.0",
-    "load-grunt-tasks": "^3.4.1",
-    "nightwatch": "^0.9.5",
-    "phantomjs-prebuilt": "^2.1.4",
-    "pre-push": "^0.1.1",
-    "selenium-standalone": "^5.5.0",
-    "time-grunt": "^1.3.0",
+    "eslint": "3.3.1",
+    "eslint-plugin-you-dont-need-lodash-underscore": "5.0.0",
+    "grunt": "1.0.1",
+    "grunt-cli": "1.2.0",
+    "grunt-contrib-connect": "1.0.1",
+    "grunt-contrib-qunit": "1.1.0",
+    "grunt-env": "0.4.4",
+    "grunt-eslint": "19.0.0",
+    "load-grunt-tasks": "3.4.1",
+    "nightwatch": "0.9.5",
+    "npm-run-all": "3.1.1",
+    "phantomjs-prebuilt": "2.1.4",
+    "pre-push": "0.1.1",
+    "selenium-standalone": "5.5.0",
+    "time-grunt": "1.3.0",
     "travis-multirunner": "latest"
   }
 }
