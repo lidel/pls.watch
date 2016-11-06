@@ -901,6 +901,34 @@ function setSplash(imgUrl) {
   }
 }
 
+function setErrorSplash(resourceId) {
+  var $image = $('<img src="https://ipfs.io/ipfs/QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR"/>').on('load', function () {
+    var $player = $('div#player');
+    if (!$player.length) {
+      $player = $('<div id="player"/>');
+      $('#box').empty().append($player);
+    }
+    if (!_.isFunction(ImagePlayer.setImagePlayerSize)) {
+      ImagePlayer();
+    }
+    ImagePlayer.setImagePlayerSize($player, 900, 600);
+    var $canvas = $('<canvas id="errror-image" width="900" height="600"></canvas>');
+    var ctx = $canvas[0].getContext('2d');
+    ctx.width = 900;
+    ctx.height = 600;
+    ctx.drawImage($image[0], 0, 0);
+    ctx.font = '90px sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.fillText('⚠', 10, 100);
+    ctx.font = '25px sans-serif';
+    ctx.fillText('UNABLE TO LOAD RESOURCE', 75, 40);
+    ctx.font = '15px sans-serif';
+    ctx.fillText('ID: ' + (resourceId ? resourceId : Playlist.current().videoId), 90, 60);
+    $canvas.height('100%').width('100%');
+    $player.empty().append($canvas);
+  });
+}
+
 function getAutosize(size) {
   var $box = $('#box');
   // adjust #box size before animation to fix padding issues
@@ -938,11 +966,16 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
         fs: '0',
       },
       events: {
-        onError: function(e) { logLady('YouTubePlayer error', e); },
+        onError: function(e) {
+          setSplash(null);
+          notification('error', 'YouTube Error', 'Failed to load Video ID: <code>' + Playlist.current().videoId + '</code>');
+          logLady('YouTubePlayer error', e);
+        },
         onReady: onYouTubePlayerReady,
         onStateChange: onYouTubePlayerStateChange
       }
     });
+
 
 
     YouTubePlayer.load = function(playback) {
@@ -1126,6 +1159,7 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
     var showError = function () {
       setSplash(null);
       notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
+      setErrorSplash();
     };
 
     $('<img/>')
@@ -1268,6 +1302,7 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
         .on('error', function () {
           setSplash(null);
           notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
+          setErrorSplash(imgUrl);
         });
 
     }
@@ -1462,11 +1497,12 @@ function HTML5Player() { // eslint-disable-line no-redeclare
 
     HTML5Player.instance = $video[0];
 
+    $('source', $video).on('error', function() {
+      setSplash(null);
+      notification('error', 'Unable to load URL:',  '<code>' + videoUrl + '</code>');
+      setErrorSplash(videoUrl);
+    });
     $video
-      .on('error', function() {
-        setSplash(null);
-        notification('error', 'Unable to load URL:',  '<code>' + videoUrl + '</code><p>Refresh page to try again</p>');
-      })
       .on('loadstart', function(event) { // eslint-disable-line no-unused-vars
         // there is no thumbnail, just use background
         setSplash('/assets/zwartevilt.png');
