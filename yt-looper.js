@@ -917,12 +917,16 @@ function setErrorSplash(resourceId) {
     ctx.width = 900;
     ctx.height = 600;
     ctx.drawImage($image[0], 0, 0);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+    ctx.fillRect(0, 0, ctx.width, ctx.height);
     ctx.font = '90px sans-serif';
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#9B2F2A';
     ctx.fillText('⚠', 10, 100);
+    ctx.fillStyle = '#eee';
     ctx.font = '25px sans-serif';
     ctx.fillText('UNABLE TO LOAD RESOURCE', 75, 40);
     ctx.font = '15px sans-serif';
+    ctx.fillStyle = '#bbb';
     ctx.fillText('ID: ' + (resourceId ? resourceId : Playlist.current().videoId), 90, 60);
     $canvas.height('100%').width('100%');
     $player.empty().append($canvas);
