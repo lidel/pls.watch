@@ -143,8 +143,8 @@ function notification(type, title, message, options) {
         $('<link>')
           .appendTo('head')
           .attr({type : 'text/css', rel : 'stylesheet'})
-          .attr('href', 'https://cdn.jsdelivr.net/toastr/2.1.2/toastr.min.css');
-        return 'https://cdn.jsdelivr.net/toastr/2.1.2/toastr.min.js';
+          .attr('href', 'https://cdn.jsdelivr.net/toastr/2.1.3/toastr.min.css');
+        return 'https://cdn.jsdelivr.net/toastr/2.1.3/toastr.min.js';
     } else {
       return null;
     }
