@@ -17,21 +17,21 @@
     "test"
   ],
   "devDependencies": {
-    "eslint": "3.3.1",
-    "eslint-plugin-you-dont-need-lodash-underscore": "5.0.0",
+    "eslint": "3.9.1",
+    "eslint-plugin-you-dont-need-lodash-underscore": "5.0.2",
     "grunt": "1.0.1",
     "grunt-cli": "1.2.0",
-    "grunt-contrib-connect": "1.0.1",
-    "grunt-contrib-qunit": "1.1.0",
+    "grunt-contrib-connect": "1.0.2",
+    "grunt-contrib-qunit": "1.2.0",
     "grunt-env": "0.4.4",
     "grunt-eslint": "19.0.0",
-    "load-grunt-tasks": "3.4.1",
-    "nightwatch": "0.9.5",
+    "load-grunt-tasks": "3.5.2",
+    "nightwatch": "0.9.8",
     "npm-run-all": "3.1.1",
-    "phantomjs-prebuilt": "2.1.4",
+    "phantomjs-prebuilt": "2.1.13",
     "pre-push": "0.1.1",
-    "selenium-standalone": "5.5.0",
-    "time-grunt": "1.3.0",
+    "selenium-standalone": "5.8.0",
+    "time-grunt": "1.4.0",
     "travis-multirunner": "latest"
   }
 }
