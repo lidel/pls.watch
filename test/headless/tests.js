@@ -1,7 +1,7 @@
 'use strict';
 /* global QUnit, recalculateYTPlaylistIndex, normalizeUrl, jackiechanMyIntervals, isExternalURI */
 /* global Playlist, parseIntervals, getParam, parseVideos, inlineYTPlaylist */
-/* global encodeToken, decodeToken */
+/* global encodeToken, decodeToken, urlFlag */
 
 QUnit.test('qunit self-test', function (assert) {
   assert.ok(1 == '1', 'Passed!');
@@ -475,6 +475,12 @@ QUnit.test('web+fs: IPFS URI', function (assert) {
                                 'IPFS URL regression');
 });
 
+QUnit.module('Additional Flags');
 
+QUnit.test('&autoplay', function (assert) {
+  var url = 'http://yt.aergia.eu/watch?v=T0rs3R4E1Sk';
+  assert.ok(!urlFlag('autoplay', normalizeUrl(url)));
+  assert.ok(urlFlag('autoplay', normalizeUrl(url + '&autoplay')));
+});
 
 // vim:ts=2:sw=2:et:

@@ -48,7 +48,7 @@ function isEmbedded() {
 }
 
 function isAutoplay() {
-  return !isEmbedded() || !_.isUndefined(isEmbedded.clickedPlay);
+  return !isEmbedded() || !_.isUndefined(isEmbedded.clickedPlay) || urlFlag('autoplay');
 }
 
 function isFullscreen() {
@@ -367,14 +367,14 @@ function getVideo(params) {
 }
 
 
-function urlParam(key) {
-  return getParam(window.location.href, key);
+function urlParam(key, href) {
+  return getParam((href || window.location.href), key);
 }
 
 
-function urlFlag(key) {
+function urlFlag(key, href) {
   var ptrn = '(?:[#&]' + key + '[&$]*)';
-  var rslt = new RegExp(ptrn).exec(window.location.href);
+  var rslt = new RegExp(ptrn).exec((href || window.location.href));
   return !rslt ? urlParam(key) == 'true' : true;
 }
 
@@ -384,6 +384,7 @@ function urlParams() {// eslint-disable-line no-unused-vars
     quality: urlParam('quality'),
     volume: urlParam('volume'),
     random: urlFlag('random'),
+    autoplay: urlFlag('autoplay'),
     editor: urlFlag('editor')
   };
 }
