@@ -7,11 +7,14 @@
     "eslint": "grunt eslint",
     "test": "grunt test"
   },
+  "name": "yt-looper",
   "homepage": "https://github.com/lidel/yt-looper",
   "repository": {
     "type": "git",
     "url": "https://github.com/lidel/yt-looper.git"
   },
+  "private": true,
+  "preferGlobal": false,
   "license": "CC0-1.0",
   "pre-push": [
     "test"
