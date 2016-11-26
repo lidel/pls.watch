@@ -20,7 +20,7 @@
     "test"
   ],
   "devDependencies": {
-    "eslint": "3.10.0",
+    "eslint": "3.10.1",
     "eslint-plugin-you-dont-need-lodash-underscore": "5.0.4",
     "grunt": "1.0.1",
     "grunt-cli": "1.2.0",
