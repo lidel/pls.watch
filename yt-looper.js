@@ -151,7 +151,7 @@ function notification(type, title, message, options) {
   })
   .wait(function(){
     if (type === 'error') {
-      options = _.extend(options, {closeButton: true, timeOut: 0, extendedTimeOut: 0});
+      options = _.extend(options, {closeButton: true, timeOut: 30000, extendedTimeOut: 60000});
     }
     toastr[type](message, title, options); // eslint-disable-line no-undef
   });
@@ -975,6 +975,9 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
           setSplash(null);
           notification('error', 'YouTube Error', 'Failed to load Video ID: <code>' + Playlist.current().videoId + '</code>');
           logLady('YouTubePlayer error', e);
+          if (Playlist.intervals.length > 1) {  // move to next interval (https://github.com/lidel/yt-looper/issues/238)
+            Player.newPlayer(Playlist.cycle());
+          }
         },
         onReady: onYouTubePlayerReady,
         onStateChange: onYouTubePlayerStateChange
