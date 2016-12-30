@@ -151,7 +151,7 @@ function notification(type, title, message, options) {
   })
   .wait(function(){
     if (type === 'error') {
-      options = _.extend(options, {closeButton: true, timeOut: 30000, extendedTimeOut: 60000});
+      options = _.extend(options, {closeButton: true, timeOut: 30000, extendedTimeOut: 60000, progressBar: true});
     }
     toastr[type](message, title, options); // eslint-disable-line no-undef
   });
