@@ -11,7 +11,7 @@
 // @include     http://imgur.com/*
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
-// @version     1.7.1
+// @version     1.7.2
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://cdn.jsdelivr.net/jquery/3.1.1/jquery.min.js
@@ -56,7 +56,7 @@
         $button.show();
         $button.click(function () {
           var url = window.location.href;
-          url = url.replace(/.*youtube.com\/watch/, 'https://yt.aergia.eu/');
+          url = url.replace(/.*youtube.com\/watch\?/, 'https://yt.aergia.eu/#');
           if (getYtPlayer().getPlayerState() === 2) {
             url = url.replace(/[&#]t=[^&#]*/g, '');
             url = url + '#t=' + $('#yt-looper-start').val() + ';' + $('#yt-looper-end').val();
