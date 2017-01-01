@@ -1,6 +1,7 @@
 module.exports = {
 
   'Recognize single SoundCloud sound as interval' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper()
       .uri('#s=juandedeboca/spacex-thales-mission-webcast-song')
