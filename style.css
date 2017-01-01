@@ -104,7 +104,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+#editor .broken {
+	text-decoration: line-through;
+	color: #844;
+	opacity: 0.5;
+}
 
 body {
   display: table;

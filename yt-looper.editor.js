@@ -58,6 +58,8 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
       success: function(data) {
         if (data.kind === 'youtube#videoListResponse' && data.items.length) {
           setTitle(data.items[0].snippet.title, intervalLink);
+        } else {
+          intervalLink.addClass('broken');
         }
       },
       error: function(jqxhr, textStatus) {
