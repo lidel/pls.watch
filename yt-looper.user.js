@@ -11,7 +11,7 @@
 // @include     http://imgur.com/*
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
-// @version     1.7.2
+// @version     1.7.3
 // @updateURL   https://yt.aergia.eu/yt-looper.user.js
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://cdn.jsdelivr.net/jquery/3.1.1/jquery.min.js
@@ -52,7 +52,9 @@
         var $start = $(input).attr('id', 'yt-looper-start').val(start).attr('title', 'Start of loop');
         var $end = $(input).attr('id', 'yt-looper-end').val(end).attr('title', 'End of loop');
         $secondaryActions.prepend($button);
-        $intervals.append($start).append($end).insertBefore($button);
+        if (!/list=/.test(window.location.href)) { // disable start/end picker when in playlist mode (did not work correct anyway)
+          $intervals.append($start).append($end).insertBefore($button);
+        }
         $button.show();
         $button.click(function () {
           var url = window.location.href;
