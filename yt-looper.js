@@ -110,6 +110,9 @@ var PLAYER_TYPES = Object.freeze({
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
 
+var PRODUCTION_HOST = 'yt.aergia.eu';
+var CORS_PROXY = '';
+
 // This API key works only with yt.aergia.eu domain
 // Key for different referer can be generated at https://console.developers.google.com
 var GOOGLE_API_KEY = 'AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU';
@@ -439,6 +442,10 @@ function parseIntervals(v) {
 // Fix for problem #2 described in:
 // https://github.com/lidel/yt-looper/issues/68#issuecomment-87316655
 function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
+  if (/^http/.test(playlistId)) {
+    // not a YouTube Playlist ID, end processing
+    return urlMatch;
+  }
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
                   + '&videoId=' + videoId
@@ -488,6 +495,11 @@ function recalculateYTPlaylistIndex(urlMatch, oldPlaylist, index) {
 }
 
 function inlineYTPlaylist(urlMatch, playlistId) {
+  if (/^http/.test(playlistId)) {
+    // not a YouTube Playlist ID, end processing
+    return urlMatch;
+  }
+
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
                   + '&maxResults=50'
@@ -552,6 +564,40 @@ function inlineYTPlaylist(urlMatch, playlistId) {
   }
 
   return inlinedPlaylist;
+}
+
+function inlineExternalURLPlaylist(urlMatch, playlistUrl) {
+  if (!/^http/.test(playlistUrl)) {
+    // end processing if bogus url
+    return urlMatch;
+  }
+  var normalizedUrl = urlMatch;
+  logLady('Loading playlist from external URL', playlistUrl);
+  if (CORS_PROXY && window.location.host === PRODUCTION_HOST) {
+    // detect when running at production and route via proxy to avoid CORS errors
+    playlistUrl = CORS_PROXY + playlistUrl;
+  }
+  $.ajax({
+    url: playlistUrl,
+    async: false,
+    success: function(data) {
+      logLady('raw playlist data read from external URL', data);
+      var validEntry = function(entry) {
+        entry = entry.trim();
+        return !(_.isEmpty(entry) || /^#/.test(entry) || /^\/\//.test(entry));
+      };
+      data = data.replace(/(\r\n|\n|\r)/gm,'\n').split('\n');
+      data = _.filter(data, validEntry).map(function (s) {return s.trim();}).join('&');
+      logLady('inlined playlist from external URL', data);
+      normalizedUrl = data;
+    },
+    error: function(jqxhr, textStatus) {
+      var msg = 'Unable to inline External Playlist from URL "'+ playlistUrl +'": ';
+      logLady(msg + textStatus, jqxhr);
+      notification('error', 'External Playlist Error', msg + 'check error in JS console');
+    }
+  });
+  return normalizedUrl;
 }
 
 function inlineShortenedPlaylist(urlMatch, shortUrl) {
@@ -632,6 +678,7 @@ function normalizeUrl(href, done) {
   apiUrl = apiUrl.replace(/([#&])t=(\w+)[,](\w+)/g,'$1t=$2.$3');
 
   // inline playlists
+  apiUrl = apiUrl.replace(/list=(https?:\/\/[^&]+)/g, inlineExternalURLPlaylist);
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=(\d+)/g, deduplicateYTPlaylist);
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)/g, function($0,$1,$2){return deduplicateYTPlaylist($0,$1,$2,'1');});
   apiUrl = apiUrl.replace(/[#&]v=([^&]+)&index=(\d+)&list=([^&]+)/g, function($0,$1,$2,$3){return deduplicateYTPlaylist($0,$1,$3,$2);});
