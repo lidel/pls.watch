@@ -572,6 +572,7 @@ function inlineExternalURLPlaylist(urlMatch, playlistUrl) {
     return urlMatch;
   }
   var normalizedUrl = urlMatch;
+  Playlist.externalUrl = normalizedUrl.replace(/^.*list=/,'');
   logLady('Loading playlist from external URL', playlistUrl);
   if (CORS_PROXY && window.location.host === PRODUCTION_HOST) {
     // detect when running at production and route via proxy to avoid CORS errors

@@ -28,6 +28,24 @@
 #editor .highlighted .editor-col2 {
   color: white;
 }
+#editor #playlist-controls {
+  font-variant: small-caps;
+  letter-spacing:0.1em;
+  font-size: 0.8em;
+  min-height: 2em;
+  line-height: 2em;
+  border-bottom: 1px solid #222;
+}
+#editor #playlist-controls::before {
+  content: 'playlist';
+  display: block;
+  padding-left: 0.25em;
+  float: left;
+}
+#editor #playlist-controls a {
+  display: block;
+  float: right;
+}
 #editor table {
   table-layout: fixed;
   position: relative;
