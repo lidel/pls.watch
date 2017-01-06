@@ -3,15 +3,16 @@
 // @description Adds a button on YouTube, Imgur and SoundCloud to open current resource in yt.aergia.eu looper
 // @namespace   https://yt.aergia.eu
 // @icon        https://i.imgur.com/EGgL1nx.png
-// @include     https://www.youtube.com/*
-// @include     https://youtube.com/*
-// @include     http://www.youtube.com/*
-// @include     http://youtube.com/*
-// @include     https://imgur.com/*
-// @include     http://imgur.com/*
-// @include     http://soundcloud.com/*
-// @include     https://soundcloud.com/*
-// @version     1.7.5
+// @match       https://www.youtube.com/*
+// @match       https://youtube.com/*
+// @match       http://www.youtube.com/*
+// @match       http://youtube.com/*
+// @match       https://imgur.com/*
+// @match       http://imgur.com/*
+// @match       http://soundcloud.com/*
+// @match       https://soundcloud.com/*
+// @version     1.7.6
+// @license     CC0
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://cdn.jsdelivr.net/jquery/3.1.1/jquery.min.js
 // @grant       none
