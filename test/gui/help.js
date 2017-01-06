@@ -2,7 +2,10 @@ module.exports = {
 
   'Clicking on "help" in #menu' : function (browser) {
     browser
-      .url('http://yt.127.0.0.1.xip.io:28080/#i=cJjBEQP.png')
+      .resizeWindow(1920,1080)
+      .page.looper()
+      .uri('#i=cJjBEQP')
+      .waitForElementVisible('div#player img')
       .waitForElementVisible('#menu')
       .assert.cssClassNotPresent('#help-toggle', 'ticker')
       .assert.hidden('#help')

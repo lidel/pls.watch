@@ -65,7 +65,6 @@ function isFullscreen() {
 
 function isMobile() {
   return urlFlag('mobile')
-    || (window.innerWidth <= 800 && window.innerHeight <= 600)
     || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
@@ -1769,12 +1768,15 @@ function Player() { // eslint-disable-line no-redeclare
 function initLooper() {
   logLady('initLooper()');
   if (isEmbedded() || isMobile()) {
-    $('#box').addClass('embedded');
     $('#help').remove();
     $('#editor').remove();
     $('#menu').remove();
     if (isEmbedded()) {
+      $('#box').addClass('embedded');
       $('body').append($('<a id="embed" href="'+ window.location.href +'" target="_blank">&#x21BB;</a>'));
+    }
+    if (isMobile()) {
+      $('#box').addClass('mobile');
     }
   }
   Player();
