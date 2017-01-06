@@ -657,6 +657,9 @@ function urlForIntervalToken(token) {
   return token;
 }
 
+function mergeTimeTokens (urlMatch) {
+  return '&t=' + urlMatch.split('&t=').filter(String).join('+');
+}
 
 function normalizeUrl(href, done) {
   var url    = href || window.location.href;
@@ -677,6 +680,7 @@ function normalizeUrl(href, done) {
   // fix time parameters
   apiUrl = apiUrl.replace(/([#&])t=(\w+)[:-](\w+)/g,'$1t=$2;$3');
   apiUrl = apiUrl.replace(/([#&])t=(\w+)[,](\w+)/g,'$1t=$2.$3');
+  apiUrl = apiUrl.replace(/(?:&t=[^&]+){2,}/g, mergeTimeTokens);
 
   // inline playlists
   apiUrl = apiUrl.replace(/list=(https?:\/\/[^&]+)/g, inlineExternalURLPlaylist);
