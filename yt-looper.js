@@ -63,6 +63,12 @@ function isFullscreen() {
   return fs !== undefined && fs !== null;
 }
 
+function isMobile() {
+  return urlFlag('mobile')
+    || (window.innerWidth <= 800 && window.innerHeight <= 600)
+    || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 // YouTube IFrame API
 function initYT(callback) {
   if (typeof YT === 'undefined') {
@@ -334,7 +340,7 @@ function changeFavicon(src) {
 function getPlayerSize(engine) {
   var w = window.innerWidth;
   var h = window.innerHeight;
-  if (isEmbedded() || isFullscreen()) {
+  if (isMobile() || isEmbedded() || isFullscreen()) {
     return {width: w, height: h};
   }
 
@@ -1762,12 +1768,14 @@ function Player() { // eslint-disable-line no-redeclare
 
 function initLooper() {
   logLady('initLooper()');
-  if (isEmbedded()) {
+  if (isEmbedded() || isMobile()) {
     $('#box').addClass('embedded');
     $('#help').remove();
     $('#editor').remove();
     $('#menu').remove();
-    $('body').append($('<a id="embed" href="'+ window.location.href +'" target="_blank">&#x21BB;</a>'));
+    if (isEmbedded()) {
+      $('body').append($('<a id="embed" href="'+ window.location.href +'" target="_blank">&#x21BB;</a>'));
+    }
   }
   Player();
   Editor(Playlist, Player);
