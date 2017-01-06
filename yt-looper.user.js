@@ -11,8 +11,7 @@
 // @include     http://imgur.com/*
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
-// @version     1.7.4
-// @updateURL   https://yt.aergia.eu/yt-looper.user.js
+// @version     1.7.5
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @require     https://cdn.jsdelivr.net/jquery/3.1.1/jquery.min.js
 // @grant       none
