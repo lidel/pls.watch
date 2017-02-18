@@ -176,6 +176,12 @@ notification('warning', 'test3','test',{timeOut: 0, extendedTimeOut: 0});
 notification('error', 'test4','test',{timeOut: 0, extendedTimeOut: 0});
 */
 
+function showLoadError(url) {
+  setSplash(null);
+  notification('error', 'Unable to Load', '<a href="' + url + '" title="open in new tab" target="_blank"><code>' + url + '</code></a><br/>Try direct link above or refresh page to retry');
+  setErrorSplash(url);
+}
+
 function initCRC32() { // http://jsperf.com/js-crc32
   var c;
   var crcTable = [];
@@ -1036,9 +1042,8 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       },
       events: {
         onError: function(e) {
-          setSplash(null);
-          notification('error', 'YouTube Error', 'Failed to load Video ID: <code>' + Playlist.current().videoId + '</code>');
           logLady('YouTubePlayer error', e);
+          showLoadError('https://www.youtube.com/watch?v=' + Playlist.current().videoId);
           if (Playlist.intervals.length > 1) {  // move to next interval (https://github.com/lidel/yt-looper/issues/238)
             Player.newPlayer(Playlist.cycle());
           }
@@ -1228,11 +1233,6 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
       changeFavicon(faviconPlay);
       ImagePlayer.startSlideshowTimerIfPresent($player, playback);
     };
-    var showError = function () {
-      setSplash(null);
-      notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
-      setErrorSplash();
-    };
 
     $('<img/>')
       .attr('src', imgUrl)
@@ -1241,7 +1241,7 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
         $('<img/>')
           .attr('src', imgUrl)
           .on('load',  showImage)
-          .on('error', showError);
+          .on('error', function() { showLoadError(imgUrl); });
       });
 
     Player.toggle = null;
@@ -1371,12 +1371,7 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
 
       buildImageTag(imgUrl, playback, apiData)
         .on('load', showImgur)
-        .on('error', function () {
-          setSplash(null);
-          notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
-          setErrorSplash(imgUrl);
-        });
-
+        .on('error', function () { showLoadError(imgUrl); });
     }
 
     Player.toggle = null;
@@ -1569,11 +1564,7 @@ function HTML5Player() { // eslint-disable-line no-redeclare
 
     HTML5Player.instance = $video[0];
 
-    $('source', $video).on('error', function() {
-      setSplash(null);
-      notification('error', 'Unable to load URL:',  '<code>' + videoUrl + '</code>');
-      setErrorSplash(videoUrl);
-    });
+    $('source', $video).on('error', function() { showLoadError(videoUrl); });
     $video
       .on('loadstart', function(event) { // eslint-disable-line no-unused-vars
         // there is no thumbnail, just use background
