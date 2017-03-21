@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        yt-looper
 // @description Adds a button on YouTube, Imgur and SoundCloud to open current resource in yt.aergia.eu looper
-// @version     1.7.8
+// @version     1.7.9
 // @namespace   https://yt.aergia.eu
 // @icon        https://ipfs.io/ipfs/QmZFXPq9xMJY3Z8q2fq4wfsU93uTpVfjbiaYzwFmfnkCfM
 // @match       https://www.youtube.com/*
@@ -16,7 +16,7 @@
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @homepageURL https://github.com/lidel/yt-looper/#companion-userscript
 // @supportURL  https://github.com/lidel/yt-looper/issues
-// @require     https://cdn.jsdelivr.net/jquery/3.2.0/jquery.min.js
+// @require     https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js
 // @grant       none
 // @noframes
 // ==/UserScript==
