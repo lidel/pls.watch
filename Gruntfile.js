@@ -77,7 +77,7 @@ module.exports = function(grunt) {
     var selenium = require('selenium-standalone');
 
     selenium.install({
-      version: '2.53.0',
+      version: '2.53.1',
       baseURL: 'http://selenium-release.storage.googleapis.com',
       drivers: {
         chrome: {
