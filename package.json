@@ -29,7 +29,7 @@
     "grunt-env": "0.4.4",
     "grunt-eslint": "19.0.0",
     "load-grunt-tasks": "3.5.2",
-    "nightwatch": "0.9.9",
+    "nightwatch": "0.9.12",
     "npm-run-all": "4.0.0",
     "phantomjs-prebuilt": "2.1.13",
     "pre-push": "0.1.1",
