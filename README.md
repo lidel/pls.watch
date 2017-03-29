@@ -1,5 +1,7 @@
 # yt-looper: The Minimalistic Media Looper
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/lidel/yt-looper.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/lidel/ipfs-firefox-addon.svg?branch=master)](https://travis-ci.org/lidel/yt-looper)
 
 > Create shareable loops and playlists using simple URL tokens.
