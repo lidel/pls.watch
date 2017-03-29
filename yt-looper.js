@@ -63,6 +63,11 @@ function isFullscreen() {
   return fs !== undefined && fs !== null;
 }
 
+function isMobile() {
+  return urlFlag('mobile')
+    || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 // YouTube IFrame API
 function initYT(callback) {
   if (typeof YT === 'undefined') {
@@ -110,6 +115,9 @@ var PLAYER_TYPES = Object.freeze({
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
 
+var PRODUCTION_HOST = 'yt.aergia.eu';
+var CORS_PROXY = '';
+
 // This API key works only with yt.aergia.eu domain
 // Key for different referer can be generated at https://console.developers.google.com
 var GOOGLE_API_KEY = 'AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU';
@@ -151,7 +159,7 @@ function notification(type, title, message, options) {
   })
   .wait(function(){
     if (type === 'error') {
-      options = _.extend(options, {closeButton: true, timeOut: 0, extendedTimeOut: 0});
+      options = _.extend(options, {closeButton: true, timeOut: 30000, extendedTimeOut: 60000, progressBar: true});
     }
     toastr[type](message, title, options); // eslint-disable-line no-undef
   });
@@ -167,6 +175,12 @@ notification('info', 'test2','test',{timeOut: 0, extendedTimeOut: 0});
 notification('warning', 'test3','test',{timeOut: 0, extendedTimeOut: 0});
 notification('error', 'test4','test',{timeOut: 0, extendedTimeOut: 0});
 */
+
+function showLoadError(url) {
+  setSplash(null);
+  notification('error', 'Unable to Load', '<a href="' + url + '" title="open in new tab" target="_blank"><code>' + url + '</code></a><br/>Try direct link above or refresh page to retry');
+  setErrorSplash(url);
+}
 
 function initCRC32() { // http://jsperf.com/js-crc32
   var c;
@@ -331,7 +345,7 @@ function changeFavicon(src) {
 function getPlayerSize(engine) {
   var w = window.innerWidth;
   var h = window.innerHeight;
-  if (isEmbedded() || isFullscreen()) {
+  if (isMobile() || isEmbedded() || isFullscreen()) {
     return {width: w, height: h};
   }
 
@@ -439,10 +453,14 @@ function parseIntervals(v) {
 // Fix for problem #2 described in:
 // https://github.com/lidel/yt-looper/issues/68#issuecomment-87316655
 function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
+  if (/^http/.test(playlistId)) {
+    // not a YouTube Playlist ID, end processing
+    return urlMatch;
+  }
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
                   + '&videoId=' + videoId
-                  + '&maxResults=50'
+                  + '&maxResults=1'
                   + '&fields=items(kind%2Csnippet(position%2CresourceId))%2CnextPageToken'
                   + '&key=' + GOOGLE_API_KEY;
   var normalizedUrl = urlMatch;
@@ -451,8 +469,14 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
     async: false,
     success: function(data) {
       // if position does match, remove duplicate from URL
-      if (data.items.length > 0 && data.items[0].kind === 'youtube#playlistItem' && data.items[0].snippet.position+1 === Number(index)) {
-        normalizedUrl = normalizedUrl.replace(/([#&])(v=[^&]+&)(list=[^&]+&index=[^&]+|index=[^&]+&list=[^&]+)/, '$1$3');
+      index = Number(index);
+      if (data.items.length > 0 && data.items[0].kind === 'youtube#playlistItem' && data.items[0].snippet.position+1 === index) {
+        var duplicateId = data.items[0].snippet.resourceId.videoId;
+        normalizedUrl = normalizedUrl.replace(new RegExp('([#&])(v='+ duplicateId +'&)(list=[^&]+&index=[^&]+|index=[^&]+&list=[^&]+)'), '$1$3');
+        if (index === 1) {
+          // special case: YouTube skips &index parameter if playlist starts from first item
+          normalizedUrl = normalizedUrl.replace(new RegExp('([#&])(v='+ duplicateId +'&)(list=[^&]+)'), '$1$3');
+        }
       }
     },
     error: function(jqxhr, textStatus) {
@@ -482,6 +506,11 @@ function recalculateYTPlaylistIndex(urlMatch, oldPlaylist, index) {
 }
 
 function inlineYTPlaylist(urlMatch, playlistId) {
+  if (/^http/.test(playlistId)) {
+    // not a YouTube Playlist ID, end processing
+    return urlMatch;
+  }
+
   var apiRequest = 'https://www.googleapis.com/youtube/v3/playlistItems'
                   + '?part=snippet&playlistId=' + playlistId
                   + '&maxResults=50'
@@ -548,6 +577,41 @@ function inlineYTPlaylist(urlMatch, playlistId) {
   return inlinedPlaylist;
 }
 
+function inlineExternalURLPlaylist(urlMatch, playlistUrl) {
+  if (!/^http/.test(playlistUrl)) {
+    // end processing if bogus url
+    return urlMatch;
+  }
+  var normalizedUrl = urlMatch;
+  Playlist.externalUrl = normalizedUrl.replace(/^.*list=/,'');
+  logLady('Loading playlist from external URL', playlistUrl);
+  if (CORS_PROXY && window.location.host === PRODUCTION_HOST) {
+    // detect when running at production and route via proxy to avoid CORS errors
+    playlistUrl = CORS_PROXY + playlistUrl;
+  }
+  $.ajax({
+    url: playlistUrl,
+    async: false,
+    success: function(data) {
+      logLady('raw playlist data read from external URL', data);
+      var validEntry = function(entry) {
+        entry = entry.trim();
+        return !(_.isEmpty(entry) || /^#/.test(entry) || /^\/\//.test(entry));
+      };
+      data = data.replace(/(\r\n|\n|\r)/gm,'\n').split('\n');
+      data = _.filter(data, validEntry).map(function (s) {return s.trim();}).join('&');
+      logLady('inlined playlist from external URL', data);
+      normalizedUrl = data;
+    },
+    error: function(jqxhr, textStatus) {
+      var msg = 'Unable to inline External Playlist from URL "'+ playlistUrl +'": ';
+      logLady(msg + textStatus, jqxhr);
+      notification('error', 'External Playlist Error', msg + 'check error in JS console');
+    }
+  });
+  return normalizedUrl;
+}
+
 function inlineShortenedPlaylist(urlMatch, shortUrl) {
   var normalizedUrl = urlMatch;
   var apiRequest = 'https://www.googleapis.com/urlshortener/v1/url'
@@ -604,6 +668,9 @@ function urlForIntervalToken(token) {
   return token;
 }
 
+function mergeTimeTokens (urlMatch) {
+  return '&t=' + urlMatch.split('&t=').filter(String).join('+');
+}
 
 function normalizeUrl(href, done) {
   var url    = href || window.location.href;
@@ -624,10 +691,13 @@ function normalizeUrl(href, done) {
   // fix time parameters
   apiUrl = apiUrl.replace(/([#&])t=(\w+)[:-](\w+)/g,'$1t=$2;$3');
   apiUrl = apiUrl.replace(/([#&])t=(\w+)[,](\w+)/g,'$1t=$2.$3');
+  apiUrl = apiUrl.replace(/(?:&t=[^&]+){2,}/g, mergeTimeTokens);
 
   // inline playlists
-  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=([^&]+)/g, deduplicateYTPlaylist);
-  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&index=([^&]+)&list=([^&]+)/g, function($0,$1,$2,$3){return deduplicateYTPlaylist($0,$1,$3,$2);});
+  apiUrl = apiUrl.replace(/list=(https?:\/\/[^&]+)/g, inlineExternalURLPlaylist);
+  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)&index=(\d+)/g, deduplicateYTPlaylist);
+  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&list=([^&]+)/g, function($0,$1,$2){return deduplicateYTPlaylist($0,$1,$2,'1');});
+  apiUrl = apiUrl.replace(/[#&]v=([^&]+)&index=(\d+)&list=([^&]+)/g, function($0,$1,$2,$3){return deduplicateYTPlaylist($0,$1,$3,$2);});
   apiUrl = apiUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/g, recalculateYTPlaylistIndex);
   apiUrl = apiUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/g, recalculateYTPlaylistIndex);
   apiUrl = apiUrl.replace(/list=([^&:#]+)/g, inlineYTPlaylist);
@@ -972,9 +1042,11 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       },
       events: {
         onError: function(e) {
-          setSplash(null);
-          notification('error', 'YouTube Error', 'Failed to load Video ID: <code>' + Playlist.current().videoId + '</code>');
           logLady('YouTubePlayer error', e);
+          showLoadError('https://www.youtube.com/watch?v=' + Playlist.current().videoId);
+          if (Playlist.intervals.length > 1) {  // move to next interval (https://github.com/lidel/yt-looper/issues/238)
+            Player.newPlayer(Playlist.cycle());
+          }
         },
         onReady: onYouTubePlayerReady,
         onStateChange: onYouTubePlayerStateChange
@@ -1161,11 +1233,6 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
       changeFavicon(faviconPlay);
       ImagePlayer.startSlideshowTimerIfPresent($player, playback);
     };
-    var showError = function () {
-      setSplash(null);
-      notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
-      setErrorSplash();
-    };
 
     $('<img/>')
       .attr('src', imgUrl)
@@ -1174,7 +1241,7 @@ function ImagePlayer() { // eslint-disable-line no-redeclare
         $('<img/>')
           .attr('src', imgUrl)
           .on('load',  showImage)
-          .on('error', showError);
+          .on('error', function() { showLoadError(imgUrl); });
       });
 
     Player.toggle = null;
@@ -1304,12 +1371,7 @@ function ImgurPlayer() { // eslint-disable-line no-redeclare
 
       buildImageTag(imgUrl, playback, apiData)
         .on('load', showImgur)
-        .on('error', function () {
-          setSplash(null);
-          notification('error', 'Unable to load URL:', '<code>' + imgUrl + '</code><p>Refresh page to try again</p>');
-          setErrorSplash(imgUrl);
-        });
-
+        .on('error', function () { showLoadError(imgUrl); });
     }
 
     Player.toggle = null;
@@ -1502,11 +1564,7 @@ function HTML5Player() { // eslint-disable-line no-redeclare
 
     HTML5Player.instance = $video[0];
 
-    $('source', $video).on('error', function() {
-      setSplash(null);
-      notification('error', 'Unable to load URL:',  '<code>' + videoUrl + '</code>');
-      setErrorSplash(videoUrl);
-    });
+    $('source', $video).on('error', function() { showLoadError(videoUrl); });
     $video
       .on('loadstart', function(event) { // eslint-disable-line no-unused-vars
         // there is no thumbnail, just use background
@@ -1700,12 +1758,17 @@ function Player() { // eslint-disable-line no-redeclare
 
 function initLooper() {
   logLady('initLooper()');
-  if (isEmbedded()) {
-    $('#box').addClass('embedded');
+  if (isEmbedded() || isMobile()) {
     $('#help').remove();
     $('#editor').remove();
     $('#menu').remove();
-    $('body').append($('<a id="embed" href="'+ window.location.href +'" target="_blank">&#x21BB;</a>'));
+    if (isEmbedded()) {
+      $('#box').addClass('embedded');
+      $('body').append($('<a id="embed" href="'+ window.location.href +'" target="_blank">&#x21BB;</a>'));
+    }
+    if (isMobile()) {
+      $('#box').addClass('mobile');
+    }
   }
   Player();
   Editor(Playlist, Player);

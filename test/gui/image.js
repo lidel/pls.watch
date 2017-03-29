@@ -27,10 +27,10 @@ module.exports = {
   'Autosize of Image player' : function (browser) {
     if (browser.globals.skipOnTravis) return;
     browser
-      .resizeWindow(640,360)
       .page.looper()
       .uri('#i=http://127.0.0.1:28080/assets/zwartevilt.png&i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm')
       .waitForElementVisible('div#player img')
+      .resizeWindow(640,360)
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
         console.log('[png] For 640x360 window Image player');

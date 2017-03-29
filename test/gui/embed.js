@@ -31,6 +31,7 @@ module.exports = {
   },
 
   'SoundCloudPlayer size in IFrame' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.embed().uri('#s=sacredbones/pharmakon-body-betrays-itself')
       .waitForLoadedId('sacredbones/pharmakon-body-betrays-itself')

@@ -1,6 +1,7 @@
 module.exports = {
 
   'Recognize single SoundCloud sound as interval' : function (browser) {
+    if (browser.globals.skipOnTravis) return;
     browser
       .page.looper()
       .uri('#s=juandedeboca/spacex-thales-mission-webcast-song')
@@ -17,9 +18,9 @@ module.exports = {
      * This is not a big issue and for now we simply bump expected value in tests
      */
     browser
-      .resizeWindow(640,360)
       .page.looper()
       .uri('#s=sacredbones/pharmakon-body-betrays-itself')
+      .resizeWindow(640,360)
       .waitForElementVisible('iframe#player')
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {
