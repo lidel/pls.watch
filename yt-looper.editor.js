@@ -58,6 +58,8 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
       success: function(data) {
         if (data.kind === 'youtube#videoListResponse' && data.items.length) {
           setTitle(data.items[0].snippet.title, intervalLink);
+        } else {
+          intervalLink.addClass('broken');
         }
       },
       error: function(jqxhr, textStatus) {
@@ -217,6 +219,21 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
     Editor.updateHighlight();
   };
 
+  Editor._renderPlaylistControls = function($editor) {
+    var $playlistControls = $('#playlist-controls', $editor);
+    if ($playlistControls.length !== 1 ) {
+      $playlistControls.remove();
+      $playlistControls = $('<div/>', { id: 'playlist-controls' });
+      $playlistControls.prependTo($editor);
+    }
+    var url = Playlist.externalUrl;
+    if (url) {
+      $playlistControls.html('<a id="refresh-from-external-url" href="#list=' + url + '" title="Click to reload/restore external playlist from: '+ url +'">reload</a>');
+    } else {
+      $('#refresh-from-external-url', $playlistControls).remove();
+    }
+  };
+
   Editor.create = _.once(function() {
     var $editor = $('<div/>', { id: 'editor' });
     var $table = $('<table/>');
@@ -225,6 +242,7 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
     $table.appendTo($editor.hide());
     $editor.appendTo('body');
     Editor._renderRows($tbody);
+    Editor._renderPlaylistControls($editor);
   });
 
   Editor.reload = function () {
@@ -236,6 +254,7 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
       var $tbody = $('tbody', $table).first();
       $tbody.children('tr').remove();
       Editor._renderRows($tbody);
+      Editor._renderPlaylistControls($editor);
     }
   };
 

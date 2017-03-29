@@ -25,9 +25,9 @@ module.exports = {
   'Autosize of Imgur player' : function (browser) {
     if (browser.globals.skipOnTravis) return;
     browser
-      .resizeWindow(640,360)
       .page.looper()
       .uri('#i=cJjBEQP.png&i=VLIBa5v.gif')
+      .resizeWindow(640,360)
       .waitForElementVisible('div#player')
       .pause(800) //wait for animation to finish
       .getElementSize('#player', function(result) {

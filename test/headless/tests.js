@@ -362,6 +362,12 @@ QUnit.test('Fix decimal in time attribute', function (assert) {
                                 'regression');
 });
 
+QUnit.test('Merge time separators', function (assert) {
+  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=1s:2s&t=3;4&t=5;6&v=otherId&t=1;2&v=otherOtherVid&t=7;8&t=9s;10s'),
+                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=1s;2s+3;4+5;6&v=otherId&t=1;2&v=otherOtherVid&t=7;8+9s;10s',
+                                'regression');
+});
+
 
 QUnit.module('YouTube Playlist Import');
 
