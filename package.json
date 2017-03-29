@@ -31,7 +31,7 @@
     "load-grunt-tasks": "3.5.2",
     "nightwatch": "0.9.12",
     "npm-run-all": "4.0.0",
-    "phantomjs-prebuilt": "2.1.13",
+    "phantomjs-prebuilt": "2.1.14",
     "pre-push": "0.1.1",
     "selenium-standalone": "5.11.0",
     "time-grunt": "1.4.0",
