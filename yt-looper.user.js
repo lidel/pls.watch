@@ -1,25 +1,27 @@
 // ==UserScript==
 // @name        yt-looper
 // @description Adds a button on YouTube, Imgur and SoundCloud to open current resource in yt.aergia.eu looper
+// @version     1.7.9
 // @namespace   https://yt.aergia.eu
-// @icon        https://i.imgur.com/EGgL1nx.png
-// @include     https://www.youtube.com/*
-// @include     https://youtube.com/*
-// @include     http://www.youtube.com/*
-// @include     http://youtube.com/*
-// @include     https://imgur.com/*
-// @include     http://imgur.com/*
-// @include     http://soundcloud.com/*
-// @include     https://soundcloud.com/*
-// @version     1.7.4
-// @updateURL   https://yt.aergia.eu/yt-looper.user.js
+// @icon        https://ipfs.io/ipfs/QmZFXPq9xMJY3Z8q2fq4wfsU93uTpVfjbiaYzwFmfnkCfM
+// @match       https://www.youtube.com/*
+// @match       https://youtube.com/*
+// @match       http://www.youtube.com/*
+// @match       http://youtube.com/*
+// @match       https://imgur.com/*
+// @match       http://imgur.com/*
+// @match       http://soundcloud.com/*
+// @match       https://soundcloud.com/*
+// @license     CC0; https://creativecommons.org/publicdomain/zero/1.0/
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
-// @require     https://cdn.jsdelivr.net/jquery/3.1.1/jquery.min.js
+// @homepageURL https://github.com/lidel/yt-looper/#companion-userscript
+// @supportURL  https://github.com/lidel/yt-looper/issues
+// @require     https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js
 // @grant       none
 // @noframes
 // ==/UserScript==
+'use strict';
 (function ($, undefined) { // eslint-disable-line no-unused-vars
-  'use strict';
   var youtubeHandler = function () {
     var atWatchPage = window.location.pathname.startsWith('/watch');
     if (atWatchPage && $('#yt-looper').length === 0) {
