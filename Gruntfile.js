@@ -48,6 +48,9 @@ module.exports = function(grunt) {
       }
     },
     eslint: {
+      options: {
+        ignorePattern: 'node_modules/*'
+      },
       target: ['*.js', 'test/**/*.js']
     },
     env: {

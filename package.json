@@ -5,6 +5,7 @@
     "selenium-download": "grunt selenium",
     "grunt": "grunt",
     "eslint": "grunt eslint",
+    "prepush": "npm test",
     "test": "grunt test"
   },
   "name": "yt-looper",
@@ -16,9 +17,6 @@
   "private": true,
   "preferGlobal": false,
   "license": "CC0-1.0",
-  "pre-push": [
-    "test"
-  ],
   "devDependencies": {
     "eslint": "3.19.0",
     "eslint-plugin-you-dont-need-lodash-underscore": "6.0.0",
@@ -28,11 +26,11 @@
     "grunt-contrib-qunit": "2.0.0",
     "grunt-env": "0.4.4",
     "grunt-eslint": "19.0.0",
+    "husky": "0.13.3",
     "load-grunt-tasks": "3.5.2",
     "nightwatch": "0.9.14",
     "npm-run-all": "4.0.2",
     "phantomjs-prebuilt": "2.1.14",
-    "pre-push": "0.1.1",
     "selenium-standalone": "6.2.0",
     "time-grunt": "1.4.0",
     "travis-multirunner": "latest"
