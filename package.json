@@ -33,7 +33,7 @@
     "npm-run-all": "4.0.2",
     "phantomjs-prebuilt": "2.1.14",
     "pre-push": "0.1.1",
-    "selenium-standalone": "6.1.0",
+    "selenium-standalone": "6.2.0",
     "time-grunt": "1.4.0",
     "travis-multirunner": "latest"
   }
