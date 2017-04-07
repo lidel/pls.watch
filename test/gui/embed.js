@@ -14,13 +14,15 @@ module.exports = {
       .end();
   },
 
+  /* TODO
   'YouTube Player size in IFrame' : function (browser) {
     browser
-      .page.embed().uri('#v=T0rs3R4E1Sk&t=23;30')
-      .waitForLoadedId('T0rs3R4E1Sk')
+      .page.embed().uri('#i=TR4iupB.jpg&editor')
       .assert.cssClassPresent('#box', 'embedded')
+      .assert.editorHighlightUri('i=TR4iupB.jpg')
       .end();
   },
+  */
 
   'Imgur Player size in IFrame' : function (browser) {
     browser
