@@ -28,7 +28,7 @@
     "grunt-eslint": "19.0.0",
     "husky": "0.13.3",
     "load-grunt-tasks": "3.5.2",
-    "nightwatch": "0.9.15",
+    "nightwatch": "0.9.16",
     "npm-run-all": "4.0.2",
     "phantomjs-prebuilt": "2.1.14",
     "selenium-standalone": "6.4.1",

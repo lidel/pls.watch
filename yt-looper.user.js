@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        yt-looper
 // @description Adds a button on YouTube, Imgur and SoundCloud to open current resource in yt.aergia.eu looper
-// @version     1.7.9
+// @version     1.8.0
 // @namespace   https://yt.aergia.eu
 // @icon        https://ipfs.io/ipfs/QmZFXPq9xMJY3Z8q2fq4wfsU93uTpVfjbiaYzwFmfnkCfM
 // @match       https://www.youtube.com/*
@@ -16,7 +16,7 @@
 // @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @homepageURL https://github.com/lidel/yt-looper/#companion-userscript
 // @supportURL  https://github.com/lidel/yt-looper/issues
-// @require     https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js
+// @require     https://cdn.jsdelivr.net/jquery/3.2.1/jquery.slim.min.js
 // @grant       none
 // @noframes
 // ==/UserScript==
@@ -48,10 +48,20 @@
         $('#yt-looper-end').remove();
         $('#yt-looper').remove();
         $('#yt-looper-interval').remove();
-        var $button = $('<button id="yt-looper" class="yt-uix-button yt-uix-button-opacity yt-uix-button-has-icon yt-uix-tooltip" title="Open in yt-looper"><span style="margin:0 0.1em;font-size:2.25em;vertical-align: middle;">&#x21BB;</span> yt.aergia.eu </button>').hide();
+
+        // new layout (https://www.youtube.com/new)
+        var $secondaryActions = $('#info #count');
+        var $button = $('<button id="yt-looper" style="cursor:pointer;background:none;border:none;" title="Open in yt-looper"><span style="margin:0 0.1rem;vertical-align: middle;font-size:2em;" class="yt-view-count-renderer"> &#x21BB; </span></button>').hide();
         var $intervals = $('<span id="yt-looper-interval"></span>').hide();
-        var input = '<input class="yt-uix-form-input-text title-input" style="width:50px!important;margin-right:0.25em;" />';
-        var $secondaryActions = $('div.watch-action-buttons > div.watch-secondary-actions');
+        var input = '<input style="width:6em!important;margin-right:0.1em;" />';
+
+        // fallback to old layout style (TODOL remove)
+        if ($secondaryActions.length === 0) {
+          $secondaryActions = $('div.watch-action-buttons > div.watch-secondary-actions');
+          $button = $('<button id="yt-looper" class="yt-uix-button yt-uix-button-opacity yt-uix-button-has-icon yt-uix-tooltip" title="Open in yt-looper"><span style="margin:0 0.1em;font-size:2.25em;vertical-align: middle;">&#x21BB;</span> yt.aergia.eu </button>').hide();
+          input = '<input class="yt-uix-form-input-text title-input" style="width:50px!important;margin-right:0.25em;" />';
+        }
+
         var start = humanize(0);
         var end = humanize(getYtPlayer().getDuration());
         var $start = $(input).attr('id', 'yt-looper-start').val(start).attr('title', 'Start of loop');
@@ -79,7 +89,7 @@
         window.ytLooperStateChanged = function (state) {
           if (state === 2) {
             $('#yt-looper-start').val(humanize(getYtPlayer().getCurrentTime()));
-            $('#yt-looper-interval').fadeIn('slow');
+            $('#yt-looper-interval').show();
           } else if (state === 1) {
             // youtube redraws div.watch-action-buttons AFTER 5 and -1 events
             // and 1 is the only one we have after GUI stabilizes
@@ -118,7 +128,7 @@
         .append($a)
         .hide()
         .prependTo($('div.post-header'))
-        .fadeIn('slow');
+        .show();
 
     }
   };
