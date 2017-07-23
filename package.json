@@ -25,13 +25,13 @@
     "grunt-contrib-connect": "1.0.2",
     "grunt-contrib-qunit": "2.0.0",
     "grunt-env": "0.4.4",
-    "grunt-eslint": "19.0.0",
+    "grunt-eslint": "20.0.0",
     "husky": "0.14.3",
     "load-grunt-tasks": "3.5.2",
     "nightwatch": "0.9.16",
     "npm-run-all": "4.0.2",
     "phantomjs-prebuilt": "2.1.14",
-    "selenium-standalone": "6.4.1",
+    "selenium-standalone": "6.5.0",
     "time-grunt": "1.4.0",
     "travis-multirunner": "latest"
   }

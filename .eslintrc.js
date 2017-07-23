@@ -7,10 +7,6 @@ module.exports = {
     "_": true,
     "$LAB": true
   },
-  "ecmaFeatures": {
-    "modules": true,
-    "arrowFunctions": true
-  },
   "plugins": ["you-dont-need-lodash-underscore"],
     "rules": {
         "indent": [
@@ -33,6 +29,12 @@ module.exports = {
         "no-unused-vars": 1,
         "no-redeclare": 1,
         "no-console": 0
+    },
+    "parserOptions": {
+      "ecmaFeatures": {
+        "modules": true,
+        "arrowFunctions": true
+      }
     },
     "env": {
         "es6": true,
