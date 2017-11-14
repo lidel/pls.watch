@@ -1141,6 +1141,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     var current = Playlist.current();
     if (event.data == YT.PlayerState.CUED) {
       logLady('CUED', current);
+      fetchAndSetYoutubeTitle(current.videoId)
       setSplash(null);
       if (isAutoplay()) {
         event.target.playVideo();
@@ -1166,7 +1167,6 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       }
     } else if (event.data == YT.PlayerState.PLAYING) {
       logLady('PLAYING', current);
-      $(document).prop('title', event.target.getVideoData().title);
       changeFavicon(faviconPlay);
       setSplash(null);
       if (isEmbedded()) {
@@ -1181,6 +1181,30 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     }
     returnFocus();
   };
+
+  var fetchAndSetYoutubeTitle = function(videoId) {
+    var apiRequest = 'https://www.googleapis.com/youtube/v3/videos'
+                    + '?part=snippet&id=' + videoId
+                    + '&maxResults=1'
+                    + '&fields=kind%2Citems%2Fsnippet(title)'
+                    + '&key=' + GOOGLE_API_KEY;
+    $.ajax({
+      url: apiRequest,
+      async: true,
+      success: function(data) {
+        if (data.kind === 'youtube#videoListResponse' && data.items.length) {
+          $(document).prop('title', data.items[0].snippet.title);
+        } else {
+          logLady('Missing youtube#videoListResponse', data);
+        }
+      },
+      error: function(jqxhr, textStatus) {
+        logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
+      }
+    });
+
+  };
+
 }
 
 function ImagePlayer() { // eslint-disable-line no-redeclare
