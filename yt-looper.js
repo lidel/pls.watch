@@ -1141,7 +1141,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     var current = Playlist.current();
     if (event.data == YT.PlayerState.CUED) {
       logLady('CUED', current);
-      fetchAndSetYoutubeTitle(current.videoId)
+      fetchAndSetYoutubeTitle(current.videoId);
       setSplash(null);
       if (isAutoplay()) {
         event.target.playVideo();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        yt-looper
 // @description Adds a button on YouTube, Imgur and SoundCloud to open current resource in yt.aergia.eu looper
-// @version     1.8.0
+// @version     1.9.0
 // @namespace   https://yt.aergia.eu
 // @icon        https://ipfs.io/ipfs/QmZFXPq9xMJY3Z8q2fq4wfsU93uTpVfjbiaYzwFmfnkCfM
 // @match       https://www.youtube.com/*
@@ -13,111 +13,65 @@
 // @match       http://soundcloud.com/*
 // @match       https://soundcloud.com/*
 // @license     CC0; https://creativecommons.org/publicdomain/zero/1.0/
-// @downloadURL https://yt.aergia.eu/yt-looper.user.js
 // @homepageURL https://github.com/lidel/yt-looper/#companion-userscript
 // @supportURL  https://github.com/lidel/yt-looper/issues
 // @require     https://cdn.jsdelivr.net/jquery/3.2.1/jquery.slim.min.js
 // @grant       none
+// @run-at document-end
 // @noframes
 // ==/UserScript==
 'use strict';
 (function ($, undefined) { // eslint-disable-line no-unused-vars
-  var youtubeHandler = function () {
-    var atWatchPage = window.location.pathname.startsWith('/watch');
+  const youtubeHandler = function () {
+    const atWatchPage = window.location.pathname.startsWith('/watch');
     if (atWatchPage && $('#yt-looper').length === 0) {
-      var humanize = function (sec) {
-        var sec_num = parseInt(sec, 10);
-        var hours = Math.floor(sec_num / 3600);
-        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-        var seconds = sec_num - (hours * 3600) - (minutes * 60);
-        hours = hours > 0 ? (hours + 'h')  : '';
-        minutes = minutes > 0 ? (minutes + 'm')  : '';
-        seconds = seconds > 0 ? (seconds + 's')  : '';
-        return sec === 0 ? '0s' : hours + minutes + seconds;
+      const getYtPlayer = function () {
+          return window.document.getElementById('movie_player');
       };
-      var getYtPlayer = function () {
-        var doc = window.document;
-        var ytplayer = doc.getElementById('movie_player') || doc.getElementById('movie_player-flash');
-        return ytplayer;
-      };
-      var playlistMode = function () {
-        return /list=/.test(window.location.href);
-      };
-      var renderLooperActions = function() {
-        $('#yt-looper-start').remove();
-        $('#yt-looper-end').remove();
+      const renderLooperActions = function() {
+        console.log('renderLooperActions()');
         $('#yt-looper').remove();
-        $('#yt-looper-interval').remove();
 
         // new layout (https://www.youtube.com/new)
-        var $secondaryActions = $('#info #count');
-        var $button = $('<button id="yt-looper" style="cursor:pointer;background:none;border:none;" title="Open in yt-looper"><span style="margin:0 0.1rem;vertical-align: middle;font-size:2em;" class="yt-view-count-renderer"> &#x21BB; </span></button>').hide();
-        var $intervals = $('<span id="yt-looper-interval"></span>').hide();
-        var input = '<input style="width:6em!important;margin-right:0.1em;" />';
-
-        // fallback to old layout style (TODOL remove)
-        if ($secondaryActions.length === 0) {
-          $secondaryActions = $('div.watch-action-buttons > div.watch-secondary-actions');
-          $button = $('<button id="yt-looper" class="yt-uix-button yt-uix-button-opacity yt-uix-button-has-icon yt-uix-tooltip" title="Open in yt-looper"><span style="margin:0 0.1em;font-size:2.25em;vertical-align: middle;">&#x21BB;</span> yt.aergia.eu </button>').hide();
-          input = '<input class="yt-uix-form-input-text title-input" style="width:50px!important;margin-right:0.25em;" />';
-        }
-
-        var start = humanize(0);
-        var end = humanize(getYtPlayer().getDuration());
-        var $start = $(input).attr('id', 'yt-looper-start').val(start).attr('title', 'Start of loop');
-        var $end = $(input).attr('id', 'yt-looper-end').val(end).attr('title', 'End of loop');
+        const $secondaryActions = $('#info #count');
+        const $button = $('<button id="yt-looper" style="cursor:pointer;background:none;border:none;" title="Open in yt-looper"><span style="margin:0 0.1rem;vertical-align: middle;font-size:2em;" class="yt-view-count-renderer"> &#x21BB; </span></button>');
         $secondaryActions.prepend($button);
-        if (!playlistMode()) { // disable start/end picker when in playlist mode (did not work correct anyway)
-          $intervals.append($start).append($end).insertBefore($button);
-        }
+
         $button.show();
         $button.click(function () {
-          var url = window.location.href;
+          let url = window.location.href;
           url = url.replace(/.*youtube.com\/watch\?/, 'https://yt.aergia.eu/#');
-          if (playlistMode()) {
-              url = url.replace(/[&#]t=[^&#]*/g, '');
-          } else if (getYtPlayer().getPlayerState() === 2) {
-              url = url.replace(/[&#]t=[^&#]*/g, '');
-              url = url + '#t=' + $('#yt-looper-start').val() + ';' + $('#yt-looper-end').val();
-          }
+          url = url.replace(/[&#]t=[^&#]*/g, '');
           window.open(url);
         });
       };
 
-      var initButton = function() {
-        var newVideo = true;
-        window.ytLooperStateChanged = function (state) {
-          if (state === 2) {
-            $('#yt-looper-start').val(humanize(getYtPlayer().getCurrentTime()));
-            $('#yt-looper-interval').show();
-          } else if (state === 1) {
+      const initButton = function() {
+        console.log('initButton()');
+        renderLooperActions();
+
+        window.ytLooperStateChanged = function(state) {
+          console.log('ytLooperStateChanged().state', state);
+          if (state === 1) {
             // youtube redraws div.watch-action-buttons AFTER 5 and -1 events
-            // and 1 is the only one we have after GUI stabilizes
+            // and 1 is the only one we have after GUI stabilizes.
             // ANGST.
-            newVideo = true;
-          } else {
-            $('#yt-looper-interval').hide();
-            $('#yt-looper-start').val(humanize(0));
-          }
-          if (newVideo) {
             renderLooperActions();
-            newVideo = false;
           }
         };
-        renderLooperActions();
-        getYtPlayer().addEventListener('onStateChange', 'ytLooperStateChanged');
+        getYtPlayer().addEventListener('onStateChange', window.ytLooperStateChanged);
       };
 
       initButton();
     }
   };
-  var imgurHandlerRenderButton = function(ids) {
-    var id = ids[0];
+  const imgurHandlerRenderButton = function(ids) {
+    const id = ids[0];
     if (/[a-zA-Z0-9]+/.test(id) && ($('div.post-image img').length > 0 || $('div.post-image video').length > 0)) {
       console.log('yt-looper → renderButton for ' + ids.join(', '));
-      var url = 'https://yt.aergia.eu/#i=' + ids.join('&i=');
-      var html = '<a style="pointer:cursor;text-decoration:none;color:#ccc" title="Open in yt.aergia.eu"><span style="font-size:1.5em">&#x21BB;</span><br>yt.looper</a>';
-      var $a = $(html).click(function () {
+      const url = 'https://yt.aergia.eu/#i=' + ids.join('&i=');
+      const html = '<a style="pointer:cursor;text-decoration:none;color:#ccc" title="Open in yt.aergia.eu"><span style="font-size:1.5em">&#x21BB;</span><br>yt.looper</a>';
+      const $a = $(html).click(function () {
         window.open(url);
       });
       $('<div class="post-account" id="yt-looper">')
@@ -132,22 +86,22 @@
 
     }
   };
-  var imgurHandler = function () {
-    var $oldButton = $('#yt-looper');
-    var imgurIds = $('div.post-image-container').map(function() { return $(this).attr('id'); }).get();
+  const imgurHandler = function () {
+    const $oldButton = $('#yt-looper');
+    const imgurIds = $('div.post-image-container').map(function() { return $(this).attr('id'); }).get();
     if (imgurIds.length > 0 && $oldButton.data('imgurId') != imgurIds[0]) {
       $oldButton.remove();
       imgurHandlerRenderButton(imgurIds);
     }
   };
-  var soundCloudHandler = function () {
+  const soundCloudHandler = function () {
     if ($('#yt-looper').length === 0) {
-      var $soundActions = $('div.l-about-top div.soundActions');
+      const $soundActions = $('div.l-about-top div.soundActions');
       if ($soundActions.length === 1) {
         console.log('soundCloudHandler(): adding yt-looper button..');
-        var scId = window.location.pathname.replace(/^\//, '');
-        var url = 'https://yt.aergia.eu/#s=' + scId;
-        var $button = $('<button id="yt-looper" class="sc-button sc-button-medium" title="Open in yt-looper"><span style="font-weight: 900;">&#x21BB;</span>&nbsp;yt.aergia.eu</button>');
+        const scId = window.location.pathname.replace(/^\//, '');
+        const url = 'https://yt.aergia.eu/#s=' + scId;
+        const $button = $('<button id="yt-looper" class="sc-button sc-button-medium" title="Open in yt-looper"><span style="font-weight: 900;">&#x21BB;</span>&nbsp;yt.aergia.eu</button>');
         $button.click(function () {
           window.open(url);
         });
@@ -159,7 +113,7 @@
   console.log('yt-looper userscript loaded');
   switch (window.location.hostname.replace('www.', '')) {
     case 'youtube.com':
-      window.setInterval(youtubeHandler, 2000);
+      window.setInterval(youtubeHandler, 1000);
       break;
     case 'imgur.com':
       window.setInterval(imgurHandler, 1000);
