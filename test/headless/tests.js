@@ -10,7 +10,7 @@ QUnit.test('qunit self-test', function (assert) {
 QUnit.module('Basic URL parsing');
 
 QUnit.test('one video, one interval', function (assert) {
-  var url = 'http://yt.aergia.eu/#v=T0rs3R4E1Sk:t=23;30';
+  var url = 'http://pls.watch/#v=T0rs3R4E1Sk:t=23;30';
   var urls = [url, url.replace(':','&')];
   var expected_intervals = [{start:23,end:30}];
 
@@ -27,7 +27,7 @@ QUnit.test('one video, one interval', function (assert) {
 });
 
 QUnit.test('one video, multiple intervals', function (assert) {
-  var url = 'http://yt.aergia.eu/#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s';
+  var url = 'http://pls.watch/#v=ZNno63ZO2Lw:t=54s;1m20s+1m33s;1m47s+3m30s;3m46s';
   var urls = [url, url.replace(':','&')];
   var expected_intervals = [{start:54,end:80}, {start:93,end:107}, {start:210,end:226}];
 
@@ -45,7 +45,7 @@ QUnit.test('one video, multiple intervals', function (assert) {
 QUnit.module('Advanced URL parsing');
 
 QUnit.test('two videos, mixed intervals', function (assert) {
-  var url = 'http://yt.aergia.eu/#v=ZNno63ZO2Lw:t=54;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2;16s';
+  var url = 'http://pls.watch/#v=ZNno63ZO2Lw:t=54;1m20s+1m33s;1m47s+3m30s;3m46s:v=TM1Jy3qPSCQ:t=2;16s';
   var urls = [url, url.replace(':','&')];
   var expected_intervals;
 
@@ -129,7 +129,7 @@ QUnit.test('External URI detection', function (assert) {
 
 QUnit.test('YT video + HTML5 video + IG image + HTML5 video: intervals', function (assert) {
   var url = normalizeUrl(
-    'https://yt.aergia.eu/'
+    'https://pls.watch/'
   + '#v=HMMofOPRo7A&t=20s;29s'
   + '&v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=1s;3s'
   + '&i=8Fy3db9&t=2s'
@@ -290,81 +290,81 @@ QUnit.test('scheme: 3 2 1 : +I +I +I +I -V -I +V +V +V +V -I +I -V -V -V -V -V -
 QUnit.module('URL Normalizer');
 
 QUnit.test('YouTube with start parameter', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/watch?v=T0rs3R4E1Sk#t=23;30'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+  assert.deepEqual(normalizeUrl('http://pls.watch/watch?v=T0rs3R4E1Sk#t=23;30'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=23;30',
                                 'regression');
 });
 
 QUnit.test('YouTube with feature parameter in the front', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/watch?feature=player_detailpage&v=n0CJfPsPOqE#t=245'),
-                                'http://yt.aergia.eu/#v=n0CJfPsPOqE&t=245',
+  assert.deepEqual(normalizeUrl('http://pls.watch/watch?feature=player_detailpage&v=n0CJfPsPOqE#t=245'),
+                                'http://pls.watch/#v=n0CJfPsPOqE&t=245',
                                 'regression');
 });
 
 QUnit.test('YouTube with feature parameter at the end', function (assert) {
-  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=D033L_aSsCw&feature=youtu.be'),
-                                'https://yt.aergia.eu/#v=D033L_aSsCw',
+  assert.deepEqual(normalizeUrl('https://pls.watch/#v=D033L_aSsCw&feature=youtu.be'),
+                                'https://pls.watch/#v=D033L_aSsCw',
                                 'regression');
 });
 
 QUnit.test('Classic GET with parameters', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/?v=T0rs3R4E1Sk&t=23;30'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+  assert.deepEqual(normalizeUrl('http://pls.watch/?v=T0rs3R4E1Sk&t=23;30'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=23;30',
                                 'regression');
 });
 
 QUnit.test('Legacy with ":"', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk:t=23;30'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#v=T0rs3R4E1Sk:t=23;30'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=23;30',
                                 'regression');
 });
 
 QUnit.test('Legacy with multiple "#"', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk#t=23;30'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#v=T0rs3R4E1Sk#t=23;30'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=23;30',
                                 'regression');
 });
 
 QUnit.test('Legacy with multiple "#" as "%23"', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk%23t=23;30'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#v=T0rs3R4E1Sk%23t=23;30'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=23;30',
                                 'regression');
 });
 
 QUnit.test('URLs butchered by IM clients', function (assert) {
   // yes, this really happened.. in MS Lync
-  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=aLcHJN1soY4%26t=41s%3b45s'),
-                                'https://yt.aergia.eu/#v=aLcHJN1soY4&t=41s;45s',
+  assert.deepEqual(normalizeUrl('https://pls.watch/#v=aLcHJN1soY4%26t=41s%3b45s'),
+                                'https://pls.watch/#v=aLcHJN1soY4&t=41s;45s',
                                 'regression');
 });
 
 QUnit.test('Alternative time separator: \':\'', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23:30s'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23;30s',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#v=T0rs3R4E1Sk&t=23:30s'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=23;30s',
                                 'regression');
 });
 
 QUnit.test('Alternative time separator: \'-\'', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23s-30'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=23s;30',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#v=T0rs3R4E1Sk&t=23s-30'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=23s;30',
                                 'regression');
 });
 
 QUnit.test('Support decimal in time attribute', function (assert) {
-  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72.5;1m16s'),
-                                'https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72.5;1m16s',
+  assert.deepEqual(normalizeUrl('https://pls.watch/#v=_SKdN1xQBjk&t=72.5;1m16s'),
+                                'https://pls.watch/#v=_SKdN1xQBjk&t=72.5;1m16s',
                                 'regression');
 });
 
 QUnit.test('Fix decimal in time attribute', function (assert) {
-  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72,5;1m16s'),
-                                'https://yt.aergia.eu/#v=_SKdN1xQBjk&t=72.5;1m16s',
+  assert.deepEqual(normalizeUrl('https://pls.watch/#v=_SKdN1xQBjk&t=72,5;1m16s'),
+                                'https://pls.watch/#v=_SKdN1xQBjk&t=72.5;1m16s',
                                 'regression');
 });
 
 QUnit.test('Merge time separators', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=1s:2s&t=3;4&t=5;6&v=otherId&t=1;2&v=otherOtherVid&t=7;8&t=9s;10s'),
-                                'http://yt.aergia.eu/#v=T0rs3R4E1Sk&t=1s;2s+3;4+5;6&v=otherId&t=1;2&v=otherOtherVid&t=7;8+9s;10s',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#v=T0rs3R4E1Sk&t=1s:2s&t=3;4&t=5;6&v=otherId&t=1;2&v=otherOtherVid&t=7;8&t=9s;10s'),
+                                'http://pls.watch/#v=T0rs3R4E1Sk&t=1s;2s+3;4+5;6&v=otherId&t=1;2&v=otherOtherVid&t=7;8+9s;10s',
                                 'regression');
 });
 
@@ -381,24 +381,24 @@ QUnit.test('Inline playlist with 21 items', function (assert) {
 
 QUnit.test('Keep index attribute in URL', function (assert) {
   // just to be sure that it is not removed from normalizer by mistake during refactoring in future
-  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2'),
-                                'https://yt.aergia.eu/#v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2',
+  assert.deepEqual(normalizeUrl('https://pls.watch/#v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2'),
+                                'https://pls.watch/#v=nJBxKT7EGKI&v=eRs_U6eYl-c&v=cWn9JN4gSsk&index=2',
                                 'regression');
 });
 
 QUnit.test('Recalculate index: Sample A1', function (assert) {
   // This is intermediate step triggered by &list= element, performed AFTER deduplication
   // In this test we have 3 videos before imported playlist, so index should be changed from 13 to 16
-  var originalUrl = 'https://yt.aergia.eu/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=13';
+  var originalUrl = 'https://pls.watch/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=13';
   var recalculatedUrl = originalUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/, recalculateYTPlaylistIndex);
-  var expectedUrl = 'https://yt.aergia.eu/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=16';
+  var expectedUrl = 'https://pls.watch/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=16';
   assert.deepEqual(recalculatedUrl, expectedUrl, 'regression');
 });
 
 QUnit.test('Recalculate index: Sample B1', function (assert) {
   // This is intermediate step triggered by &list= element, performed AFTER deduplication
   // In this test we have no videos before imported playlist, so index should remain 13
-  var originalUrl = 'https://yt.aergia.eu/#list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=13';
+  var originalUrl = 'https://pls.watch/#list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS&index=13';
   var recalculatedUrl = originalUrl.replace(/(#.+&|#)list=[^&]+&index=(\d+)/, recalculateYTPlaylistIndex);
   assert.deepEqual(recalculatedUrl, originalUrl, 'regression');
 });
@@ -407,9 +407,9 @@ QUnit.test('Recalculate index: Sample B1', function (assert) {
 QUnit.test('Recalculate index: Sample A2', function (assert) {
   // This is intermediate step triggered by &list= element, performed AFTER deduplication
   // In this test we have 3 videos before imported playlist, so index should be changed from 13 to 16
-  var originalUrl = 'https://yt.aergia.eu/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&index=13&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS';
+  var originalUrl = 'https://pls.watch/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&index=13&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS';
   var recalculatedUrl = originalUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/, recalculateYTPlaylistIndex);
-  var expectedUrl = 'https://yt.aergia.eu/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&index=16&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS';
+  var expectedUrl = 'https://pls.watch/#v=eRs_U6eYl-c&v=cWn9JN4gSsk&v=ZNno63ZO2Lw&index=16&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS';
   assert.deepEqual(recalculatedUrl, expectedUrl, 'regression');
 });
 
@@ -417,7 +417,7 @@ QUnit.test('Recalculate index: Sample A2', function (assert) {
 QUnit.test('Recalculate index: Sample B2', function (assert) {
   // This is intermediate step triggered by &list= element, performed AFTER deduplication
   // In this test we have no videos before imported playlist, so index should remain 13
-  var originalUrl = 'https://yt.aergia.eu/#index=13&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS';
+  var originalUrl = 'https://pls.watch/#index=13&list=PLyALKMPGOR5evINIHBRgtioZBuujYFaeS';
   var recalculatedUrl = originalUrl.replace(/(#.+&|#)index=(\d+)&list=[^&]+/, recalculateYTPlaylistIndex);
   assert.deepEqual(recalculatedUrl, originalUrl, 'regression');
 });
@@ -445,46 +445,46 @@ QUnit.test('Encode+Decode', function (assert) {
 QUnit.module('Minimizing URLs From Known Services');
 
 QUnit.test('Direct Image URL', function (assert) {
-  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#i=https://goo.gl/R9z9r0'),
-                                'https://yt.aergia.eu/#i=goo.gl/R9z9r0',
+  assert.deepEqual(normalizeUrl('https://pls.watch/#i=https://goo.gl/R9z9r0'),
+                                'https://pls.watch/#i=goo.gl/R9z9r0',
                                 'Direct Image URL regression');
 });
 
 QUnit.test('Direct Video URL', function (assert) {
-  assert.deepEqual(normalizeUrl('https://yt.aergia.eu/#v=https://goo.gl/WN8BkV'),
-                                'https://yt.aergia.eu/#v=goo.gl/WN8BkV',
+  assert.deepEqual(normalizeUrl('https://pls.watch/#v=https://goo.gl/WN8BkV'),
+                                'https://pls.watch/#v=goo.gl/WN8BkV',
                                 'Direct Video URL regression');
 });
 
 QUnit.test('Direct Imgur URL', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=https://i.imgur.com/fooo.gif'),
-                                'http://yt.aergia.eu/#i=fooo.gif',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#i=https://i.imgur.com/fooo.gif'),
+                                'http://pls.watch/#i=fooo.gif',
                                 'Direct Imgur URL regression');
 });
 
 QUnit.test('Public IPFS Gateway URL', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
-                                'http://yt.aergia.eu/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
+                                'http://pls.watch/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
                                 'IPFS URL regression');
 });
 
 QUnit.test('fs: IPFS URI', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=fs:/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
-                                'http://yt.aergia.eu/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#i=fs:/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
+                                'http://pls.watch/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
                                 'IPFS URL regression');
 });
 
 
 QUnit.test('web+fs: IPFS URI', function (assert) {
-  assert.deepEqual(normalizeUrl('http://yt.aergia.eu/#i=web+fs:/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
-                                'http://yt.aergia.eu/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
+  assert.deepEqual(normalizeUrl('http://pls.watch/#i=web+fs:/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm'),
+                                'http://pls.watch/#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm',
                                 'IPFS URL regression');
 });
 
 QUnit.module('Additional Flags');
 
 QUnit.test('&autoplay', function (assert) {
-  var url = 'http://yt.aergia.eu/watch?v=T0rs3R4E1Sk';
+  var url = 'http://pls.watch/watch?v=T0rs3R4E1Sk';
   assert.ok(!urlFlag('autoplay', normalizeUrl(url)));
   assert.ok(urlFlag('autoplay', normalizeUrl(url + '&autoplay')));
 });

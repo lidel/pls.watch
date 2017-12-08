@@ -115,10 +115,10 @@ var PLAYER_TYPES = Object.freeze({
 
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
 
-var PRODUCTION_HOST = 'yt.aergia.eu';
+var PRODUCTION_HOST = 'pls.watch';
 var CORS_PROXY = '';
 
-// This API key works only with yt.aergia.eu domain
+// This API key works only with pls.watch domain
 // Key for different referer can be generated at https://console.developers.google.com
 var GOOGLE_API_KEY = 'AIzaSyDp31p-15b8Ep-Bfnjbq1EeyN1n6lRtdmU';
 
@@ -451,7 +451,7 @@ function parseIntervals(v) {
 }
 
 // Fix for problem #2 described in:
-// https://github.com/lidel/yt-looper/issues/68#issuecomment-87316655
+// https://github.com/lidel/pls.watch/issues/68#issuecomment-87316655
 function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
   if (/^http/.test(playlistId)) {
     // not a YouTube Playlist ID, end processing
@@ -495,7 +495,7 @@ function deduplicateYTPlaylist(urlMatch, videoId, playlistId, index) {
 }
 
 // Fix for problem #1 described in:
-// https://github.com/lidel/yt-looper/issues/68#issuecomment-87316655
+// https://github.com/lidel/pls.watch/issues/68#issuecomment-87316655
 function recalculateYTPlaylistIndex(urlMatch, oldPlaylist, index) {
   var videosBefore = oldPlaylist.match(/[#&]v=/g);
   if (videosBefore) {
@@ -545,7 +545,7 @@ function inlineYTPlaylist(urlMatch, playlistId) {
             var msg = 'Unable to get playlistId='+playlistId+': ';
             logLady(msg + textStatus, jqxhr);
             if (jqxhr.status === 403) {
-              msg = 'playlistId='+playlistId+' is not public and can\'t be displayed in yt-looper';
+              msg = 'playlistId='+playlistId+' is not public and can\'t be displayed in pls.watch';
               notification('error', 'ERR-403: private playlist', msg);
             } else {
               notification('error', 'YouTube API Error', msg + 'check error in JS console');
@@ -1044,7 +1044,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
         onError: function(e) {
           logLady('YouTubePlayer error', e);
           showLoadError('https://www.youtube.com/watch?v=' + Playlist.current().videoId);
-          if (Playlist.intervals.length > 1) {  // move to next interval (https://github.com/lidel/yt-looper/issues/238)
+          if (Playlist.intervals.length > 1) {  // move to next interval (https://github.com/lidel/pls.watch/issues/238)
             Player.newPlayer(Playlist.cycle());
           }
         },
@@ -1740,7 +1740,7 @@ function Player() { // eslint-disable-line no-redeclare
     var prevEngine = Player.type(prev).engine;
     var nextEngine = Player.type(next).engine;
     // reuse player engine when possible
-    // https://github.com/lidel/yt-looper/issues/152
+    // https://github.com/lidel/pls.watch/issues/152
     if (prevEngine === nextEngine && _.isFunction(prevEngine.load)) {
       prevEngine.load(next);
       $('#box').attr('data-loaded-id', next.videoId);
@@ -1797,7 +1797,7 @@ function initLooper() {
   Player();
   Editor(Playlist, Player);
   if (urlFlag('random')) {
-    // Random mode should work from the start: https://github.com/lidel/yt-looper/issues/221
+    // Random mode should work from the start: https://github.com/lidel/pls.watch/issues/221
     Playlist.random();
   }
 }
@@ -1823,7 +1823,7 @@ function renderPage() {
   } else {
     // no valid hash, display #help
     changeFavicon();
-    $(document).prop('title', 'yt-looper');
+    $(document).prop('title', 'pls.watch');
     $box.hide();
     $menu.hide();
     showHelpUi(true);

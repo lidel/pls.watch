@@ -1,13 +1,13 @@
-# yt-looper: The Minimalistic Media Looper
+# pls.watch: The Minimalistic Media Looper
 
-[![Build Status](https://travis-ci.org/lidel/yt-looper.svg?branch=master)](https://travis-ci.org/lidel/yt-looper)
+[![Build Status](https://travis-ci.org/lidel/pls.watch.svg?branch=master)](https://travis-ci.org/lidel/pls.watch)
 
 > Create shareable loops and playlists using simple URL tokens.
 
 A snowball of JavaScript antipatterns that turned into an avalanche of features.    
 Supports YouTube for video (with playlist import), Imgur for images (with gifv support) and SoundCloud for audio.
 
-Deployed at https://yt.aergia.eu
+Deployed at https://pls.watch
 
 ## Table of Contents
 
@@ -29,7 +29,7 @@ Scratching own itches.
 At the time YouTube did not provide any way to specify end timestamp when sharing a link to a video.    
 The amount of distractions and advertisements on third party sites that provided this functionality was abysmal.
 
-Out of frustration, `yt-looper` was born as a clean way to:
+Out of frustration, `pls.watch` was born as a clean way to:
 
 - share specific fragment of YouTube video
 - display content without any distractions such as related videos or ads
@@ -111,9 +111,9 @@ By default image is displayed forever (useful for GIFs). A slideshow can be crea
 #i=<imageId>.jpg[&t=<displayTime>]
 ```
 
-Example: https://yt.aergia.eu/#i=lkD38.gifv&t=3&i=cJjBEQP.jpg&t=1s&i=vo9DPpp.gif&t=3s
+Example: https://pls.watch/#i=lkD38.gifv&t=3&i=cJjBEQP.jpg&t=1s&i=vo9DPpp.gif&t=3s
 
-Note: [GIF intervals](https://yt.aergia.eu/#i=zvATqgs) are automatically rendered as [GIFV](https://imgur.com/blog/2014/10/09/introducing-gifv/).
+Note: [GIF intervals](https://pls.watch/#i=zvATqgs) are automatically rendered as [GIFV](https://imgur.com/blog/2014/10/09/introducing-gifv/).
 
 ### SoundCloud
 
@@ -123,7 +123,7 @@ Single track interval:
 #s=<user>/<sound>[&t=<start>[;<end>]]
 ```
 
-Example: https://yt.aergia.eu/#s=sacredbones/pharmakon-body-betrays-itself&t=0s;17s
+Example: https://pls.watch/#s=sacredbones/pharmakon-body-betrays-itself&t=0s;17s
 
 Playlists (sets) are lazy-inlined on first play:
 
@@ -131,7 +131,7 @@ Playlists (sets) are lazy-inlined on first play:
 #s=<user>/sets/<set>
 ```
 
-Example: https://yt.aergia.eu/#s=erasedtapes/sets/erased-tapes-collection-iv
+Example: https://pls.watch/#s=erasedtapes/sets/erased-tapes-collection-iv
 
 ### Any External URL
 
@@ -141,13 +141,13 @@ Similar to YouTube Player - main difference is format for `videoId`.
 
 Currently, to be detected, `videoId` has to begin with `http` and end with: `.mp3`, `.mp4`, `.ogg`, `.ogv` or `.webm`. 
 
-Example: https://yt.aergia.eu/#v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=4s;5s
+Example: https://pls.watch/#v=https://vt.tumblr.com/tumblr_npa1dkYP1U1urdxm4.mp4&t=4s;5s
 
 #### Generic Image Player
 
 Similar to Imgur Player but if `videoId` starts with `http` it loads the URL and naïvely believes it is an image.
 
-Example: https://yt.aergia.eu/#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm
+Example: https://pls.watch/#i=https://ipfs.io/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm
 
 ### Global
 
@@ -175,7 +175,7 @@ Press <kbd>?</kbd> to toggle help screen listing available shortcuts.
 
 ### Playback pauses when tab is not active (Google Chrome/Chromium)
 
-See [issue #151](https://github.com/lidel/yt-looper/issues/151#issuecomment-190417962).
+See [issue #151](https://github.com/lidel/pls.watch/issues/151#issuecomment-190417962).
 
 
 ## Companion UserScript
@@ -184,7 +184,7 @@ There is a simple [UserScript](https://openuserjs.org/about/Userscript-Beginners
 
 ### Installation
 
-Click to install: https://yt.aergia.eu/yt-looper.user.js
+Click to install: https://pls.watch/pls.watch.user.js
 
 It may require preinstalled browser extension:
 
@@ -214,6 +214,6 @@ Ideas and bug reports are most welcome.
 - [Underscore.js](http://underscorejs.org/), [jQuery](https://jquery.com/), [mCustomScrollbar](https://github.com/malihu/malihu-custom-scrollbar-plugin) and [toastr](https://github.com/CodeSeven/toastr) are under [MIT license](http://opensource.org/licenses/MIT)
 - [Black Felt](http://subtlepatterns.com/black-felt/) is under [CC-BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/)
 
-The yt-looper itself is released under [CC0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+The pls.watch itself is released under [CC0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
 
 
