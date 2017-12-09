@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        pls.watch
 // @description Adds a button on YouTube, Imgur and SoundCloud to open current resource in pls.watch looper
-// @version     1.9.0
+// @version     1.9.1
 // @namespace   https://pls.watch
 // @icon        https://ipfs.io/ipfs/QmZFXPq9xMJY3Z8q2fq4wfsU93uTpVfjbiaYzwFmfnkCfM
 // @match       https://www.youtube.com/*
@@ -24,17 +24,17 @@
 (function ($, undefined) { // eslint-disable-line no-unused-vars
   const youtubeHandler = function () {
     const atWatchPage = window.location.pathname.startsWith('/watch');
-    if (atWatchPage && $('#pls.watch').length === 0) {
+    if (atWatchPage && $('#pls-watch').length === 0) {
       const getYtPlayer = function () {
           return window.document.getElementById('movie_player');
       };
       const renderLooperActions = function() {
         console.log('renderLooperActions()');
-        $('#pls.watch').remove();
+        $('#pls-watch').remove();
 
         // new layout (https://www.youtube.com/new)
         const $secondaryActions = $('#info #count');
-        const $button = $('<button id="pls.watch" style="cursor:pointer;background:none;border:none;" title="Open in pls.watch"><span style="margin:0 0.1rem;vertical-align: middle;font-size:2em;" class="yt-view-count-renderer"> &#x21BB; </span></button>');
+        const $button = $('<button id="pls-watch" style="cursor:pointer;background:none;border:none;" title="Open in pls.watch"><span style="margin:0 0.1rem;vertical-align: middle;font-size:2em;" class="yt-view-count-renderer"> &#x21BB; </span></button>');
         $secondaryActions.prepend($button);
 
         $button.show();
@@ -74,7 +74,7 @@
       const $a = $(html).click(function () {
         window.open(url);
       });
-      $('<div class="post-account" id="pls.watch">')
+      $('<div class="post-account" id="pls-watch">')
         .data('imgurId', id)
         .css('margin-left','1em')
         .css('float', 'right')
@@ -87,7 +87,7 @@
     }
   };
   const imgurHandler = function () {
-    const $oldButton = $('#pls.watch');
+    const $oldButton = $('#pls-watch');
     const imgurIds = $('div.post-image-container').map(function() { return $(this).attr('id'); }).get();
     if (imgurIds.length > 0 && $oldButton.data('imgurId') != imgurIds[0]) {
       $oldButton.remove();
@@ -95,13 +95,13 @@
     }
   };
   const soundCloudHandler = function () {
-    if ($('#pls.watch').length === 0) {
+    if ($('#pls-watch').length === 0) {
       const $soundActions = $('div.l-about-top div.soundActions');
       if ($soundActions.length === 1) {
         console.log('soundCloudHandler(): adding pls.watch button..');
         const scId = window.location.pathname.replace(/^\//, '');
         const url = 'https://pls.watch/#s=' + scId;
-        const $button = $('<button id="pls.watch" class="sc-button sc-button-medium" title="Open in pls.watch"><span style="font-weight: 900;">&#x21BB;</span>&nbsp;pls.watch</button>');
+        const $button = $('<button id="pls-watch" class="sc-button sc-button-medium" title="Open in pls.watch"><span style="font-weight: 900;">&#x21BB;</span>&nbsp;pls.watch</button>');
         $button.click(function () {
           window.open(url);
         });
