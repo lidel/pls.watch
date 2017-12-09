@@ -8,14 +8,13 @@
 
   "selenium" : {
     "start_process" : true,
-    "server_path" : "../node_modules/selenium-standalone/.selenium/selenium-server/2.53.1-server.jar",
+    "server_path" : "../node_modules/nightwatch/bin/selenium.jar",
     "log_path" : "logs",
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {
       "-Djava.security.egd" : "file:///dev/urandom",
-      "webdriver.chrome.driver" : "../node_modules/selenium-standalone/.selenium/chromedriver/2.31-x64-chromedriver",
-      "webdriver.ie.driver" : ""
+      "webdriver.chrome.driver" : "../node_modules/nightwatch/bin/chromedriver"
     }
   },
 
@@ -43,6 +42,17 @@
         "browserName": "firefox",
         "javascriptEnabled": true,
         "acceptSslCerts": true
+      }
+    },
+
+    "firefoxHeadless" : {
+      "desiredCapabilities": {
+        "browserName": "firefox",
+        "javascriptEnabled": true,
+        "acceptSslCerts": true,
+        "chromeOptions" : {
+          "args" : ["--headless", "--marionette", "--window-size=1366,768"]
+        }
       }
     },
 

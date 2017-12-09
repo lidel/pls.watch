@@ -23,6 +23,11 @@ module.exports = function(grunt) {
           env: 'firefox',
         },
       },
+      'firefoxHeadless': {
+        argv: {
+          env: 'firefox',
+        },
+      },
       'chrome': {
         argv: {
           env: 'chrome',
@@ -75,39 +80,13 @@ module.exports = function(grunt) {
     },
   });
 
-  grunt.registerTask('selenium', 'Download Selenium Standalone Server', function() {
-    var done = this.async();
-    var selenium = require('selenium-standalone');
-
-    selenium.install({
-      version: '2.53.1',
-      baseURL: 'http://selenium-release.storage.googleapis.com',
-      drivers: {
-        chrome: {
-          version: '2.31',
-          arch: process.arch,
-          baseURL: 'http://chromedriver.storage.googleapis.com'
-        }
-      },
-
-      logger: function(message) {
-        grunt.verbose.writeln(message);
-      },
-
-      progressCb: function(total, progress, chunk) { // eslint-disable-line no-unused-vars
-        grunt.log.write('\rDownloading Selenium.. '+Math.round(progress/total*100)+'%');
-      }
-
-    }, done);
-
-  });
-
   grunt.registerTask('default', 'test');
-  grunt.registerTask('common',  ['env', 'eslint', 'connect', 'qunit', 'env:test', 'selenium']);
+  grunt.registerTask('common',  ['env', 'eslint', 'connect', 'qunit', 'env:test']);
 
   grunt.registerTask('test',    ['common', 'nightwatch:phantomjs']);
   grunt.registerTask('firefox', ['common', 'nightwatch:firefox']);
   grunt.registerTask('chrome',  ['common', 'nightwatch:chrome']);
+  grunt.registerTask('firefoxHeadless', ['common', 'nightwatch:firefoxHeadless']);
 
   grunt.registerTask('httpd', 'connect:server:keepalive');
 

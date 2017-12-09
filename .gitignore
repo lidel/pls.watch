@@ -10,3 +10,10 @@ test/reports/
 test/*.png
 test/screenshots/
 pure_style.css
+
+test_reports
+test_screenshots
+selenium-debug.log
+browserstack.err
+local.log
+test/phantomjsdriver.log
