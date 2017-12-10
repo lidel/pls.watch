@@ -805,7 +805,7 @@ function togglePanicOverlay() {
 
   if (!$overlay.is(':visible')) {
     // create overlay
-    $overlay = $('<iframe src="https://duckduckgo.com/?q=parsing+error:+unmatched+0x42+in+unobtainium+loader+site%3Astackoverflow.com" id="panicOverlay"/>').appendTo('body');
+    $overlay = $('<iframe src="https://www.windows93.net/" id="panicOverlay"/>').appendTo('body');
 
     osd('Eek!');
 
@@ -814,8 +814,8 @@ function togglePanicOverlay() {
 
     // set title to something else
     $overlay.data('oldTitle', $(document).find('title').text());
-    $(document).prop('title', 'Search: parsing error…');
-    changeFavicon('https://duckduckgo.com/favicon.ico');
+    $(document).prop('title', 'Boot parsing error…');
+    changeFavicon('//www.windows93.net/favicon.ico');
 
     // other chores
     $('#box').hide();
