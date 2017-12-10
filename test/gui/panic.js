@@ -12,7 +12,7 @@ module.exports = {
       .waitForElementVisible('#panicOverlay')
       .assert.hidden('#box')
       .assert.hidden('#player')
-      .assert.title('Search: parsing error…')
+      .assert.title('Boot parsing error…')
       .sendKeys('body', ['x'])
       .waitForElementVisible('#box')
       .waitForElementVisible('#player')

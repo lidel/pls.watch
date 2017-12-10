@@ -72,7 +72,7 @@ function isMobile() {
 function initYT(callback) {
   if (typeof YT === 'undefined') {
     onYouTubeIframeAPIReady.callback = callback;
-    $.loadCachedScript('https://www.youtube.com/player_api');
+    $.loadCachedScript('https://www.youtube.com/iframe_api');
   } else {
     callback();
   }
@@ -1022,27 +1022,29 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
 
     setSplash('https://i.ytimg.com/vi/' + playback.videoId + '/default.jpg');
 
+    var playerVars = '?autoplay=0'
+                   + '&iv_load_policy=3'
+                   + '&modestbranding=1'
+                   + '&showinfo=0'
+                   + '&disablekb=0'
+                   + '&enablejsapi=1'
+                   + '&rel=0'
+                   + '&color=white'
+                   + '&theme=dark'
+                   + '&fs=0'
+                   + '&origin=' + encodeURI(window.location.origin)
+                   + '&widget_referrer=' + encodeURI(window.location.href);
+    var nocookieIframePlayerUrl = 'https://www.youtube-nocookie.com/embed/'+ playback.videoId + playerVars;
+    var nocookieIframePlayer = $('<iframe id="player" src="'+ nocookieIframePlayerUrl + '" frameborder="0"></iframe>');
+    $('#player').replaceWith(nocookieIframePlayer);
+
     YouTubePlayer.instance = new YT.Player('player',{
       height: size.height,
       width:  size.width,
-      playerVars: {
-        autoplay: '0',
-        autohide: '1',
-        html5: '1',
-        iv_load_policy: '3',
-        modestbranding: '1',
-        showinfo: '0',
-        disablekb: '0',
-        enablejsapi: '1',
-        origin: window.location.origin,
-        rel: '0',
-        theme: 'dark',
-        color: 'white',
-        fs: '0',
-      },
       events: {
         onError: function(e) {
-          logLady('YouTubePlayer error', e);
+          // https://developers.google.com/youtube/iframe_api_reference#onError
+          logLady('YouTubePlayer error', e.data);
           showLoadError('https://www.youtube.com/watch?v=' + Playlist.current().videoId);
           if (Playlist.intervals.length > 1) {  // move to next interval (https://github.com/lidel/pls.watch/issues/238)
             Player.newPlayer(Playlist.cycle());
