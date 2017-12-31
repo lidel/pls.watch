@@ -1024,6 +1024,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
 
     var playerVars = '?autoplay=0'
                    + '&iv_load_policy=3'
+                   + '&cc_load_policy=1'
                    + '&modestbranding=1'
                    + '&showinfo=0'
                    + '&disablekb=0'
