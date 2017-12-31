@@ -1823,6 +1823,7 @@ function renderPage() {
 
   if (PLAYER_TYPES.hasOwnProperty(video.urlKey)) {
     initLooper();
+    $("#close-help").show();
   } else {
     // no valid hash, display #help
     changeFavicon();
@@ -1830,6 +1831,7 @@ function renderPage() {
     $box.hide();
     $menu.hide();
     showHelpUi(true);
+    $("#close-help").hide();
   }
 }
 
@@ -1868,11 +1870,39 @@ function renderPage() {
 
 
   // menu items will now commence!
-
   $('#shorten').click(showShortUrl);
   $('#embed-toggle').click(showEmbedCode);
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
+  $('#close-help').click(function(){showHelpUi(false);});
   $('#fullscreen-toggle').click(function() {Player.fullscreenToggle();});
+  // fade-out menu when mouse is idle
+  $(function () {
+    var timer;
+    var fadeInBuffer = false;
+    $(document).mousemove(function () {
+      if (!fadeInBuffer) {
+        if (timer) {
+          clearTimeout(timer);
+          timer = 0;
+        }
+        $('#menu').fadeIn();
+        $('html').css({
+          cursor: ''
+        });
+      } else {
+        fadeInBuffer = false;
+      }
+      timer = setTimeout(function () {
+        $('#menu').fadeOut();
+        $('html').css({
+          cursor: 'none'
+        });
+        fadeInBuffer = true;
+      }, 3000);
+    });
+  });
+
+
 
   // update player on window resize if autosize is enabled
   $(window).on('resize', _.throttle(function() {

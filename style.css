@@ -105,9 +105,9 @@
   text-overflow: ellipsis;
 }
 #editor .broken {
-	text-decoration: line-through;
-	color: #844;
-	opacity: 0.5;
+  text-decoration: line-through;
+  color: #844;
+  opacity: 0.5;
 }
 
 body {
@@ -118,10 +118,10 @@ body {
   width: 100%;
   font-family: sans-serif;
   margin: 0;
-	background-color: #111111;
-	background-image: url(assets/zwartevilt.jpg),url("data:image/svg+xml,%3Csvg width='12' height='16' viewBox='0 0 12 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 .99C4 .445 4.444 0 5 0c.552 0 1 .45 1 .99v4.02C6 5.555 5.556 6 5 6c-.552 0-1-.45-1-.99V.99zm6 8c0-.546.444-.99 1-.99.552 0 1 .45 1 .99v4.02c0 .546-.444.99-1 .99-.552 0-1-.45-1-.99V8.99z' fill='%23161616' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-color: #111111;
+  background-image: url(assets/zwartevilt.jpg),url("data:image/svg+xml,%3Csvg width='12' height='16' viewBox='0 0 12 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 .99C4 .445 4.444 0 5 0c.552 0 1 .45 1 .99v4.02C6 5.555 5.556 6 5 6c-.552 0-1-.45-1-.99V.99zm6 8c0-.546.444-.99 1-.99.552 0 1 .45 1 .99v4.02c0 .546-.444.99-1 .99-.552 0-1-.45-1-.99V8.99z' fill='%23161616' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E");
   /* zwartevilt.png from http://subtlepatterns.com/black-felt/ (CC BY-SA) */
-	/* svg pattern from http://www.heropatterns.com/ */
+  /* svg pattern from http://www.heropatterns.com/ */
 }
 body>div {
   display: table-cell;
@@ -172,8 +172,17 @@ body>div {
 }
 #help h1 {
   font-size: 1.75em;
-  margin: 0.5em 0 -0.25em 0;
+  margin: 0.5em 1.5em 0.25em 0;
   text-align: right;
+}
+#close-help:hover,
+#editor table tr:hover,
+#menu a:hover,
+#help a:hover {
+  color: #eee;
+/* Glow?
+  text-shadow: #23e0f7 0 0 6em,#23e0f7 0 0 4em,#23e0f7 0 0 2em,#23e0f7 0 0 1em;
+*/
 }
 #help h2 {
   font-size: 1.25em;
@@ -185,10 +194,10 @@ body>div {
   font-size: 0.9em;
 }
 #help div#version {
-  float: right;
-  margin: 0.3em 5em 0 0;
+  margin: -.75em 5em 1em 0;
   font-size: x-small;
   color: #666;
+  text-align: right;
 }
 #help a {
   color: #888;
@@ -202,7 +211,7 @@ body>div {
   font-size: 0.95em;
 }
 #help tt {
-	border-radius: 1em;
+  border-radius: 1em;
   text-decoration: none;
   border: 1px #333 solid;
   padding: .25em .5em!important;
@@ -224,7 +233,7 @@ body>div {
 }
 #help .feature-list {
   font-size:0.75rem;
-  text-align:right;
+  text-align:left;
 }
 #help ul>li {
   padding:0.3em 0;
@@ -242,6 +251,9 @@ body>div {
   border-bottom-color:#bbb;
   border-radius:3px;
   box-shadow:inset 0 -1px 0 #bbb
+}
+#close-help {
+  float: right;
 }
 
 #embed {
@@ -275,19 +287,15 @@ body>div {
   text-align: right;
   width: 100%;
   text-shadow: 0 0 6px #000;
-  font-size: .8em;
+  font-size: .9em;
   padding: 1em;
 }
-#menu a {
+#menu a, #close-help {
   display: inline-block;
   cursor: pointer;
   text-decoration: none;
+  color: #777;
 }
-
-#menu a:hover {
-  color: #888;
-}
-
 
 #menu input {
   color: #fff !important;
@@ -324,16 +332,17 @@ body>div {
 }
 
 .ticker:before {
+    color: #888;
     content: '\2714';
 }
 
 #panicOverlay {
-		background-color: #808080;
-		position: absolute;
-		top: 0; left: 0;
-		width:100%;
-		height:100%;
-		z-index: 1000;
+    background-color: #808080;
+    position: absolute;
+    top: 0; left: 0;
+    width:100%;
+    height:100%;
+    z-index: 1000;
 }
 
 #spinner { /* credit: https://github.com/tobiasahlin/SpinKit */
@@ -369,21 +378,21 @@ body>div {
 
 /* FULLSCREEN fix for Chrome */
 body:-webkit-full-screen {
-		position:relative !important;
+    position:relative !important;
 }
 
 /* Custom toaster style (notifications) */
 #toast-container > div {
-		box-shadow: 0px 0px 12px #000 !important;
+  box-shadow: 0px 0px 12px #000 !important;
 }
 .toast-success {
-		background-color: rgba(13, 51, 62, 0.5) !important;
+  background-color: rgba(13, 51, 62, 0.5) !important;
 }
 .toast-info {
-		background-color: rgba(0, 0, 0, 0.5) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
 }
 .toast-warning {
-		background-color: rgba(192, 113, 0, 0.5) !important;
+  background-color: rgba(192, 113, 0, 0.5) !important;
 }
 
 /* UX fix for SoundCloud player */
