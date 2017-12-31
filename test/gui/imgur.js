@@ -13,10 +13,10 @@ module.exports = {
   'Player with single Imgur interval (gifv)' : function (browser) {
     browser
       .page.looper()
-      .uri('#i=vo9DPpp&t=50s&editor')
+      .uri('#i=kViaawt&t=50s&editor')
       .waitForElementPresent('div#player video#gifv')
       .waitForElementVisible('#editor .highlighted')
-      .assert.editorHighlightUri('i=vo9DPpp&t=50s')
+      .assert.editorHighlightUri('i=kViaawt&t=50s')
       .end();
   },
 
