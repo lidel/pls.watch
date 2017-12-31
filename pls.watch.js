@@ -1872,6 +1872,7 @@ function renderPage() {
   $('#shorten').click(showShortUrl);
   $('#embed-toggle').click(showEmbedCode);
   $('#help-toggle').click(function(){showHelpUi(!$('#help').is(':visible'));});
+  $('#fullscreen-toggle').click(function() {Player.fullscreenToggle();});
 
   // update player on window resize if autosize is enabled
   $(window).on('resize', _.throttle(function() {
