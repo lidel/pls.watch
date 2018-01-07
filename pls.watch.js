@@ -23,17 +23,17 @@ function logLady(a, b) { // kek
                                  : a);
 }
 
-// Limit concurrent jQuery ajax requests to at most 2 at a time, and queue the rest.
+// Limit concurrent jQuery ajax requests to at most 3 at a time, and queue the rest.
 // Credit: https://gist.github.com/OllieTerrance/158a4c436baa64c4324803467844b00f
 var ajaxQueue = [];
 var ajaxActive = 0;
-var ajaxMaxConc = 2;
+var ajaxMaxConc = 3;
 $.queuedAjax = function(obj) {
   var oldSuccess = obj.success;
   var oldError = obj.error;
   var callback = function() {
     if (ajaxActive === ajaxMaxConc) {
-      window.requestAnimationFrame(function() { $.ajax(ajaxQueue.shift()); });
+      window.setTimeout(function() { $.ajax(ajaxQueue.shift()); }, 25);
     } else {
         ajaxActive--;
     }
@@ -50,7 +50,7 @@ $.queuedAjax = function(obj) {
     ajaxQueue.push(obj);
   } else {
     ajaxActive++;
-    window.requestAnimationFrame(function() { $.ajax(obj); });
+    window.setTimeout(function() { $.ajax(obj); }, 25);
   }
 };
 
@@ -1260,10 +1260,16 @@ function setCachedTitle(id) {
 }
 
 function readTitleFromCache(id) {
+  if (typeof (sessionStorage) === 'undefined') {
+    return null;
+  }
   return window.sessionStorage.getItem(titleCacheKey(id));
 }
 
 function addTitleToCache(id, title) {
+  if (typeof (sessionStorage) === 'undefined') {
+    return;
+  }
   window.sessionStorage.setItem(titleCacheKey(id), title);
 }
 

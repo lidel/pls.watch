@@ -95,7 +95,11 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
     intervalLink.attr('data-interval-uri', intervalLink.text());
 
     if (interval.urlKey === 'v' && !isExternalURI(interval.videoId)) {
-      Editor._createAsyncVideoTitle(interval.videoId, intervalLink);
+      // fetch/set editor titles only when in foreground
+      // (great performance boost for huuge playlists playing in background)
+      window.requestAnimationFrame(function() {
+        Editor._createAsyncVideoTitle(interval.videoId, intervalLink);
+      });
     }
 
     return intervalLink;
