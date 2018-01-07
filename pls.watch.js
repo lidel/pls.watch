@@ -23,6 +23,37 @@ function logLady(a, b) { // kek
                                  : a);
 }
 
+// Limit concurrent jQuery ajax requests to at most 2 at a time, and queue the rest.
+// Credit: https://gist.github.com/OllieTerrance/158a4c436baa64c4324803467844b00f
+var ajaxQueue = [];
+var ajaxActive = 0;
+var ajaxMaxConc = 2;
+$.queuedAjax = function(obj) {
+  var oldSuccess = obj.success;
+  var oldError = obj.error;
+  var callback = function() {
+    if (ajaxActive === ajaxMaxConc) {
+      window.requestAnimationFrame(function() { $.ajax(ajaxQueue.shift()); });
+    } else {
+        ajaxActive--;
+    }
+  };
+  obj.success = function(resp, xhr, status) {
+    callback();
+    if (oldSuccess) oldSuccess(resp, xhr, status);
+  };
+  obj.error = function(xhr, status, error) {
+    callback();
+    if (oldError) oldError(xhr, status, error);
+  };
+  if (ajaxActive === ajaxMaxConc) {
+    ajaxQueue.push(obj);
+  } else {
+    ajaxActive++;
+    window.requestAnimationFrame(function() { $.ajax(obj); });
+  }
+};
+
 function cookieMonster(key, value) { // hihi
   if (value !== undefined) {  // naive implementation: set, get, !remove
     var cookie = _.template(
@@ -1188,7 +1219,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
   var fetchAndSetYoutubeTitle = function(videoId) {
     // try cache first
     if (setCachedTitle(videoId)) {
-      return
+      return;
     }
 
     // fallback to read from API
@@ -1197,7 +1228,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
                     + '&maxResults=1'
                     + '&fields=kind%2Citems%2Fsnippet(title)'
                     + '&key=' + GOOGLE_API_KEY;
-    $.ajax({
+    $.queuedAjax({
       url: apiRequest,
       async: true,
       success: function(data) {
@@ -1219,13 +1250,13 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
 }
 
 function setCachedTitle(id) {
-  var cachedTitle = readTitleFromCache(id)
+  var cachedTitle = readTitleFromCache(id);
   if (cachedTitle) {
-    console.log('Setting cachedTitle for "' + id + '"', cachedTitle);
+    // console.log('Setting cachedTitle for "' + id + '"', cachedTitle);
     $(document).prop('title', cachedTitle);
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
 function readTitleFromCache(id) {
@@ -1853,7 +1884,7 @@ function renderPage() {
 
   if (PLAYER_TYPES.hasOwnProperty(video.urlKey)) {
     initLooper();
-    $("#close-help").show();
+    $('#close-help').show();
   } else {
     // no valid hash, display #help
     changeFavicon();
@@ -1861,7 +1892,7 @@ function renderPage() {
     $box.hide();
     $menu.hide();
     showHelpUi(true);
-    $("#close-help").hide();
+    $('#close-help').hide();
   }
 }
 

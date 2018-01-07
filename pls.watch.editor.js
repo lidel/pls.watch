@@ -1,6 +1,6 @@
 'use strict';
 
-/* global GOOGLE_API_KEY, jackiechanMyIntervals, logLady, osd, urlFlag, urlParams, urlArgs, isExternalURI */
+/* global GOOGLE_API_KEY, jackiechanMyIntervals, logLady, osd, urlFlag, urlParams, urlArgs, isExternalURI, readTitleFromCache, addTitleToCache */
 
 
 function _humanReadableTime(interval) {
@@ -49,9 +49,9 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
     // try cache first
     var cachedTitle = readTitleFromCache(videoId);
     if (cachedTitle) {
-      console.log('cachedTitle @ Editor._createAsyncVideoTitle', cachedTitle)
+      // console.log('cachedTitle @ Editor._createAsyncVideoTitle', cachedTitle);
       setPlaylistEntryTitle(cachedTitle, intervalLink);
-      return
+      return;
     }
 
     // fallback to reading title via API
@@ -60,22 +60,20 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
                     + '&maxResults=1'
                     + '&fields=kind%2Citems%2Fsnippet(title)'
                     + '&key=' + GOOGLE_API_KEY;
-    var retries = 3; // eslint-disable-line
-    $.ajax({
+    $.queuedAjax({
       url: apiRequest,
       async: true,
       success: function(data) {
         if (data.kind === 'youtube#videoListResponse' && data.items.length) {
           var titleFromApi = data.items[0].snippet.title;
           setPlaylistEntryTitle(titleFromApi, intervalLink);
-          addTitleToCache(videoId, titleFromApi)
+          addTitleToCache(videoId, titleFromApi);
         } else {
           intervalLink.addClass('broken');
         }
       },
       error: function(jqxhr, textStatus) {
         logLady('Unable to get video title for id='+videoId+' ('+ textStatus +'): ', jqxhr);
-        retries = retries - 1;
       }
     });
   };
