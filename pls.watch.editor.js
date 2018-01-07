@@ -39,13 +39,22 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
                             // Mother, forgive us for what we have done
 
   Editor._createAsyncVideoTitle = function (videoId, intervalLink) {
-    var setTitle = function(title, intervalLink) {
+    var setPlaylistEntryTitle = function(title, intervalLink) {
         var intervalUri = intervalLink.text();
         intervalLink.addClass('truncate');
         intervalLink.attr('title', intervalUri);
         intervalLink.text(title);
     };
 
+    // try cache first
+    var cachedTitle = readTitleFromCache(videoId);
+    if (cachedTitle) {
+      console.log('cachedTitle @ Editor._createAsyncVideoTitle', cachedTitle)
+      setPlaylistEntryTitle(cachedTitle, intervalLink);
+      return
+    }
+
+    // fallback to reading title via API
     var apiRequest = 'https://www.googleapis.com/youtube/v3/videos'
                     + '?part=snippet&id=' + videoId
                     + '&maxResults=1'
@@ -57,7 +66,9 @@ function Editor(Playlist, Player) { // eslint-disable-line no-unused-vars
       async: true,
       success: function(data) {
         if (data.kind === 'youtube#videoListResponse' && data.items.length) {
-          setTitle(data.items[0].snippet.title, intervalLink);
+          var titleFromApi = data.items[0].snippet.title;
+          setPlaylistEntryTitle(titleFromApi, intervalLink);
+          addTitleToCache(videoId, titleFromApi)
         } else {
           intervalLink.addClass('broken');
         }

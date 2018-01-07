@@ -1186,6 +1186,12 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
   };
 
   var fetchAndSetYoutubeTitle = function(videoId) {
+    // try cache first
+    if (setCachedTitle(videoId)) {
+      return
+    }
+
+    // fallback to read from API
     var apiRequest = 'https://www.googleapis.com/youtube/v3/videos'
                     + '?part=snippet&id=' + videoId
                     + '&maxResults=1'
@@ -1196,7 +1202,9 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       async: true,
       success: function(data) {
         if (data.kind === 'youtube#videoListResponse' && data.items.length) {
-          $(document).prop('title', data.items[0].snippet.title);
+          var titleFromApi = data.items[0].snippet.title;
+          addTitleToCache(videoId, titleFromApi);
+          setCachedTitle(videoId);
         } else {
           logLady('Missing youtube#videoListResponse', data);
         }
@@ -1208,6 +1216,28 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
 
   };
 
+}
+
+function setCachedTitle(id) {
+  var cachedTitle = readTitleFromCache(id)
+  if (cachedTitle) {
+    console.log('Setting cachedTitle for "' + id + '"', cachedTitle);
+    $(document).prop('title', cachedTitle);
+    return true
+  }
+  return false
+}
+
+function readTitleFromCache(id) {
+  return window.sessionStorage.getItem(titleCacheKey(id));
+}
+
+function addTitleToCache(id, title) {
+  window.sessionStorage.setItem(titleCacheKey(id), title);
+}
+
+function titleCacheKey(id) {
+  return 'title_' + id;
 }
 
 function ImagePlayer() { // eslint-disable-line no-redeclare
