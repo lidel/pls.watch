@@ -182,8 +182,8 @@ function notification(type, title, message, options) {
         $('<link>')
           .appendTo('head')
           .attr({type : 'text/css', rel : 'stylesheet'})
-          .attr('href', 'https://cdn.jsdelivr.net/toastr/2.1.3/toastr.min.css');
-        return 'https://cdn.jsdelivr.net/toastr/2.1.3/toastr.min.js';
+          .attr('href', 'https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.css');
+        return 'https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js';
     } else {
       return null;
     }
@@ -197,7 +197,14 @@ function notification(type, title, message, options) {
 }
 
 function osd(message) {
-  notification('info', message, null, {showDuration: 0, hideDuration: 0, timeOut: 750});
+  notification('info', message, null, {
+    showDuration: 0,
+    preventDuplicates: true,
+    hideEasing: 'linear',
+    hideDuration: 200,
+    progressBar: true,
+    timeOut: 750
+  });
 }
 
 /* Styling help
