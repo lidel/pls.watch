@@ -27,7 +27,7 @@
     "grunt-eslint": "20.0.0",
     "husky": "0.14.3",
     "load-grunt-tasks": "3.5.2",
-    "nightwatchjs-end2end": "2.5.5",
+    "nightwatchjs-end2end": "2.6.0",
     "npm-run-all": "4.1.2",
     "time-grunt": "1.4.0",
     "travis-multirunner": "latest"
