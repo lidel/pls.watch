@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        pls.watch
 // @description Adds a button on YouTube, Imgur and SoundCloud to open current resource in pls.watch looper
-// @version     1.9.1
+// @version     1.9.2
 // @namespace   https://pls.watch
 // @icon        https://ipfs.io/ipfs/QmZFXPq9xMJY3Z8q2fq4wfsU93uTpVfjbiaYzwFmfnkCfM
 // @match       https://www.youtube.com/*
@@ -33,9 +33,9 @@
         $('#pls-watch').remove();
 
         // new layout (https://www.youtube.com/new)
-        const $secondaryActions = $('#info #count');
-        const $button = $('<button id="pls-watch" style="cursor:pointer;background:none;border:none;" title="Open in pls.watch"><span style="margin:0 0.1rem;vertical-align: middle;font-size:2em;" class="yt-view-count-renderer"> &#x21BB; </span></button>');
-        $secondaryActions.prepend($button);
+        const $secondaryActions = $('#info #top-level-buttons');
+        const $button = $('<button id="pls-watch" style="cursor:pointer;background:none;border:none;vertical-align:middle;" title="Open in pls.watch"><span style="margin:0 0.1rem;vertical-align: middle;font-size:2em;" class="yt-view-count-renderer"> &#x21BB; </span></button>');
+        $secondaryActions.append($button);
 
         $button.show();
         $button.click(function () {

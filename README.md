@@ -195,7 +195,7 @@ It may require preinstalled browser extension:
 
 #### YouTube
 
-> ![](https://cloud.githubusercontent.com/assets/157609/4671390/5d989338-5580-11e4-9f67-01ed61a085ca.png)
+> ![](https://user-images.githubusercontent.com/157609/38982703-d78075d8-43c2-11e8-9c06-8020e3bab500.png)
 
 #### Imgur
 
