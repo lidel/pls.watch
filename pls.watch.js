@@ -1095,13 +1095,22 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     });
 
 
-
-    YouTubePlayer.load = function(playback) {
+    YouTubePlayer.load = function(next, prev) { // eslint-disable-line no-unused-vars
       if (!_.isUndefined(YouTubePlayer.instance)) {
-        logLady('Reusing existing YouTubePlayer for', playback);
-        cueVideo(playback);
+        console.log('--> YouTubePlayer.load: reusing player for', next);
+        /* DEBUG stuff
+        console.log('---> current: ', prev)
+        console.log('--->    next: ', next)
+        if (prev && prev.videoId === next.videoId) {
+          console.log('--> YouTubePlayer.load (player reuse: same videoId)')
+        } else {
+          console.log('--> YouTubePlayer.load (player reuse: different videoId)')
+        }
+        */
+        cueVideo(next);
       } else {
-        Player.newPlayer(playback);
+        console.log('--> YouTubePlayer.load: create new player for', next);
+        Player.newPlayer(next);
       }
     };
 
@@ -1151,8 +1160,17 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       'startSeconds': playback.start,
       'endSeconds':   playback.end
     };
-    YouTubePlayer.instance.cueVideoById(id);
+    if (isAutoplay()) {
+      console.log('--> loadVideoById', id);
+      fetchAndSetYoutubeTitle(id.videoId);
+      setSplash(null);
+      YouTubePlayer.instance.loadVideoById(id);
+    } else {
+      console.log('--> cueVideoiById', id);
+      YouTubePlayer.instance.cueVideoById(id);
+    }
   };
+
 
   var onYouTubePlayerReady = function(event) {
     logLady('onYouTubePlayerReady()');
@@ -1171,50 +1189,69 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
     cueVideo(Playlist.current());
   };
 
-  var playFromStart = function(player, video) {
-    player.pauseVideo();
-    player.seekTo(video.start, true);
-    player.playVideo();
+  var YouTubePlayerStates = {
+  '-1': 'UNSTARTED',
+    '0': 'ENDED',
+    '1': 'PLAYING',
+    '2': 'PAUSED',
+    '3': 'BUFFERING',
+    '5': 'CUED'
   };
 
   var onYouTubePlayerStateChange = function(event) {
-    logLady('YouTube Player State Change', event.data);
+    logLady('YouTube Player State Change', YouTubePlayerStates[event.data]);
     var current = Playlist.current();
-    if (event.data == YT.PlayerState.CUED) {
+    if (event.data === YT.PlayerState.UNSTARTED) {
+       event.target.unstarted = true;
+    } else if (event.data === YT.PlayerState.CUED) {
       logLady('CUED', current);
       fetchAndSetYoutubeTitle(current.videoId);
       setSplash(null);
       if (isAutoplay()) {
         event.target.playVideo();
       }
-    } else if (event.data == YT.PlayerState.ENDED) {
+    } else if (event.data === YT.PlayerState.ENDED) {
       logLady('ENDED', current);
       changeFavicon(faviconWait);
-      if (event.target.getCurrentTime() >= current.end) {
-        if (Playlist.multivideo) {
-          Player.playNext();
-        } else {
-          playFromStart(event.target, current);
-        }
-      } else {
-        // Sometimes YT player sends false-positive "ENDED" signal
-        // just after item finished buffering, which causes premature
-        // advancement to the next playlist item.
-        // Workaround below reinitializes playback of impacted items.
-        logLady('ENDED at', event.target.getCurrentTime());
-        logLady('END was', current.end);
-        logLady('Executing workaround for YT API bug');
-        playFromStart(event.target, current);
+
+      var playerBug = function(player, item) {
+        var startIs = item.start;
+        var endIs = item.end;
+        var endedAt = event.target.getCurrentTime();
+        var endedUrl = event.target.getVideoUrl();
+        // Reused YT player sometimes sends ENDED with metadata
+        // of previous interval instead of current one
+        // we compare videoId and interval range (if present)
+        // to detect the bug and mark ENDED as false-positive
+        // (we add full second to the end marker
+        // because player always goes a few ms over limit)
+        // hurr durr
+        return !endedUrl.includes(item.videoId)
+          || (startIs && endedAt < startIs)
+          || (endIs && endedAt > (endIs+1));
+      };
+
+      if (playerBug(event.target, current)) {
+        logLady('--> Executing workaround for YT player bug 💩');
+        event.target.unstarted = true;
       }
-    } else if (event.data == YT.PlayerState.PLAYING) {
+      //console.log('unstarted', event.target.unstarted)
+      if (!_.isUndefined(event.target.unstarted) && event.target.unstarted) {
+        event.target.seekTo(current.start, true);
+      } else {
+        Player.playNext();
+      }
+    } else if (event.data === YT.PlayerState.PLAYING) {
       logLady('PLAYING', current);
+      event.target.unstarted = false;
       changeFavicon(faviconPlay);
       setSplash(null);
       if (isEmbedded()) {
         isEmbedded.clickedPlay = true;
       }
     } else if ($('#box').is(':visible') || !event.target.isMuted()) {
-      if (event.data == YT.PlayerState.PAUSED) {
+      if (event.data === YT.PlayerState.PAUSED) {
+        logLady('PAUSED at', event.target.getCurrentTime());
         changeFavicon(faviconPause);
       } else {
         changeFavicon(faviconWait);
@@ -1819,7 +1856,7 @@ function Player() { // eslint-disable-line no-redeclare
     // reuse player engine when possible
     // https://github.com/lidel/pls.watch/issues/152
     if (prevEngine === nextEngine && _.isFunction(prevEngine.load)) {
-      prevEngine.load(next);
+      prevEngine.load(next, prev);
       $('#box').attr('data-loaded-id', next.videoId);
       if (_.isFunction(editorNotification)) editorNotification();
     } else {
