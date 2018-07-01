@@ -42,15 +42,6 @@
         "browserName": "firefox",
         "marionette": true,
         "javascriptEnabled": true,
-        "acceptSslCerts": true
-      }
-    },
-
-    "firefoxHeadless" : {
-      "desiredCapabilities": {
-        "browserName": "firefox",
-        "marionette": true,
-        "javascriptEnabled": true,
         "acceptSslCerts": true,
         "chromeOptions" : {
           "args" : ["headless", "window-size=1366,768"]
@@ -59,17 +50,6 @@
     },
 
     "chrome" : {
-      "desiredCapabilities": {
-        "browserName": "chrome",
-        "javascriptEnabled": true,
-        "acceptSslCerts": true,
-        "chromeOptions" : {
-          "args" : ["--no-sandbox"]
-        }
-      }
-    },
-
-    "chromeHeadless" : {
       "desiredCapabilities": {
         "browserName": "chrome",
         "javascriptEnabled": true,
