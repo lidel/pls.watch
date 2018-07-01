@@ -2,44 +2,17 @@ language: node_js
 node_js:
     - "8"
 sudo: false
-env:
-    global:
-        - DISPLAY=':99.0'
-        - FIREFOX_BIN='./firefox/firefox'
-        - PATH=./node_modules/.bin:${PATH}
-    matrix:
-        - NIGHTWATCH_TARGET=firefoxHeadless BVER=latest
-        #- NIGHTWATCH_TARGET=chrome  BVER=stable
-        #- NIGHTWATCH_TARGET=firefox BVER=latest
-        #- NIGHTWATCH_TARGET=firefox BVER=esr-latest
-        #- NIGHTWATCH_TARGET=firefox BVER=31.0
-        #- NIGHTWATCH_TARGET=firefox BVER=38.0
-        #- NIGHTWATCH_TARGET=firefox BVER=39.0
-        #- NIGHTWATCH_TARGET=firefox BVER=43.0
-matrix:
-    fast_finish: true
-    allow_failures:
-        - env: NIGHTWATCH_TARGET=chrome  BVER=stable
-        - env: NIGHTWATCH_TARGET=firefox BVER=latest
 addons:
+    firefox: latest
     hosts:
         - yt.127.0.0.1.xip.io
-    apt:
-        packages:
-            - python-pip
-            - wget
 cache:
     yarn: true
     directories:
-        - cache
         - node_modules
-before_install:
-    - mkdir -p $HOME/cache
 install:
     # devDependencies from package.json
     - yarn --frozen-lockfile
-    - test "$NIGHTWATCH_TARGET" = "firefoxHeadless" && (text -x $HOME/cache/firefox-${BVER}.tar.bz2 || wget -O $HOME/cache/firefox-${BVER}.tar.bz2 "https://download.mozilla.org/?product=firefox-$BVER&os=linux64&lang=en-US") && tar xvf firefox-${BVER}.tar.bz2 || true
 script:
-    - grunt connect qunit --verbose
-    - grunt connect nightwatch:${NIGHTWATCH_TARGET}
-    - grunt eslint
+    - yarn test
+    - yarn lint
