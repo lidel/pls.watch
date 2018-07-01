@@ -14,9 +14,9 @@ module.exports = {
     //if (browser.globals.skipOnTravis) return;
     browser
       .page.looper()
-      .uri('#i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm&editor')
+      .uri('#i=/ipfs/QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR&editor')
       .waitForElementVisible('#editor .highlighted')
-      .assert.editorHighlightUri('i=/ipfs/QmYHNYAaYK5hm3ZhZFx5W9H6xydKDGimjdgJMrMSdnctEm')
+      .assert.editorHighlightUri('i=/ipfs/QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR')
       .end();
   },
 

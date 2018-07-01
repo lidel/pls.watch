@@ -5,10 +5,7 @@ package-lock.json
 *.swo
 npm-debug.log
 deploy.sh
-test/logs/
-test/reports/
 test/*.png
-test/screenshots/
 pure_style.css
 
 test_reports

@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-    - "6.1"
+    - "8"
 sudo: false
 env:
     global:
@@ -8,7 +8,7 @@ env:
         - FIREFOX_BIN='./firefox/firefox'
         - PATH=./node_modules/.bin:${PATH}
     matrix:
-        - NIGHTWATCH_TARGET=phantomjs
+        - NIGHTWATCH_TARGET=firefoxHeadless BVER=latest
         #- NIGHTWATCH_TARGET=chrome  BVER=stable
         #- NIGHTWATCH_TARGET=firefox BVER=latest
         #- NIGHTWATCH_TARGET=firefox BVER=esr-latest
@@ -29,6 +29,7 @@ addons:
             - python-pip
             - wget
 cache:
+    yarn: true
     directories:
         - cache
         - node_modules
@@ -36,11 +37,8 @@ before_install:
     - mkdir -p $HOME/cache
 install:
     # devDependencies from package.json
-    - npm install
-    - test "$NIGHTWATCH_TARGET" = "firefox" && (text -x $HOME/cache/firefox-${BVER}.tar.bz2 || wget -O $HOME/cache/firefox-${BVER}.tar.bz2 "https://download.mozilla.org/?product=firefox-$BVER&os=linux64&lang=en-US") && tar xvf firefox-${BVER}.tar.bz2 || true
-before_script:
-    # start xvfb for non-phantomjs tests
-    - test "$NIGHTWATCH_TARGET" = "phantomjs" || /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16
+    - yarn --frozen-lockfile
+    - test "$NIGHTWATCH_TARGET" = "firefoxHeadless" && (text -x $HOME/cache/firefox-${BVER}.tar.bz2 || wget -O $HOME/cache/firefox-${BVER}.tar.bz2 "https://download.mozilla.org/?product=firefox-$BVER&os=linux64&lang=en-US") && tar xvf firefox-${BVER}.tar.bz2 || true
 script:
     - grunt connect qunit --verbose
     - grunt connect nightwatch:${NIGHTWATCH_TARGET}

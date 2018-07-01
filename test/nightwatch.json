@@ -8,13 +8,13 @@
 
   "selenium" : {
     "start_process" : true,
-    "server_path" : "../node_modules/nightwatch/bin/selenium.jar",
+    "server_path" : "../node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-3.12.0.jar",
     "log_path" : "logs",
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {
       "-Djava.security.egd" : "file:///dev/urandom",
-      "webdriver.chrome.driver" : "../node_modules/nightwatch/bin/chromedriver"
+      "webdriver.chrome.driver" : "../node_modules/chromedriver/lib/chromedriver/chromedriver"
     }
   },
 
@@ -40,6 +40,7 @@
     "firefox" : {
       "desiredCapabilities": {
         "browserName": "firefox",
+        "marionette": true,
         "javascriptEnabled": true,
         "acceptSslCerts": true
       }
@@ -48,10 +49,11 @@
     "firefoxHeadless" : {
       "desiredCapabilities": {
         "browserName": "firefox",
+        "marionette": true,
         "javascriptEnabled": true,
         "acceptSslCerts": true,
         "chromeOptions" : {
-          "args" : ["--headless", "--marionette", "--window-size=1366,768"]
+          "args" : ["headless", "window-size=1366,768"]
         }
       }
     },
@@ -67,11 +69,14 @@
       }
     },
 
-    "phantomjs" : {
+    "chromeHeadless" : {
       "desiredCapabilities": {
-        "browserName": "phantomjs",
+        "browserName": "chrome",
         "javascriptEnabled": true,
-        "acceptSslCerts": true
+        "acceptSslCerts": true,
+        "chromeOptions" : {
+          "args" : ["headless", "no-sandbox", "disable-gpu", "window-size=1366,768"]
+        }
       }
     }
 
