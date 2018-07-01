@@ -23,11 +23,6 @@ module.exports = function(grunt) {
           env: 'firefox',
         },
       },
-      'firefoxHeadless': {
-        argv: {
-          env: 'firefoxHeadless',
-        },
-      },
       'chrome': {
         argv: {
           env: 'chrome',
@@ -78,10 +73,9 @@ module.exports = function(grunt) {
   grunt.registerTask('default', 'test');
   grunt.registerTask('common',  ['env', 'eslint', 'connect', 'qunit', 'env:test']);
 
-  grunt.registerTask('test',    ['common', 'nightwatch:firefoxHeadless']);
+  grunt.registerTask('test',    ['common', 'nightwatch:firefox']);
   grunt.registerTask('firefox', ['common', 'nightwatch:firefox']);
   grunt.registerTask('chrome',  ['common', 'nightwatch:chrome']);
-  grunt.registerTask('firefoxHeadless', ['common', 'nightwatch:firefoxHeadless']);
 
   grunt.registerTask('httpd', 'connect:server:keepalive');
 

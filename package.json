@@ -3,7 +3,7 @@
     "httpd": "grunt httpd",
     "start": "run-s httpd",
     "grunt": "grunt",
-    "eslint": "grunt eslint",
+    "lint": "grunt eslint",
     "prepush": "npm test",
     "test": "grunt test"
   },
