@@ -177,7 +177,7 @@ Press <kbd>?</kbd> to toggle help screen listing available shortcuts.
 ### Autoplay does not work in Google Chrome/Chromium
 
 Chrome made the decision not to allow autoplay of video/audio content unless muted, to prevent annoying webpage content.
-There is no fix for this, but every user can opt-out and restore autoplay by opening `chrome://flags/#autoplay-policy`, changing it to `No user gesture is requires` and restarting the browser:
+There is no fix for this, but every user can opt-out and restore autoplay by opening `chrome://flags/#autoplay-policy`, changing it to `No user gesture is required` and restarting the browser:
 
 ![enabling autoplay in Chrome](https://user-images.githubusercontent.com/157609/42972002-5c8dd0a8-8bae-11e8-9a7f-fbcd49a694a0.png)
 
