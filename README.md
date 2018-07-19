@@ -18,6 +18,7 @@ Deployed at https://pls.watch
   - [SoundCloud](#soundcloud)
   - or [any External URL](#any-external-url)
 - [Known Issues](#known-issues)
+  (Fixing autoplay and background playback in Google Chrome/Chromium, etc)
 - [Companion UserScript](#companion-userscript)
 - [Contribute](#contribute)
 - [License](#license)
@@ -173,9 +174,17 @@ Press <kbd>?</kbd> to toggle help screen listing available shortcuts.
 
 ## Known Issues
 
-### Playback pauses when tab is not active (Google Chrome/Chromium)
+### Autoplay does not work in Google Chrome/Chromium
 
-See [issue #151](https://github.com/lidel/pls.watch/issues/151#issuecomment-190417962).
+Chrome made the decision not to allow autoplay of video/audio content unless muted, to prevent annoying webpage content.
+There is no fix for this, but every user can opt-out and restore autoplay by opening `chrome://flags/#autoplay-policy`, changing it to `No user gesture is requires` and restarting the browser:
+
+![enabling autoplay in Chrome](https://user-images.githubusercontent.com/157609/42972002-5c8dd0a8-8bae-11e8-9a7f-fbcd49a694a0.png)
+
+### Playback pauses when tab is not active in Google Chrome/Chromium
+
+The fix is the same as above (change `chrome://flags/#autoplay-policy`).
+See [issue #151](https://github.com/lidel/pls.watch/issues/151#issuecomment-190417962) for historical context.
 
 
 ## Companion UserScript
