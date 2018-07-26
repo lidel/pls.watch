@@ -1097,17 +1097,14 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
 
     YouTubePlayer.load = function(next, prev) { // eslint-disable-line no-unused-vars
       if (!_.isUndefined(YouTubePlayer.instance)) {
-        console.log('--> YouTubePlayer.load: reusing player for', next);
-        /* DEBUG stuff
-        console.log('---> current: ', prev)
-        console.log('--->    next: ', next)
-        if (prev && prev.videoId === next.videoId) {
-          console.log('--> YouTubePlayer.load (player reuse: same videoId)')
+        console.log('--> YouTubePlayer.load: reusing preexisting player for', next);
+        if (prev && Object.is(prev, next)) {
+          console.log('--> YouTubePlayer.load (seek-based player reuse: same interval)');
+          YouTubePlayer.instance.seekTo(next.start, true);
         } else {
-          console.log('--> YouTubePlayer.load (player reuse: different videoId)')
+          console.log('--> YouTubePlayer.load (cue-based player reuse: different interval)');
+          cueVideo(next);
         }
-        */
-        cueVideo(next);
       } else {
         console.log('--> YouTubePlayer.load: create new player for', next);
         Player.newPlayer(next);
@@ -1237,7 +1234,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       }
       //console.log('unstarted', event.target.unstarted)
       if (!_.isUndefined(event.target.unstarted) && event.target.unstarted) {
-        event.target.seekTo(current.start, true);
+        cueVideo(current)
       } else {
         Player.playNext();
       }
