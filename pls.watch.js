@@ -196,8 +196,8 @@ function notification(type, title, message, options) {
   });
 }
 
-function osd(message) {
-  notification('info', message, null, {
+function osd(message, type) {
+  notification((type ? type : 'info'), message, null, {
     showDuration: 0,
     preventDuplicates: true,
     hideEasing: 'linear',
@@ -1234,7 +1234,7 @@ function YouTubePlayer() { // eslint-disable-line no-redeclare
       }
       //console.log('unstarted', event.target.unstarted)
       if (!_.isUndefined(event.target.unstarted) && event.target.unstarted) {
-        cueVideo(current)
+        cueVideo(current);
       } else {
         Player.playNext();
       }
@@ -2031,13 +2031,15 @@ function renderPage() {
   });
 
   // keyboard shortcuts will now commence!
-  $(document).unbind('keypress').keypress(function(e) {
-    var k = (( typeof Editor === 'undefined'
-            || _.isUndefined(Editor.editInProgress))
-            && !isEmbedded() && !e.ctrlKey)
-             ? String.fromCharCode(e.which).toLowerCase()
-             : undefined;
-    //logLady('key/code:'+k+'/'+e.which+'/ctrl:'+e.ctrlKey);
+  $(document).unbind('keydown').keydown(function(e) {
+    if ((typeof Editor !== 'undefined' && Editor.editInProgress) || isEmbedded()) {
+      return;
+    }
+    var k = (e.key && !e.ctrlKey)
+      ? e.key.toLowerCase()
+      : String(e.which || e.keyCode).toLowerCase();
+    logLady('k:'+k+'/which:'+e.which+'/keyCode:'+e.keyCode+'/charCode:'+e.charCode+'/ctrl:'+e.ctrlKey);
+    // fallback
     if (k==='?') {
       $('#help-toggle').click();
 
@@ -2122,6 +2124,43 @@ function renderPage() {
         Player.toggle();
       }
 
+    } else if (['arrowleft','arrowright','37','39'].includes(k)) {
+      // seek current video with left/right arrows
+      // ctrl: bigger seek
+      var offset = e.ctrlKey ? 30 : 5;
+      // left key: seek backwards
+      offset = ['arrowright','39'].includes(k) ? offset : (-1*offset);
+
+      var seekHandler = function (getCurrent, getMax, doSeek) {
+          var current = getCurrent();
+          var max = getMax();
+          var seek = current + offset;
+          if (seek < max) {
+            // console.log('current:'+current+'seek:'+seek+'/max:'+max)
+            doSeek(seek);
+          }
+          if (seek > 0 && seek < max) {
+            osd('Seek ' + (Math.sign(offset) === 1 && '+' || '')  + offset + 's');
+          } else {
+            osd('Seek out of range', 'warning');
+          }
+      };
+
+      switch(Player.engine) {
+        case YouTubePlayer:
+          var yt = YouTubePlayer.instance;
+          seekHandler(() => yt.getCurrentTime(), ()=> yt.getDuration(), (time) => yt.seekTo(time));
+          break;
+        case SoundCloudPlayer:
+          /* TODO
+          SoundCloudPlayer.instance
+          */
+          break;
+        case HTML5Player:
+          var v = HTML5Player.instance;
+          seekHandler(() => v.currentTime, () => v.duration, (time) => {v.currentTime = time;});
+          break;
+     }
     } else if (Playlist.go) {
       var change = k==='k' ? Playlist.go('prevV')
                  : k==='j' ? Playlist.go('nextV')
