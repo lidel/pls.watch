@@ -2152,9 +2152,14 @@ function renderPage() {
           seekHandler(() => yt.getCurrentTime(), ()=> yt.getDuration(), (time) => yt.seekTo(time));
           break;
         case SoundCloudPlayer:
-          /* TODO
-          SoundCloudPlayer.instance
-          */
+          var s = SoundCloudPlayer.instance;
+          s.getPosition((ms) => {
+            var current = ms / 1000;
+            s.getDuration((ms) => {
+              var max = ms / 1000;
+              seekHandler(() => current, ()=> max, (time) => s.seekTo(time * 1000));
+            });
+          });
           break;
         case HTML5Player:
           var v = HTML5Player.instance;
