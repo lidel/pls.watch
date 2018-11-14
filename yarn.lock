@@ -2262,9 +2262,9 @@ safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-selenium-server-standalone-jar@3.12.0:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/selenium-server-standalone-jar/-/selenium-server-standalone-jar-3.12.0.tgz#295616238dd244b41bddc67f0a97a07329c9ae5c"
+selenium-server-standalone-jar@3.141.5:
+  version "3.141.5"
+  resolved "https://registry.yarnpkg.com/selenium-server-standalone-jar/-/selenium-server-standalone-jar-3.141.5.tgz#dcce97923571ce6505d28efc6d87bf4c97ef5c17"
 
 "semver@2 || 3 || 4 || 5", semver@^5.1.0, semver@^5.3.0:
   version "5.5.0"
