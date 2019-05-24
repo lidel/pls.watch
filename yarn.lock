@@ -557,9 +557,10 @@ escodegen@1.x.x:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-plugin-you-dont-need-lodash-underscore@6.3.1:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-you-dont-need-lodash-underscore/-/eslint-plugin-you-dont-need-lodash-underscore-6.3.1.tgz#652ddaf98a5cebb733d0ae9ae7207cf14d3837b6"
+eslint-plugin-you-dont-need-lodash-underscore@6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-you-dont-need-lodash-underscore/-/eslint-plugin-you-dont-need-lodash-underscore-6.5.0.tgz#c8893157fe477f8ccc9bf6e3e4577702f7333116"
+  integrity sha512-68bj1UlZtCLmu1Mp0GaRgIBNFJyHJChfwphY9fBk60fBkNPH/xnbEXhbFsk7CBaZGMqPkHhYjT1iICQyZAdK5Q==
   dependencies:
     kebab-case "^1.0.0"
 
