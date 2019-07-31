@@ -27,7 +27,7 @@
     "grunt-env": "0.4.4",
     "grunt-eslint": "20.0.0",
     "husky": "0.14.3",
-    "load-grunt-tasks": "3.5.2",
+    "load-grunt-tasks": "5.1.0",
     "nightwatch": "0.9.21",
     "npm-run-all": "4.1.2",
     "selenium-server-standalone-jar": "3.12.0",
