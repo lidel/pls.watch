@@ -147,7 +147,7 @@ var PLAYER_TYPES = Object.freeze({
 var PLAYER_TYPES_REGX = '['+ _(PLAYER_TYPES).keys().join('') +']'; // nice halper
 
 var PRODUCTION_HOST = 'pls.watch';
-var CORS_PROXY = '';
+var CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
 
 // This API key works only with pls.watch domain
 // Key for different referer can be generated at https://console.developers.google.com
