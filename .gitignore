@@ -4,9 +4,9 @@ package-lock.json
 *.swp
 *.swo
 npm-debug.log
-deploy.sh
 test/*.png
 pure_style.css
+dist/
 
 test_reports
 test_screenshots
